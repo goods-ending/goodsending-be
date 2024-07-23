@@ -3,6 +3,7 @@ package com.goodsending.product.service;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.service.S3Uploader;
+import com.goodsending.global.service.TimeService;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageInfoDto;
@@ -10,6 +11,7 @@ import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Uploader s3Uploader;
+  private final TimeService timeService;
 
   @Override
   @Transactional
@@ -39,7 +42,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 정보 저장
-    Product product = Product.of(requestDto, memberId);
+    LocalDateTime currentTime = timeService.getCurrentTime();
+    Product product = Product.of(requestDto, currentTime, memberId);
     Product savedProduct = productRepository.save(product);
 
     // 버킷에 상품 이미지 업로드

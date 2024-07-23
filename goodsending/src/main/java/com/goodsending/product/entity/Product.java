@@ -49,11 +49,10 @@ public class Product extends BaseEntity {
     this.memberId = memberId;
   }
 
-  public static Product of(ProductCreateRequestDto requestDto, Long memberId) {
+  public static Product of(ProductCreateRequestDto requestDto, LocalDateTime currentTime, Long memberId) {
 
     int auctionPeriodDays = requestDto.getAuctionPeriodDays();
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime auctionEndDate = now.plusDays(auctionPeriodDays)
+    LocalDateTime auctionEndDate = currentTime.plusDays(auctionPeriodDays)
         .withHour(23)
         .withMinute(59)
         .withSecond(59)

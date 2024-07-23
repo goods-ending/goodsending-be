@@ -10,14 +10,23 @@ public class ExceptionResponse {
   private HttpStatus status;
   private String message;
 
-  public ExceptionResponse(HttpStatus status, Exception ex) {
+  private ExceptionResponse(HttpStatus status, Exception ex) {
     this.code = status.value();
     this.status = status;
     this.message = ex.getMessage();
+  }
+
+  private ExceptionResponse(HttpStatus status, String message) {
+    this.code = status.value();
+    this.status = status;
+    this.message = message;
   }
 
   public static ExceptionResponse of(HttpStatus httpStatus, Exception ex) {
     return new ExceptionResponse(httpStatus, ex);
   }
 
+  public static ExceptionResponse of(HttpStatus httpStatus, String message) {
+    return new ExceptionResponse(httpStatus, message);
+  }
 }

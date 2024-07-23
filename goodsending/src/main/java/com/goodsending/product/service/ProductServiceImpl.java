@@ -14,10 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,28 +42,17 @@ public class ProductServiceImpl implements ProductService {
     Product product = Product.of(requestDto, memberId);
     Product savedProduct = productRepository.save(product);
 
-    // 상품 이미지 업로드
+    // 버킷에 상품 이미지 업로드
+    List<String> uploadedFileNames = s3Uploader.uploadProductImageFileList(productImages, "images/products");
+
+    // 업로드 된 상품의 url 저장
     List<ProductImageInfoDto> savedProductImages = new ArrayList<>();
-    for (MultipartFile productImageFile : productImages) {
-      try {
-        // S3 업로드
-        String storedFileName = s3Uploader.upload(productImageFile, "images/products");
+    for (String uploadedFileName : uploadedFileNames) {
+      ProductImage productImage = ProductImage.of(product, uploadedFileName);
+      productImageRepository.save(productImage);
 
-        // 업로드 된 url 저장
-        ProductImage productImage = ProductImage.of(product, storedFileName);
-        productImageRepository.save(productImage);
-
-        ProductImageInfoDto productImageInfoDto = ProductImageInfoDto.from(productImage);
-        savedProductImages.add(productImageInfoDto);
-      } catch (MaxUploadSizeExceededException e) { // 파일 용량 초과
-        throw CustomException.of(ExceptionCode.FILE_SIZE_EXCEEDED);
-      } catch (IOException e) {
-        if (e.getMessage().contains("No space left on device")) {
-          throw CustomException.of(ExceptionCode.LOW_DISK_SPACE); // 디스크 공간 부족
-        } else {
-          throw CustomException.of(ExceptionCode.FILE_UPLOAD_FAILED); // 파일 업로드 실패
-        }
-      }
+      ProductImageInfoDto productImageInfoDto = ProductImageInfoDto.from(productImage);
+      savedProductImages.add(productImageInfoDto);
     }
 
     return ProductCreateResponseDto.of(product, savedProductImages);

@@ -5,9 +5,12 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -27,7 +30,18 @@ public class S3Uploader {
     this.bucket = bucket;
   }
 
-  public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+  public List<String> uploadProductImageFileList(List<MultipartFile> productImages, String dirName) {
+    List<String> uploadedFileNames = new ArrayList<>();
+
+    for (MultipartFile file : productImages) {
+      String uploadedFileName = upload(file, dirName);
+      uploadedFileNames.add(uploadedFileName);
+    }
+
+    return uploadedFileNames;
+  }
+
+  private String upload(MultipartFile multipartFile, String dirName) {
     // 원본 파일 명
     String originalFileName = multipartFile.getOriginalFilename();
     log.info("파일 업로드 : {}", originalFileName);
@@ -44,19 +58,33 @@ public class S3Uploader {
     return uploadImageUrl;
   }
 
-  private File convert(MultipartFile file, String uniqueFileName) throws IOException {
+  private File convert(MultipartFile file, String uniqueFileName) {
     File convertFile = new File(uniqueFileName);
-    if (!convertFile.createNewFile()) { // 이미 존재하는 파일일 경우
-      log.error("파일 생성 실패");
+    try {
+      if (convertFile.createNewFile()) {
+        log.info("파일 생성 성공");
+      } else {
+        log.error("이미 존재하는 파일입니다");
+      }
+    } catch (IOException e) {
+      log.error("파일 생성 실패 : {}", e.getMessage());
       throw CustomException.of(ExceptionCode.FILE_UPLOAD_FAILED);
     }
 
     // MultipartFile 데이터를 File 에 쓰기
     try (FileOutputStream fos = new FileOutputStream(convertFile)) {
       fos.write(file.getBytes());
+    } catch (MaxUploadSizeExceededException e) { // 파일 용량 초과
+      log.error("파일 용량 초과 : {}", e.getMessage());
+      throw CustomException.of(ExceptionCode.FILE_SIZE_EXCEEDED);
     } catch (IOException e) {
-      log.error("파일 처리 중 오류 발생 : {}", e.getMessage());
-      throw CustomException.of(ExceptionCode.FILE_UPLOAD_FAILED);
+      if (e.getMessage().contains("No space left on device")) {
+        log.error("디스크 공간 부족 : {}", e.getMessage());
+        throw CustomException.of(ExceptionCode.LOW_DISK_SPACE); // 디스크 공간 부족
+      } else {
+        log.error("파일 업로드 실패 : {}", e.getMessage());
+        throw CustomException.of(ExceptionCode.FILE_UPLOAD_FAILED); // 파일 업로드 실패
+      }
     }
 
     return convertFile;

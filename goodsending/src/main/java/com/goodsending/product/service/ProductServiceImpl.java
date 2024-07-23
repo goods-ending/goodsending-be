@@ -3,7 +3,6 @@ package com.goodsending.product.service;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.service.S3Uploader;
-import com.goodsending.global.service.TimeService;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageInfoDto;
@@ -29,12 +28,11 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Uploader s3Uploader;
-  private final TimeService timeService;
 
   @Override
   @Transactional
   public ProductCreateResponseDto createProduct(ProductCreateRequestDto requestDto,
-      List<MultipartFile> productImages, Long memberId) {
+      List<MultipartFile> productImages, LocalDateTime currentTime, Long memberId) {
 
     // 존재하는 회원인지 판별
     if (memberId == null) {
@@ -42,7 +40,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 정보 저장
-    LocalDateTime currentTime = timeService.getCurrentTime();
     Product product = Product.of(requestDto, currentTime, memberId);
     Product savedProduct = productRepository.save(product);
 

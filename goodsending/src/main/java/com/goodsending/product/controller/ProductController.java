@@ -4,6 +4,7 @@ import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.service.ProductService;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,9 @@ public class ProductController {
       @RequestPart("requestDto") @Valid ProductCreateRequestDto requestDto,
       @RequestPart("productImages") List<MultipartFile> productImages,
       @RequestPart("memberId") Long memberId) {
+    LocalDateTime currentTime = LocalDateTime.now();
     ProductCreateResponseDto responseDto = productService.createProduct(requestDto, productImages,
-        memberId);
+        currentTime, memberId);
     return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
   }
 

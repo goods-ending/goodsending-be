@@ -1,4 +1,4 @@
-package com.goodsending.member.security;
+package com.goodsending.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodsending.member.dto.LoginRequestDto;
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       throws IOException, ServletException {
     log.info("로그인 성공 및 JWT 생성");
     String email = ((MemberDetailsImpl) authResult.getPrincipal()).getUsername();
-    MemberRole role = ((MemberDetailsImpl) authResult.getPrincipal()).getMember().getRole();
+    MemberRole role = ((MemberDetailsImpl) authResult.getPrincipal()).getRole();
 
     String token = jwtUtil.createToken(email, role);
     response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);

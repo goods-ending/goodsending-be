@@ -1,8 +1,8 @@
-package com.goodsending.member.config;
+package com.goodsending.global.config;
 
-import com.goodsending.member.security.JwtAuthenticationFilter;
-import com.goodsending.member.security.JwtAuthorizationFilter;
-import com.goodsending.member.security.MemberDetailsServiceImpl;
+import com.goodsending.global.security.JwtAuthenticationFilter;
+import com.goodsending.global.security.JwtAuthorizationFilter;
+import com.goodsending.global.security.MemberDetailsServiceImpl;
 import com.goodsending.member.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -64,9 +64,9 @@ public class WebSecurityConfig {
         authorizeHttpRequests
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
             .permitAll() // resources 접근 허용 설정
-            //.requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-            .requestMatchers("/api/members/signup")
-            .permitAll() // '/api/members/'로 시작하는 요청 모두 접근 허가
+            .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
+            .requestMatchers("/api/members/**")
+            .permitAll() // '/api/members/**'로 시작하는 요청 모두 접근 허가
             .anyRequest().authenticated() // 그 외 모든 요청 인증처리
     );
 

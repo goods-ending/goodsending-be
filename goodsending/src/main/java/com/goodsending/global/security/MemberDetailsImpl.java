@@ -1,39 +1,38 @@
-package com.goodsending.member.security;
+package com.goodsending.global.security;
 
-import com.goodsending.member.entity.Member;
+import com.goodsending.member.dto.MemberDetailsDto;
 import com.goodsending.member.type.MemberRole;
+import java.util.ArrayList;
+import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+@RequiredArgsConstructor
 public class MemberDetailsImpl implements UserDetails {
 
-  private final Member member;
-
-  public MemberDetailsImpl(Member member) {
-    this.member = member;
-  }
-
-  public Member getMember() {
-    return member;
-  }
+  private final MemberDetailsDto memberDetailsDto;
 
   @Override
   public String getPassword() {
-    return member.getPassword();
+
+    return memberDetailsDto.getPassword();
   }
 
   @Override
   public String getUsername() {
-    return member.getEmail();
+
+    return memberDetailsDto.getEmail();
+  }
+
+  public MemberRole getRole() {
+    return memberDetailsDto.getRole();
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    MemberRole role = member.getRole();
+    MemberRole role = memberDetailsDto.getRole();
     String authority = role.getAuthority();
 
     SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);

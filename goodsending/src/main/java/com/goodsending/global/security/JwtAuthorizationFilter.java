@@ -1,4 +1,4 @@
-package com.goodsending.member.security;
+package com.goodsending.global.security;
 
 import com.goodsending.member.util.JwtUtil;
 import io.jsonwebtoken.Claims;

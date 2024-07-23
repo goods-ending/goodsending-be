@@ -1,9 +1,11 @@
 package com.goodsending.member.entity;
 
 import com.goodsending.global.entity.BaseEntity;
+import com.goodsending.member.dto.SignupRequestDto;
 import com.goodsending.member.type.MemberRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +18,7 @@ public class Member extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "member_id")
-  private Long member_id;
+  private Long memberId;
 
   @Column(name = "email", nullable = false, unique = true, length = 40)
   private String email;
@@ -25,7 +27,7 @@ public class Member extends BaseEntity {
   private String password;
 
   @Column(name = "phone_number", nullable = false, length = 14)
-  private String phone_number;
+  private String phoneNumber;
 
   @Column(name = "cash", nullable = true)
   private Long cash;
@@ -40,11 +42,21 @@ public class Member extends BaseEntity {
   @Enumerated(value = EnumType.STRING)
   private MemberRole role; // 권한 (ADMIN, USER)
 
-  public Member(String email, String password, String phone_number, MemberRole role) {
+  @Builder
+  private Member(String email, String password, String phoneNumber, MemberRole role) {
     this.email = email;
     this.password = password;
-    this.phone_number = phone_number;
+    this.phoneNumber = phoneNumber;
     this.role = role;
   }
 
+  public static Member fromSignupRequest(SignupRequestDto signupRequestDto, String encodedPassword,
+      MemberRole role) {
+    return Member.builder()
+        .email(signupRequestDto.getEmail())
+        .password(encodedPassword)
+        .phoneNumber(signupRequestDto.getPhoneNumber())
+        .role(role)
+        .build();
+  }
 }

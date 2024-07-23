@@ -8,17 +8,18 @@ import lombok.Getter;
 @Getter
 public class SignupRequestDto {
 
-  @NotBlank
+  @NotBlank(message = "이메일이 입력되지 않았습니다.")
   @Email
   private String email;
 
-  @NotBlank
+  @NotBlank(message = "비밀번호가 입력되지 않았습니다.")
   @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]{8,15}$")
   private String password;
 
-  @NotBlank
-  private String phone_number;
+  @NotBlank(message = "전화번호가 입력되지 않았습니다.")
+  private String phoneNumber;
 
-  //private boolean admin = false;
+
+  // TODO : 관리자 할 경우 adminToken
   //private String adminToken = "";
 }

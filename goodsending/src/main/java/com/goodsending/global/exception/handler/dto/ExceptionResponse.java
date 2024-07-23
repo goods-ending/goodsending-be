@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ExceptionResponse {
 
-  private int code;
-  private HttpStatus status;
-  private String message;
+  private final int code;
+  private final HttpStatus status;
+  private final String message;
 
   private ExceptionResponse(HttpStatus status, Exception ex) {
     this.code = status.value();

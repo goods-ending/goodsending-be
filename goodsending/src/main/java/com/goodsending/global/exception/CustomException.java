@@ -1,8 +1,10 @@
 package com.goodsending.global.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 public class CustomException extends RuntimeException{
+  @Getter
   private final HttpStatus statusCode;
 
   public static CustomException from(ExceptionCode exceptionCode) {
@@ -14,7 +16,4 @@ public class CustomException extends RuntimeException{
     this.statusCode = statusCode;
   }
 
-  public HttpStatus getStatusCode() {
-    return statusCode;
-  }
 }

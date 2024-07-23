@@ -65,14 +65,14 @@ public class CustomExceptionHandler {
 
   private static String errorMessage(MethodArgumentNotValidException e) {
     StringBuilder errorMessage = new StringBuilder();
-    e.getBindingResult().getFieldErrors().stream().forEach(fieldError -> {
+    e.getBindingResult().getFieldErrors().forEach(fieldError ->
       errorMessage
           .append("{")
           .append(fieldError.getField())
           .append(" : ")
           .append(fieldError.getDefaultMessage())
-          .append("}, ");
-    });
+          .append("}, ")
+    );
     return errorMessage.toString();
   }
 }

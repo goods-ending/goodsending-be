@@ -56,6 +56,6 @@ public class ProductServiceImpl implements ProductService {
       savedProductImages.add(productImageInfoDto);
     }
 
-    return ProductCreateResponseDto.of(product, savedProductImages);
+    return ProductCreateResponseDto.of(savedProduct, savedProductImages);
   }
 }

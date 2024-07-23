@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public class CustomException extends RuntimeException{
   private final HttpStatus statusCode;
 
-  public static CustomException of(ExceptionCode exceptionCode) {
+  public static CustomException from(ExceptionCode exceptionCode) {
     return new CustomException(exceptionCode.getStatus(), exceptionCode.getMessage());
   }
 

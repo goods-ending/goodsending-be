@@ -39,7 +39,7 @@ public class MemberService {
 //            role = MemberRole.ADMIN;
 //        }
 
-    Member member = Member.fromSignupRequest(signupRequestDto, encodedPassword, role);
+    Member member = Member.from(signupRequestDto, encodedPassword, role);
     memberRepository.save(member);
     return ResponseEntity.ok("가입 완료");
   }

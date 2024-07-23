@@ -50,7 +50,7 @@ public class Member extends BaseEntity {
     this.role = role;
   }
 
-  public static Member fromSignupRequest(SignupRequestDto signupRequestDto, String encodedPassword,
+  public static Member from(SignupRequestDto signupRequestDto, String encodedPassword,
       MemberRole role) {
     return Member.builder()
         .email(signupRequestDto.getEmail())

@@ -27,7 +27,7 @@ public class ProductController {
   public ResponseEntity<ProductCreateResponseDto> createProduct(
       @RequestPart("requestDto") @Valid ProductCreateRequestDto requestDto,
       @RequestPart("productImages") List<MultipartFile> productImages,
-      @MemberId Long memberId) {
+      @MemberId(required = true) Long memberId) {
     LocalDateTime currentTime = LocalDateTime.now();
     ProductCreateResponseDto responseDto = productService.createProduct(requestDto, productImages,
         currentTime, memberId);

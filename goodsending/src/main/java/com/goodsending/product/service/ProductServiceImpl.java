@@ -65,17 +65,11 @@ public class ProductServiceImpl implements ProductService {
   public ProductInfoDto getProduct(Long productId) {
 
     Product product = findProduct(productId);
-
     List<ProductImage> productImageList = findProductImageList(product);
-    List<ProductImageInfoDto> productImages = new ArrayList<>();
-    for (ProductImage productImage : productImageList) {
-      ProductImageInfoDto productImageInfoDto = ProductImageInfoDto.from(productImage);
-      productImages.add(productImageInfoDto);
-    }
 
     // TODO: 입찰 여부 확인 로직 구현
 
-    return ProductInfoDto.of(product, productImages);
+    return ProductInfoDto.of(product, productImageList);
   }
 
   private List<ProductImage> findProductImageList(Product product) {

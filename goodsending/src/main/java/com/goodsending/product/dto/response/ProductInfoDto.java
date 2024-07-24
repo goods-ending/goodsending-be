@@ -1,7 +1,9 @@
 package com.goodsending.product.dto.response;
 
 import com.goodsending.product.entity.Product;
+import com.goodsending.product.entity.ProductImage;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +35,14 @@ public class ProductInfoDto {
   }
 
 
-  public static ProductInfoDto of(Product product, List<ProductImageInfoDto> productImages) {
+  public static ProductInfoDto of(Product product, List<ProductImage> productImageList) {
+
+    List<ProductImageInfoDto> productImages = new ArrayList<>();
+    for (ProductImage productImage : productImageList) {
+      ProductImageInfoDto productImageInfoDto = ProductImageInfoDto.from(productImage);
+      productImages.add(productImageInfoDto);
+    }
+
     return ProductInfoDto.builder()
         .productId(product.getId())
         .memberId(product.getMember().getMemberId())

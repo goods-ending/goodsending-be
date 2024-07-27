@@ -30,7 +30,7 @@ public enum ExceptionCode {
 
   // FORBIDDEN:403:권한이슈
 
-  // NOT_FOUND:404:자원없음,
+  // NOT_FOUND:404:자원없음
   USER_NOT_FOUND(NOT_FOUND, "유저 개체를 찾지 못했습니다."),
   PRODUCT_NOT_FOUND(NOT_FOUND, "경매 상품 개체를 찾지 못했습니다."),
   STOMP_HEADER_ACCESSOR_NOT_FOUND_EXCEPTION(NOT_FOUND, "메시지에서 STOMP 헤더 접근자를 가져오지 못했습니다."),

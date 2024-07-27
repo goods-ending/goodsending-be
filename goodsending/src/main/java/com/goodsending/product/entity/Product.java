@@ -1,8 +1,11 @@
 package com.goodsending.product.entity;
 
 import com.goodsending.global.entity.BaseEntity;
+import com.goodsending.member.entity.Member;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
+import com.goodsending.product.type.AuctionTime;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,40 +33,49 @@ public class Product extends BaseEntity {
   @Column(name = "introduction", nullable = false)
   private String introduction;
 
-  @Column(name = "auction_end_date", nullable = true)
-  private LocalDateTime auctionEndDate;
+  @Column(name = "start_date_time", nullable = false)
+  private LocalDateTime startDateTime;
+
+  @Column(name = "max_end_date_time", nullable = true)
+  private LocalDateTime maxEndDateTime;
+
+  @Column(name = "dynamic_end_date_time")
+  private LocalDateTime dynamicEndDateTime;
 
   @Column(name = "bidding_count", nullable = false)
   private int biddingCount;
 
-  @Column(name = "member_id", nullable = false)
-  private Long memberId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id")
+  private Member member;
 
   @Builder
-  public Product(String name, int price, String introduction, LocalDateTime auctionEndDate,
-      Long memberId) {
+  public Product(Long id, String name, int price, String introduction, LocalDateTime startDateTime,
+      LocalDateTime maxEndDateTime, LocalDateTime dynamicEndDateTime, int biddingCount,
+      Member member) {
     this.name = name;
     this.price = price;
     this.introduction = introduction;
-    this.auctionEndDate = auctionEndDate;
-    this.memberId = memberId;
+    this.startDateTime = startDateTime;
+    this.maxEndDateTime = maxEndDateTime;
+    this.member = member;
   }
 
-  public static Product of(ProductCreateRequestDto requestDto, LocalDateTime currentTime, Long memberId) {
+  public static Product of(ProductCreateRequestDto requestDto, Member member) {
 
-    int auctionPeriodDays = requestDto.getAuctionPeriodDays();
-    LocalDateTime auctionEndDate = currentTime.plusDays(auctionPeriodDays)
-        .withHour(23)
-        .withMinute(59)
-        .withSecond(59)
-        .withNano(0);
+    LocalDate startDate = requestDto.getStartDate();
+    AuctionTime auctionTime = requestDto.getAuctionTime();
+
+    LocalDateTime startDateTime = startDate.atTime(auctionTime.getStartTime());
+    LocalDateTime maxEndDateTime = startDate.atTime(auctionTime.getEndTime());
 
     return Product.builder()
         .name(requestDto.getName())
         .price(requestDto.getPrice())
         .introduction(requestDto.getIntroduction())
-        .auctionEndDate(auctionEndDate)
-        .memberId(memberId)
+        .startDateTime(startDateTime)
+        .maxEndDateTime(maxEndDateTime)
+        .member(member)
         .build();
   }
 }

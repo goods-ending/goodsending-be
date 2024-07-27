@@ -56,6 +56,7 @@ public class ProductController {
   /**
    * 선택한 경매 상품 상세 정보 조회
    * @param productId 상품 아이디
+   * @param productId
    * @return 경매 상품 상세 정보 반환
    * @author : puclpu
    */

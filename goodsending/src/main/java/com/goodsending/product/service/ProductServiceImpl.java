@@ -121,9 +121,9 @@ public class ProductServiceImpl implements ProductService {
 
   private List<Product> findProductList(String keyword) {
     if (keyword == null || keyword.equals("")) { // 전체 목록 조회
-      return productRepository.findAll();
+      return productRepository.findAllByOrderByCreatedDateTimeDesc();
     } else { // keyword 검색
-      return productRepository.findAllByNameContainingOrderByCreatedDateTime(keyword);
+      return productRepository.findAllByNameContainingOrderByCreatedDateTimeDesc(keyword);
     }
   }
 

@@ -1,4 +1,4 @@
-package com.goodsending.member.dto;
+package com.goodsending.member.dto.response;
 
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.type.MemberRole;
@@ -11,6 +11,8 @@ public class MemberDetailsDto {
   private final Long memberId;
   private final String email;
   private final String password;
+  private final Integer cash;
+  private final Integer point;
   private final MemberRole role;
 
   public static MemberDetailsDto from(Member member) {
@@ -18,7 +20,10 @@ public class MemberDetailsDto {
         member.getMemberId(),
         member.getEmail(),
         member.getPassword(),
+        member.getCash(),
+        member.getPoint(),
         member.getRole()
     );
   }
+
 }

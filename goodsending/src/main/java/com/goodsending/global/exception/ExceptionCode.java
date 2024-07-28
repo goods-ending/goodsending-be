@@ -1,8 +1,8 @@
 package com.goodsending.global.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -24,6 +24,7 @@ public enum ExceptionCode {
   AUCTION_ALREADY_WON(BAD_REQUEST, "이미 낙찰된 경매입니다."),
   AUCTION_ALREADY_CLOSED(BAD_REQUEST, "이미 마감된 경매입니다."),
   AUCTION_NOT_STARTED(BAD_REQUEST, "경매가 아직 시작되지 않았습니다."),
+  FILE_COUNT_EXCEEDED(BAD_REQUEST, "상품 이미지 개수가 최대 5개를 초과했습니다."),
 
   // Unauthorized:401:인증이슈
   INVALID_TOKEN(UNAUTHORIZED, "토큰이 유효하지 않습니다."),

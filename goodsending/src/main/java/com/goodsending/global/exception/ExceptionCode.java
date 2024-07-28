@@ -35,7 +35,7 @@ public enum ExceptionCode {
   LOW_DISK_SPACE(INTERNAL_SERVER_ERROR, "디스크 공간이 부족합니다."),
   FILE_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "파일 변환에 실패했습니다."),
   ALGORITHM_NOT_AVAILABLE(INTERNAL_SERVER_ERROR, "알고리즘을 찾을 수 없습니다."),
-  EMAIL_SENDING_FAILED(INTERNAL_SERVER_ERROR, "이메일 전송에 실패했습니다.");;
+  EMAIL_SENDING_FAILED(INTERNAL_SERVER_ERROR, "이메일 전송에 실패했습니다.");
 
   private final HttpStatus status;
   private final String message;

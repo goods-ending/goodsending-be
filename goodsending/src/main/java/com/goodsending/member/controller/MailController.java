@@ -4,6 +4,7 @@ import com.goodsending.member.service.MailService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class MailController {
   /**
    * 인증코드 발송
    * <p>
-   * 유저가 지닌 캐시와 포인트로 결제하여 입찰을 합니다.
+   * 유저가 입력한 email 중복 확인 후 인증코드 발송합니다.
    *
    * @param 회원가입 하려는 유저의 email
    * @return mailService를 반환합니다.
@@ -38,7 +39,7 @@ public class MailController {
   @Operation(summary = "인증코드 발송 기능", description = "이메일 중복검사 후 인증코드 발송")
   @PostMapping("/members/sendMail")
   public ResponseEntity<String> sendCode(@RequestParam @Valid String email)
-      throws MessagingException {
+      throws MessagingException, UnsupportedEncodingException {
     return mailService.sendCode(email);
   }
 }

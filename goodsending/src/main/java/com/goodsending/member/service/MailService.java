@@ -15,6 +15,7 @@ import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -47,44 +48,41 @@ public class MailService {
    * @return 인증완료 문구를 반환합니다.
    * @author : 이아람
    */
-  public ResponseEntity<String> sendCode(String email) throws MessagingException {
-    try {
+  public ResponseEntity<String> sendCode(String email) throws MessagingException, UnsupportedEncodingException {
+
       // 이메일 중복 확인
       Optional<Member> checkEmail = memberRepository.findByEmail(email);
-      if (checkEmail.isPresent()) {
+      if (checkEmail.isEmpty()) {
+        String code = this.createCode();
+
+        // DB 저장
+        Member member = Member.from(email, code);
+        memberRepository.save(member);
+        // 인증코드 메일 전송
+        createMail(email, code);
+      } else {
         throw CustomException.from(ExceptionCode.EMAIL_ALREADY_EXISTS);
       }
-
-      MemberRole role = MemberRole.USER;
-      String password = "";
-      boolean verified = false;
-      String code = this.createCode();
-
-      // DB 저장
-      Member member = Member.from(email, password, code, role,verified);
-      memberRepository.save(member);
-      // 인증코드 메일 전송
-      createMail(email, code);
-    } catch (CustomException e) {
-      throw CustomException.from(ExceptionCode.EMAIL_ALREADY_EXISTS);
-    }
     return ResponseEntity.ok("인증코드 전송 완료");
   }
 
   // 인증번호 만들기
   private String createCode() {
-    int lenth = 6;
+    int length = 6;
+    Random random;
     try {
-      Random random = SecureRandom.getInstanceStrong();
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < lenth; i++) {
-        builder.append(random.nextInt(10));
-      }
-      return builder.toString();
+      random = SecureRandom.getInstanceStrong();
     } catch (NoSuchAlgorithmException e) {
       throw CustomException.from(ExceptionCode.ALGORITHM_NOT_AVAILABLE);
     }
+
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < length; i++) {
+      builder.append(random.nextInt(10));
+    }
+    return builder.toString();
   }
+
 
   /**
    * 메일 생성 및 전송
@@ -95,24 +93,23 @@ public class MailService {
    * @param 인증코드
    * @author : 이아람
    */
-  public void createMail(String email, String code) throws MessagingException {
-
+  public void createMail(String email, String code)
+      throws MessagingException, UnsupportedEncodingException {
     MimeMessage mail = mailSender.createMimeMessage();
-    String mailContent =
-        "<h3>GoodsEnding</h3>"
-            + "<h1>이메일 인증번호 안내</h1><br>"
-            + "<p>본 메일은 GoodsEnding 회원가입을 위한 이메일 인증입니다.</p>"
-            + "<p>아래의 인증 번호를 입력하여 본인확인을 해주시기 바랍니다.</p><br>"
-            + code;
+    String mailContent = createEmailContent(code);
 
-    try {
-      mail.addRecipients(Message.RecipientType.TO, email); // 받는 사람
-      mail.setSubject("GoodsEnding 회원가입 인증 번호 ", "utf-8"); // 제목
-      mail.setText(mailContent, "utf-8", "html"); // 내용
-      mail.setFrom(new InternetAddress(fromEmail, "GoodsEnding")); // 보내는 사람
-      mailSender.send(mail);
-    } catch (MessagingException | UnsupportedEncodingException e) {
-      throw CustomException.from(ExceptionCode.EMAIL_SENDING_FAILED);
-    }
+    mail.addRecipients(Message.RecipientType.TO, email); // 받는 사람
+    mail.setSubject("GoodsEnding 회원가입 인증 번호", "utf-8"); // 제목
+    mail.setText(mailContent, "utf-8", "html"); // 내용
+    mail.setFrom(new InternetAddress(fromEmail, "GoodsEnding")); // 보내는 사람
+    mailSender.send(mail);
+  }
+
+  private String createEmailContent(String code) {
+    return "<h3>GoodsEnding</h3>" +
+        "<h1>이메일 인증번호 안내</h1><br>" +
+        "<p>본 메일은 GoodsEnding 회원가입을 위한 이메일 인증입니다.</p>" +
+        "<p>아래의 인증 번호를 입력하여 본인확인을 해주시기 바랍니다.</p><br>" +
+        code;
   }
 }

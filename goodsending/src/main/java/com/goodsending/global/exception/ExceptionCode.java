@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionCode {
 
   // BAD_REQUEST:400:잘못된요청
+  FILE_COUNT_EXCEEDED(BAD_REQUEST, "상품 이미지 개수가 최대 5개를 초과했습니다."),
 
   // Unauthorized:401:인증이슈
 

@@ -4,6 +4,7 @@ import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  *
- * @Date : 2024. 07. 12.
+ * @Date : 2024. 07. 23.
  * @Team : GoodsEnding
  * @author : puclpu
  * @Project : goodsending-be :: goodsending
@@ -54,6 +55,7 @@ public class ProductController {
 
   /**
    * 선택한 경매 상품 상세 정보 조회
+   * @param productId 상품 아이디
    * @param productId
    * @return 경매 상품 상세 정보 반환
    * @author : puclpu
@@ -63,4 +65,17 @@ public class ProductController {
     ProductInfoDto responseDto = productService.getProduct(productId);
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
+
+  /**
+   * 경매 상품 검색
+   * @param keyword 검색어
+   * @return 키워드 검색을 통해 조회한 경매 상품 목록 반환
+   * @author : puclpu
+   */
+  @GetMapping()
+  public ResponseEntity<List<ProductSummaryDto>> getProductList(@RequestParam(required = false) String keyword) {
+    List<ProductSummaryDto> responseDtoList = productService.getProductList(keyword);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
+  }
+
 }

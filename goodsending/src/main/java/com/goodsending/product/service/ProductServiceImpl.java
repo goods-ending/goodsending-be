@@ -9,6 +9,7 @@ import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import com.goodsending.product.repository.ProductImageRepository;
@@ -24,7 +25,7 @@ import java.util.List;
 
 /**
  *
- * @Date : 2024. 07. 12.
+ * @Date : 2024. 07. 23.
  * @Team : GoodsEnding
  * @author : puclpu
  * @Project : goodsending-be :: goodsending
@@ -95,6 +96,41 @@ public class ProductServiceImpl implements ProductService {
     // TODO: 입찰 여부 확인 로직 구현
 
     return ProductInfoDto.of(product, productImageList);
+  }
+
+  /**
+   * 경매 상품 검색
+   * @param keyword
+   * @return 검색된 경매 상품 정보 반환
+   */
+  @Override
+  public List<ProductSummaryDto> getProductList(String keyword) {
+    // keyword 로 검색한 경매 상품 목록
+    List<Product> productList = findProductList(keyword);
+
+    List<ProductSummaryDto> productSummaryDtoList = new ArrayList<>();
+    for (Product product : productList) {
+      // 경매 상품 썸네일 이미지
+      ProductImage productImage = findProductImage(product);
+
+      ProductSummaryDto productSummaryDto = ProductSummaryDto.of(product, productImage);
+      productSummaryDtoList.add(productSummaryDto);
+    }
+
+    return productSummaryDtoList;
+  }
+
+  private ProductImage findProductImage(Product product) {
+    return productImageRepository.findFirstByProduct(product)
+        .orElseThrow(() -> CustomException.from(ExceptionCode.PRODUCTIMAGE_NOT_FOUND));
+  }
+
+  private List<Product> findProductList(String keyword) {
+    if (keyword == null || keyword.equals("")) { // 전체 목록 조회
+      return productRepository.findAllByOrderByCreatedDateTimeDesc();
+    } else { // keyword 검색
+      return productRepository.findAllByNameContainingOrderByCreatedDateTimeDesc(keyword);
+    }
   }
 
   private List<ProductImage> findProductImageList(Product product) {

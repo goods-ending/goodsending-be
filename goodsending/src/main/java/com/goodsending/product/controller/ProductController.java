@@ -6,6 +6,7 @@ import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class ProductController {
    * @return 생성된 상품 정보 반환
    * @author : puclpu
    */
+  @Operation(summary = "경매 상품 등록 기능", description = "상품명, 판매가, 상품소개, 경매시작일, 경매시간대, 상품 이미지를 입력하면 상품을 등록할 수 있다.")
   @PostMapping
   public ResponseEntity<ProductCreateResponseDto> createProduct(
       @RequestPart("requestDto") @Valid ProductCreateRequestDto requestDto,
@@ -61,6 +63,7 @@ public class ProductController {
    * @return 경매 상품 상세 정보 반환
    * @author : puclpu
    */
+  @Operation(summary = "경매 상품 상세 정보 조회 기능", description = "상품 아이디를 통해 선택한 상품의 상세 정보를 조회할 수 있다.")
   @GetMapping("/{productId}")
   public ResponseEntity<ProductInfoDto> getProduct(@PathVariable Long productId) {
     ProductInfoDto responseDto = productService.getProduct(productId);
@@ -73,6 +76,10 @@ public class ProductController {
    * @return 키워드 검색을 통해 조회한 경매 상품 목록 페이지 반환
    * @author : puclpu
    */
+  @Operation(summary = "경매 상품 검색 기능",
+      description = "keyword를 입력하면 상품명에 해당 keyword가 포함된 상품 목록을, "
+          + "keyword를 입력하지 않았다면 상품 전체 목록을,"
+          + " 입력한 page의 size 개수만큼 조회할 수 있다")
   @GetMapping()
   public ResponseEntity<Page<ProductSummaryDto>> getProductList(@RequestParam(required = false) String keyword,
                                                                 @RequestParam(required = true) int page,

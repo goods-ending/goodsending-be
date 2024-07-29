@@ -24,7 +24,6 @@ public enum ExceptionCode {
   PRODUCT_NOT_FOUND(NOT_FOUND, "상품 개체를 찾지 못했습니다."),
   MEMBER_NOT_FOUND(NOT_FOUND, "회원 개체를 찾지 못했습니다."),
   USER_NOT_FOUND(NOT_FOUND, "유저 개체를 찾지 못했습니다."),
-  PRODUCT_NOT_FOUND(NOT_FOUND, "경매 상품 개체를 찾지 못했습니다."),
   PRODUCTIMAGE_NOT_FOUND(NOT_FOUND, "경매 상품 이미지를 찾지 못했습니다."),
   LIKE_NOT_FOUND(NOT_FOUND, "찜 개체를 찾지 못했습니다."),
 

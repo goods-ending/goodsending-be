@@ -1,17 +1,11 @@
 package com.goodsending.member.service;
 
-import com.goodsending.global.exception.CustomException;
-import com.goodsending.global.exception.ExceptionCode;
-import com.goodsending.member.dto.MemberDetailsDto;
-import com.goodsending.member.dto.MemberInfoDto;
-import com.goodsending.member.dto.SignupRequestDto;
+import com.goodsending.member.dto.response.MemberDetailsDto;
+import com.goodsending.member.dto.request.SignupRequestDto;
+import com.goodsending.member.dto.response.MemberInfoDto;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.member.type.MemberRole;
-import com.goodsending.member.util.JwtUtil;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +18,6 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
-  private final MailService mailService;
-  private final JwtUtil jwtUtil;
 
   // TODO : 관리자 할 경우 ADMIN_TOKEN 생성
   //private final String ADMIN_TOKEN = "1234";
@@ -52,11 +44,10 @@ public class MemberService {
     Member member = Member.from(signupRequestDto, encodedPassword, role);
     memberRepository.save(member);
     return ResponseEntity.ok("가입 완료");
+  }
   // 회원 정보 조회
   public MemberInfoDto getMemberInfo(Long memberId) {
     MemberDetailsDto memberDetailsDto = memberRepository.findByMemberId(memberId);
-    MemberRole role = memberDetailsDto.getRole();
-    boolean isAdmin = (role == MemberRole.ADMIN);
-    return new MemberInfoDto(memberDetailsDto, isAdmin);
+    return new MemberInfoDto(memberDetailsDto);
   }
 }

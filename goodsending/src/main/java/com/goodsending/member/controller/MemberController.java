@@ -1,8 +1,8 @@
 package com.goodsending.member.controller;
 
 import com.goodsending.global.security.anotation.MemberId;
-import com.goodsending.member.dto.MemberInfoDto;
-import com.goodsending.member.dto.SignupRequestDto;
+import com.goodsending.member.dto.response.MemberInfoDto;
+import com.goodsending.member.dto.request.SignupRequestDto;
 import com.goodsending.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

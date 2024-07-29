@@ -1,5 +1,6 @@
 package com.goodsending.member.dto.response;
 
+import com.goodsending.member.type.MemberRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,14 +11,14 @@ public class MemberInfoDto {
   private String email;
   private Integer cash;
   private Integer point;
-  private boolean isAdmin;
+  private MemberRole role;
 
-  public MemberInfoDto(MemberDetailsDto memberDetailsDto, boolean isAdmin) {
+  public MemberInfoDto(MemberDetailsDto memberDetailsDto) {
     this.member_id = memberDetailsDto.getMemberId();
     this.email = memberDetailsDto.getEmail();
     this.cash = memberDetailsDto.getCash();
     this.point = memberDetailsDto.getPoint();
-    this.isAdmin = isAdmin;
+    this.role = memberDetailsDto.getRole();
   }
 
 }

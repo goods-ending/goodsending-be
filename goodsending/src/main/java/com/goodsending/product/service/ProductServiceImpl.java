@@ -16,9 +16,9 @@ import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,19 +106,19 @@ public class ProductServiceImpl implements ProductService {
    * @param keyword
    * @return 검색된 경매 상품 정보 반환
    */
+  /**
+   * 경매 상품 검색
+   * @param keyword 검색어
+   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자 값
+   * @param size 조회할 데이터 개수
+   * @return 키워드 검색을 통해 조회한 경매 상품 목록 반환
+   * @author : puclpu
+   */
   @Override
-  public Page<ProductSummaryDto> getProductList(String keyword, int page, int size) {
-    // keyword 로 검색한 경매 상품 목록
-    Page<Product> productPage = findProductPage(keyword, page, size);
-    Page<ProductSummaryDto> productSummaryDtoPage = ProductSummaryDto.from(productPage);
-
-    return productSummaryDtoPage;
-  }
-
-  private Page<Product> findProductPage(String keyword, int page, int size) {
-    Pageable pageable = PageRequest.of(page, size);
-    Page<Product> productPage = productRepository.findByKeywordOrAllOrderByIdDesc(keyword, pageable);
-    return productPage;
+  public Slice<ProductSummaryDto> getProductSlice(String keyword, Long cursorId, int size) {
+    Pageable pageable = PageRequest.of(0, size);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByKeywordOrAllOrderByIdDescSlice(keyword, cursorId, pageable);
+    return productSummaryDtoSlice;
   }
 
   private List<ProductImage> findProductImageList(Product product) {

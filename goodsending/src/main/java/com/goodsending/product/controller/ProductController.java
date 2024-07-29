@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,19 +73,20 @@ public class ProductController {
   /**
    * 경매 상품 검색
    * @param keyword 검색어
-   * @return 키워드 검색을 통해 조회한 경매 상품 목록 페이지 반환
+   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자 값
+   * @param size 조회할 데이터 개수
+   * @return 키워드 검색을 통해 조회한 경매 상품 목록 반환
    * @author : puclpu
    */
   @Operation(summary = "경매 상품 검색 기능",
-      description = "keyword를 입력하면 상품명에 해당 keyword가 포함된 상품 목록을, "
-          + "keyword를 입력하지 않았다면 상품 전체 목록을,"
-          + " 입력한 page의 size 개수만큼 조회할 수 있다")
-  @GetMapping()
-  public ResponseEntity<Page<ProductSummaryDto>> getProductList(@RequestParam(required = false) String keyword,
-                                                                @RequestParam(required = true) int page,
-                                                                @RequestParam(required = true)int size) {
-    Page<ProductSummaryDto> responseDtoList = productService.getProductList(keyword, page-1, size);
-    return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
+      description = "keyword를 입력하면 상품명에 해당 keyword가 포함된 상품 목록을, keyword를 입력하지 않았다면 상품 전체 목록을 조회할 수 있으며,"
+          + " 입력한 size 개수만큼 조회할 수 있다.")
+  @GetMapping
+  public ResponseEntity<Slice<ProductSummaryDto>> getProductList(@RequestParam(required = false) String keyword,
+                                              @RequestParam(required = false) Long cursorId,
+                                              @RequestParam(required = true, defaultValue = "15") int size) {
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productService.getProductSlice(keyword, cursorId,
+        size);
+    return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtoSlice);
   }
-
 }

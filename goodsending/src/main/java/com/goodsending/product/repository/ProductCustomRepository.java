@@ -1,9 +1,9 @@
 package com.goodsending.product.repository;
 
-import com.goodsending.product.entity.Product;
-import org.springframework.data.domain.Page;
+import com.goodsending.product.dto.response.ProductSummaryDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface ProductCustomRepository {
-  Page<Product> findByKeywordOrAllOrderByIdDesc(String keyword, Pageable pageable);
+  Slice<ProductSummaryDto> findByKeywordOrAllOrderByIdDescSlice(String keyword, Long cursorId, Pageable pageable);
 }

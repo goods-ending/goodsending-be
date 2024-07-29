@@ -15,31 +15,51 @@ public class ProductCreateResponseDto {
   private final String name;
   private final int price;
   private final String introduction;
-  private final LocalDateTime auctionEndDate;
-  private final List<ProductImageInfoDto> productImages;
+  private final Long likeCount;
+  private final LocalDateTime startDateTime;
+  private final LocalDateTime maxEndDate;
+  private final List<ProductImageCreateResponseDto> productImages;
 
   @Builder
-  public ProductCreateResponseDto(Long productId, Long memberId, String name, int price, String introduction,
-      LocalDateTime auctionEndDate, List<ProductImageInfoDto> productImages) {
+  public ProductCreateResponseDto(Long productId, Long memberId, String name, int price,
+      String introduction, LocalDateTime startDateTime, LocalDateTime maxEndDate,Long likeCount,
+      List<ProductImageCreateResponseDto> productImages) {
     this.productId = productId;
     this.memberId = memberId;
     this.name = name;
     this.price = price;
     this.introduction = introduction;
-    this.auctionEndDate = auctionEndDate;
+    this.startDateTime = startDateTime;
+    this.maxEndDate = maxEndDate;
+    this.likeCount = likeCount;
     this.productImages = productImages;
   }
 
   public static ProductCreateResponseDto of(Product product,
-      List<ProductImageInfoDto> savedProductImages) {
+      List<ProductImageCreateResponseDto> savedProductImages) {
     return ProductCreateResponseDto.builder()
         .productId(product.getId())
         .memberId(product.getMember().getMemberId())
         .name(product.getName())
         .price(product.getPrice())
         .introduction(product.getIntroduction())
-        .auctionEndDate(product.getAuctionEndDate())
         .productImages(savedProductImages)
+        .likeCount(product.getLikeCount())
+        .startDateTime(product.getStartDateTime())
+        .maxEndDate(product.getMaxEndDateTime())
         .build();
   }
+  public static ProductCreateResponseDto from(Product product) {
+    return ProductCreateResponseDto.builder()
+        .productId(product.getId())
+        .memberId(product.getMember().getMemberId())
+        .name(product.getName())
+        .price(product.getPrice())
+        .introduction(product.getIntroduction())
+        .likeCount(product.getLikeCount())
+        .startDateTime(product.getStartDateTime())
+        .maxEndDate(product.getMaxEndDateTime())
+        .build();
+  }
+
 }

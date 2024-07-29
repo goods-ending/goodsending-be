@@ -1,4 +1,4 @@
-package com.goodsending.member.dto;
+package com.goodsending.member.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

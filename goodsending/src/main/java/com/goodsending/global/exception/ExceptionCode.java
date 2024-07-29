@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
 
 import lombok.Getter;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionCode {
 
   // BAD_REQUEST:400:잘못된요청
+  FILE_COUNT_EXCEEDED(BAD_REQUEST, "상품 이미지 개수가 최대 5개를 초과했습니다."),
   PASSWORD_MISMATCH(BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
   // Unauthorized:401:인증이슈
@@ -22,7 +24,10 @@ public enum ExceptionCode {
   // FORBIDDEN:403:권한이슈
 
   // NOT_FOUND:404:자원없음
+  PRODUCT_NOT_FOUND(NOT_FOUND, "상품 개체를 찾지 못했습니다."),
+  MEMBER_NOT_FOUND(NOT_FOUND, "회원 개체를 찾지 못했습니다."),
   USER_NOT_FOUND(NOT_FOUND, "유저 개체를 찾지 못했습니다."),
+  LIKE_NOT_FOUND(NOT_FOUND, "찜 개체를 찾지 못했습니다."),
   PRODUCT_NOT_FOUND(NOT_FOUND, "경매 상품 개체를 찾지 못했습니다."),
 
   // CONFLICT:409:충돌

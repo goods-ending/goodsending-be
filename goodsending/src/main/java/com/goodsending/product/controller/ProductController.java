@@ -9,6 +9,7 @@ import com.goodsending.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,12 +70,14 @@ public class ProductController {
   /**
    * 경매 상품 검색
    * @param keyword 검색어
-   * @return 키워드 검색을 통해 조회한 경매 상품 목록 반환
+   * @return 키워드 검색을 통해 조회한 경매 상품 목록 페이지 반환
    * @author : puclpu
    */
   @GetMapping()
-  public ResponseEntity<List<ProductSummaryDto>> getProductList(@RequestParam(required = false) String keyword) {
-    List<ProductSummaryDto> responseDtoList = productService.getProductList(keyword);
+  public ResponseEntity<Page<ProductSummaryDto>> getProductList(@RequestParam(required = false) String keyword,
+                                                                @RequestParam(required = true) int page,
+                                                                @RequestParam(required = true)int size) {
+    Page<ProductSummaryDto> responseDtoList = productService.getProductList(keyword, page-1, size);
     return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
   }
 

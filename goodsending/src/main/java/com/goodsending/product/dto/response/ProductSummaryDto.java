@@ -5,6 +5,7 @@ import com.goodsending.product.entity.ProductImage;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 @Getter
 public class ProductSummaryDto {
@@ -28,14 +29,22 @@ public class ProductSummaryDto {
     this.thumbnailUrl = thumbnailUrl;
   }
 
-  public static ProductSummaryDto of(Product product, ProductImage productImage) {
+  public static ProductSummaryDto from(Product product) {
+    ProductImage thumbnailProductImage = product.getProductImages().get(0);
+    String thumbnailUrl = thumbnailProductImage.getUrl();
+
     return ProductSummaryDto.builder()
         .productId(product.getId())
         .name(product.getName())
         .price(product.getPrice())
         .startDateTime(product.getStartDateTime())
         .maxEndDate(product.getMaxEndDateTime())
-        .thumbnailUrl(productImage.getUrl())
+        .thumbnailUrl(thumbnailUrl)
         .build();
+  }
+
+  public static Page<ProductSummaryDto> from(Page<Product> productPage) {
+    Page<ProductSummaryDto> productSummaryDtoPage = productPage.map(product -> ProductSummaryDto.from(product));
+    return productSummaryDtoPage;
   }
 }

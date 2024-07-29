@@ -16,6 +16,9 @@ import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,33 +107,18 @@ public class ProductServiceImpl implements ProductService {
    * @return 검색된 경매 상품 정보 반환
    */
   @Override
-  public List<ProductSummaryDto> getProductList(String keyword) {
+  public Page<ProductSummaryDto> getProductList(String keyword, int page, int size) {
     // keyword 로 검색한 경매 상품 목록
-    List<Product> productList = findProductList(keyword);
+    Page<Product> productPage = findProductPage(keyword, page, size);
+    Page<ProductSummaryDto> productSummaryDtoPage = ProductSummaryDto.from(productPage);
 
-    List<ProductSummaryDto> productSummaryDtoList = new ArrayList<>();
-    for (Product product : productList) {
-      // 경매 상품 썸네일 이미지
-      ProductImage productImage = findProductImage(product);
-
-      ProductSummaryDto productSummaryDto = ProductSummaryDto.of(product, productImage);
-      productSummaryDtoList.add(productSummaryDto);
-    }
-
-    return productSummaryDtoList;
+    return productSummaryDtoPage;
   }
 
-  private ProductImage findProductImage(Product product) {
-    return productImageRepository.findFirstByProduct(product)
-        .orElseThrow(() -> CustomException.from(ExceptionCode.PRODUCTIMAGE_NOT_FOUND));
-  }
-
-  private List<Product> findProductList(String keyword) {
-    if (keyword == null || keyword.equals("")) { // 전체 목록 조회
-      return productRepository.findAllByOrderByCreatedDateTimeDesc();
-    } else { // keyword 검색
-      return productRepository.findAllByNameContainingOrderByCreatedDateTimeDesc(keyword);
-    }
+  private Page<Product> findProductPage(String keyword, int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<Product> productPage = productRepository.findByKeywordOrAllOrderByCreatedDateTimeDesc(keyword, pageable);
+    return productPage;
   }
 
   private List<ProductImage> findProductImageList(Product product) {

@@ -45,9 +45,6 @@ public class Product extends BaseEntity {
   @Column(name = "bidding_count", nullable = false)
   private int biddingCount;
 
-  @Column(name = "like_count", nullable = false)
-  private Long likeCount;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
@@ -81,8 +78,4 @@ public class Product extends BaseEntity {
         .member(member)
         .build();
   }
-  public void setLikeCount(Long likeCount) {
-    this.likeCount = likeCount;
-  }
-
 }

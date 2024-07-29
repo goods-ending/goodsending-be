@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProductCustomRepository {
-  Page<Product> findByKeywordOrAllOrderByCreatedDateTimeDesc(String keyword, Pageable pageable);
+  Page<Product> findByKeywordOrAllOrderByIdDesc(String keyword, Pageable pageable);
 }

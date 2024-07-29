@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
 
   private Page<Product> findProductPage(String keyword, int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
-    Page<Product> productPage = productRepository.findByKeywordOrAllOrderByCreatedDateTimeDesc(keyword, pageable);
+    Page<Product> productPage = productRepository.findByKeywordOrAllOrderByIdDesc(keyword, pageable);
     return productPage;
   }
 

@@ -21,7 +21,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
-  public Page<Product> findByKeywordOrAllOrderByCreatedDateTimeDesc(String keyword,
+  public Page<Product> findByKeywordOrAllOrderByIdDesc(String keyword,
       Pageable pageable) {
     // 상품 목록 조회
     List<Product> fetch = jpaQueryFactory
@@ -30,7 +30,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .where(nameContainsKeyword(keyword))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
-        .orderBy(product.createdDateTime.desc())
+        .orderBy(product.id.desc())
         .fetch();
 
     // 총 개수 계산

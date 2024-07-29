@@ -1,10 +1,8 @@
 package com.goodsending.member.repository;
 
-import com.goodsending.member.dto.response.MemberDetailsDto;
 import com.goodsending.member.entity.Member;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 

@@ -9,9 +9,11 @@ import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -81,25 +83,26 @@ public class MemberService {
    * @author : 이아람
    */
   public MemberInfoDto getMemberInfo(Long memberId) {
-    Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-    Member member = optionalMember.orElseThrow(
-        () -> CustomException.from(ExceptionCode.USER_NOT_FOUND));
+    Member member = findByMemberId(memberId);
     return new MemberInfoDto(member);
   }
 
   /**
    * 회원 비밀번호 변경
    * <p>
-   *DB에서 memberId 값 확인 후 현재 비밀번호가 DB 비밀번호와 일치하면 새로운 비밀번호로 변경됩니다.
+   * DB에서 memberId 값 확인 후 현재 비밀번호가 DB 비밀번호와 일치하면 새로운 비밀번호로 변경됩니다.
    *
    * @param 로그인 한 유저의 memberId, PasswordRequestDto
+   * @param id
    * @return "비밀번호 변경 완료" 문구 반환합니다.
    * @author : 이아람
    */
-  public String updatePassword(Long memberId, PasswordRequestDto passwordRequestDto) {
-    Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
-    Member member = optionalMember.orElseThrow(
-        () -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
+  @Transactional
+  public ResponseEntity<Void> updatePassword(Long pathMemberId, Long memberId, PasswordRequestDto passwordRequestDto) {
+    if (!pathMemberId.equals(memberId)) {
+      throw CustomException.from(ExceptionCode.MEMBER_ID_MISMATCH);
+    }
+    Member member = findByMemberId(memberId);
     // DB에 있는 비밀번호와 현재 비밀번호 일치하는지 확인
     if (!passwordEncoder.matches(passwordRequestDto.getCurrentPassword(), member.getPassword())) {
       throw CustomException.from(ExceptionCode.MEMBER_PASSWORD_INCORRECT);
@@ -110,8 +113,13 @@ public class MemberService {
     }
     // 비밀번호 암호화
     String encodedPassword = passwordEncoder.encode(passwordRequestDto.getPassword());
-    member.update(encodedPassword);
-    memberRepository.save(member);
-    return "비밀번호 변경 완료";
+    member.passwordUpdate(encodedPassword);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  // memberId 검색
+  private Member findByMemberId(Long memberId) {
+    return memberRepository.findById(memberId)
+        .orElseThrow(() -> CustomException.from(ExceptionCode.USER_NOT_FOUND));
   }
 }

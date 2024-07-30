@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +59,7 @@ public class MemberController {
    * @author : 이아람
    */
   @Operation(summary = "회원 정보 조회 기능", description = "로그인 한 회원 이메일, 캐시, 포인트, 권한 조회")
-  @GetMapping("/member-info")
+  @GetMapping("/members/info")
   public ResponseEntity<MemberInfoDto> getMemberInfo(@MemberId Long memberId) {
 
     return ResponseEntity.ok(memberService.getMemberInfo(memberId));
@@ -74,10 +75,10 @@ public class MemberController {
    * @author : 이아람
    */
   @Operation(summary = "비밀번호 변경 기능", description = "로그인 한 회원 비밀번호 변경")
-  @PutMapping("/member-edit")
-  public ResponseEntity<String> updatePassword(@MemberId Long memberId,
+  @PutMapping("/members/{memberId}/password")
+  public ResponseEntity<Void> updatePassword(@PathVariable("memberId") Long pathMemberId, @MemberId Long memberId,
       @RequestBody @Valid PasswordRequestDto passwordRequestDto) {
-    return ResponseEntity.ok(memberService.updatePassword(memberId, passwordRequestDto));
+    return memberService.updatePassword(pathMemberId, memberId, passwordRequestDto);
   }
 }
 

@@ -19,6 +19,7 @@ public enum ExceptionCode {
   FILE_COUNT_EXCEEDED(BAD_REQUEST, "상품 이미지 개수가 최대 5개를 초과했습니다."),
   PASSWORD_MISMATCH(BAD_REQUEST, "두 비밀번호가 일치하지 않습니다."),
   VERIFICATION_CODE_MISMATCH(BAD_REQUEST, "인증코드가 일치하지 않습니다."),
+  MEMBER_ID_MISMATCH(BAD_REQUEST, "회원 아이디가 일치하지 않습니다."),
 
   // Unauthorized:401:인증이슈
   EMAIL_NOT_VERIFIED(UNAUTHORIZED, "이메일 인증이 되지 않았습니다."),

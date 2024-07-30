@@ -2,6 +2,7 @@ package com.goodsending.member.service;
 
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
+import com.goodsending.member.dto.request.PasswordRequestDto;
 import com.goodsending.member.dto.request.SignupRequestDto;
 import com.goodsending.member.dto.response.MemberInfoDto;
 import com.goodsending.member.entity.Member;
@@ -84,5 +85,33 @@ public class MemberService {
     Member member = optionalMember.orElseThrow(
         () -> CustomException.from(ExceptionCode.USER_NOT_FOUND));
     return new MemberInfoDto(member);
+  }
+
+  /**
+   * 회원 비밀번호 변경
+   * <p>
+   *DB에서 memberId 값 확인 후 현재 비밀번호가 DB 비밀번호와 일치하면 새로운 비밀번호로 변경됩니다.
+   *
+   * @param 로그인 한 유저의 memberId, PasswordRequestDto
+   * @return "비밀번호 변경 완료" 문구 반환합니다.
+   * @author : 이아람
+   */
+  public String updatePassword(Long memberId, PasswordRequestDto passwordRequestDto) {
+    Optional<Member> optionalMember = memberRepository.findByMemberId(memberId);
+    Member member = optionalMember.orElseThrow(
+        () -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
+    // DB에 있는 비밀번호와 현재 비밀번호 일치하는지 확인
+    if (!passwordEncoder.matches(passwordRequestDto.getCurrentPassword(), member.getPassword())) {
+      throw CustomException.from(ExceptionCode.MEMBER_PASSWORD_INCORRECT);
+    }
+    // 입력한 새로운 비밀번호 확인
+    if (!passwordRequestDto.getPassword().equals(passwordRequestDto.getConfirmPassword())) {
+      throw CustomException.from(ExceptionCode.PASSWORD_MISMATCH);
+    }
+    // 비밀번호 암호화
+    String encodedPassword = passwordEncoder.encode(passwordRequestDto.getPassword());
+    member.update(encodedPassword);
+    memberRepository.save(member);
+    return "비밀번호 변경 완료";
   }
 }

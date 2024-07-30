@@ -93,8 +93,7 @@ public class MemberService {
    * DB에서 memberId 값 확인 후 현재 비밀번호가 DB 비밀번호와 일치하면 새로운 비밀번호로 변경됩니다.
    *
    * @param 로그인 한 유저의 memberId, PasswordRequestDto
-   * @param id
-   * @return "비밀번호 변경 완료" 문구 반환합니다.
+   * @return status 상태코드 반환합니다.
    * @author : 이아람
    */
   @Transactional

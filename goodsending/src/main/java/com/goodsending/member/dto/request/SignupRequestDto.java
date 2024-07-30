@@ -21,8 +21,6 @@ public class SignupRequestDto {
 
   private String code;
 
-  private boolean admin = false;
-
   // TODO : 관리자 할 경우 adminToken
   //private String adminToken = "";
 }

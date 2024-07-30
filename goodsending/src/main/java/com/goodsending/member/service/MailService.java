@@ -4,7 +4,6 @@ import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
-import com.goodsending.member.type.MemberRole;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -15,7 +14,6 @@ import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -36,7 +34,7 @@ public class MailService {
   private final JavaMailSender mailSender;
   private final MemberRepository memberRepository;
 
-  @Value("${YOUR_NAVER_EMAIL}")
+  @Value("${spring.mail.username}")
   private String fromEmail;
 
   /**

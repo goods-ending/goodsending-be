@@ -1,6 +1,7 @@
 package com.goodsending.member.entity;
 
 import com.goodsending.global.entity.BaseEntity;
+import com.goodsending.member.dto.request.CashRequestDto;
 import com.goodsending.member.dto.request.SignupRequestDto;
 import com.goodsending.member.type.MemberRole;
 import jakarta.persistence.Column;
@@ -88,5 +89,9 @@ public class Member extends BaseEntity {
 
   public void passwordUpdate(String encodedPassword) {
     this.password = encodedPassword;
+  }
+
+  public void cashUpdate(CashRequestDto cashRequestDto) {
+    this.cash = cashRequestDto.getCash();
   }
 }

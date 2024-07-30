@@ -3,13 +3,18 @@ package com.goodsending.member.entity;
 import com.goodsending.global.entity.BaseEntity;
 import com.goodsending.member.dto.request.SignupRequestDto;
 import com.goodsending.member.type.MemberRole;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.type.descriptor.jdbc.TinyIntAsSmallIntJdbcType;
-import org.hibernate.type.descriptor.jdbc.TinyIntJdbcType;
 
 @Entity
 @Getter
@@ -34,7 +39,7 @@ public class Member extends BaseEntity {
   @Column(name = "point", nullable = true)
   private Integer point;
 
-  @Column(name = "code", nullable = true, length = 36)
+  @Column(name = "code", nullable = true)
   private String code;
 
   @Column(name = "role", nullable = false)
@@ -72,5 +77,10 @@ public class Member extends BaseEntity {
         .role(role)
         .verify(verify)
         .build();
+  }
+
+  public void update(String encodedPassword, boolean verify) {
+    this.password = encodedPassword;
+    this.verify = verify;
   }
 }

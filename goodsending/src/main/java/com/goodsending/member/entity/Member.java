@@ -91,7 +91,7 @@ public class Member extends BaseEntity {
     this.password = encodedPassword;
   }
 
-  public void cashUpdate(CashRequestDto cashRequestDto) {
-    this.cash = cashRequestDto.getCash();
+  public void cashUpdate(Integer cash) {
+    this.cash = cash;
   }
 }

@@ -61,7 +61,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .limit(1)
         .orderBy(product.startDateTime.asc())
         .fetch();
-    Product firstOpenProduct = firstFetch.get(0);
+    Long firstOpenProductId = -1L;
+    if (firstFetch.size() > 0) {
+      firstOpenProductId = firstFetch.get(0).getId();
+    }
 
     // 구매 가능한 상품 중 시작 시간이 가장 먼 상품
     List<Product> lastFetch = jpaQueryFactory
@@ -70,11 +73,16 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .limit(1)
         .orderBy(product.startDateTime.desc())
         .fetch();
-    Product lastOpenProduct = lastFetch.get(0);
+    Long lastOpenProductId = -1L;
+    if (lastFetch.size() > 0) {
+      lastOpenProductId = lastFetch.get(0).getId();
+    }
 
     // 구매 가능한 상품 목록
     List<Product> openFetch = new ArrayList<>();
-    if (open && (cursorId == null || cursorId > firstOpenProduct.getId() && cursorId != lastOpenProduct.getId())) {
+    if (open && (cursorId == null || cursorId > firstOpenProductId
+                                      && firstOpenProductId > 0
+                                      && cursorId != lastOpenProductId)) {
       openFetch = jpaQueryFactory
           .selectFrom(product)
           .leftJoin(product.productImages, productImage).fetchJoin()
@@ -93,7 +101,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     // cursorId가 null 이거나
     // 구매 가능 목록과 마감 목록을 함께 조회해 리스트에 담아야 할 경우
     // cursorBuilder 를 초기화하여 사용하지 않음
-    if (cursorId != null && open && (cursorId == lastOpenProduct.getId() || (openFetch.size() < pageable.getPageSize() && openFetch.size() > 0))) {
+    if (cursorId != null && open && (cursorId == lastOpenProductId || (openFetch.size() < pageable.getPageSize() && openFetch.size() > 0))) {
       cursorBuilder = new BooleanBuilder();
     }
 

@@ -4,18 +4,10 @@ import com.goodsending.global.entity.BaseEntity;
 import com.goodsending.member.entity.Member;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.type.AuctionTime;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,9 +46,15 @@ public class Product extends BaseEntity {
   @Column(name = "bidding_count", nullable = false)
   private int biddingCount;
 
+  @Column(name = "like_count", nullable = true)
+  private Long likeCount;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private List<ProductImage> productImages;
 
   @Version
   private Long version;
@@ -90,6 +88,10 @@ public class Product extends BaseEntity {
         .member(member)
         .build();
   }
+  public void setLikeCount(Long likeCount) {
+    this.likeCount = likeCount;
+  }
+
 
   public boolean isPriceGreaterOrEqualsThan(Integer amount) {
     if (amount == null) {

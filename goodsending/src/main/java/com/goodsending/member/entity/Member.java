@@ -3,7 +3,7 @@ package com.goodsending.member.entity;
 import com.goodsending.global.entity.BaseEntity;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
-import com.goodsending.member.dto.SignupRequestDto;
+import com.goodsending.member.dto.request.SignupRequestDto;
 import com.goodsending.member.type.MemberRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,9 +36,6 @@ public class Member extends BaseEntity {
   @Column(name = "password", nullable = false, length = 60)
   private String password;
 
-  @Column(name = "phone_number", nullable = false, length = 14)
-  private String phoneNumber;
-
   @Column(name = "cash", nullable = true)
   private Integer cash;
 
@@ -46,31 +43,55 @@ public class Member extends BaseEntity {
   private Integer point;
 
   @Column(name = "code", nullable = true)
-  private Long code;
+  private String code;
 
-  @Column(nullable = false)
+  @Column(name = "role", nullable = false)
   @Enumerated(value = EnumType.STRING)
   private MemberRole role; // 권한 (ADMIN, USER)
+
+  @Column(name = "verify", nullable = false)
+  private boolean verify; // 인증여부 (0: false, 1: true)
 
   @Version
   private Long version;
 
   @Builder
-  private Member(String email, String password, String phoneNumber, MemberRole role) {
+  public Member(String email, String password, String code, MemberRole role, boolean verify) {
     this.email = email;
     this.password = password;
-    this.phoneNumber = phoneNumber;
+    this.code = code;
     this.role = role;
+    this.verify = verify;
+  }
+
+  public static Member from(String email, String code) {
+    return Member.builder()
+        .email(email)
+        .password("")
+        .code(code)
+        .role(MemberRole.USER)
+        .verify(false)
+        .build();
   }
 
   public static Member from(SignupRequestDto signupRequestDto, String encodedPassword,
-      MemberRole role) {
+      MemberRole role, boolean verify) {
     return Member.builder()
         .email(signupRequestDto.getEmail())
         .password(encodedPassword)
-        .phoneNumber(signupRequestDto.getPhoneNumber())
+        .code(signupRequestDto.getCode())
         .role(role)
+        .verify(verify)
         .build();
+  }
+ // TODO : redis 사용하면 삭제 될 예정
+  public void update(String encodedPassword, boolean verify) {
+    this.password = encodedPassword;
+    this.verify = verify;
+  }
+
+  public void passwordUpdate(String encodedPassword) {
+    this.password = encodedPassword;
   }
 
   public boolean isCashGreaterOrEqualsThan(Integer amount){

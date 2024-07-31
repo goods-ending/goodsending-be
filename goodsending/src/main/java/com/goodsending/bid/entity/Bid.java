@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,8 +30,8 @@ import lombok.NoArgsConstructor;
  * @Project : goodsending-be :: goodsending
  */
 @Entity
-@Table(name = "bids"
-//    uniqueConstraints = {@UniqueConstraint(columnNames = {"price", "member_id", "product_id"})}
+@Table(name = "bids",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"price", "member_id", "product_id"})}
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

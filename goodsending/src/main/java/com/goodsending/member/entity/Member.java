@@ -1,9 +1,19 @@
 package com.goodsending.member.entity;
 
 import com.goodsending.global.entity.BaseEntity;
+import com.goodsending.global.exception.CustomException;
+import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.member.dto.SignupRequestDto;
 import com.goodsending.member.type.MemberRole;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,10 +40,10 @@ public class Member extends BaseEntity {
   private String phoneNumber;
 
   @Column(name = "cash", nullable = true)
-  private Long cash;
+  private Integer cash;
 
   @Column(name = "point", nullable = true)
-  private Long point;
+  private Integer point;
 
   @Column(name = "code", nullable = true)
   private Long code;
@@ -41,6 +51,9 @@ public class Member extends BaseEntity {
   @Column(nullable = false)
   @Enumerated(value = EnumType.STRING)
   private MemberRole role; // 권한 (ADMIN, USER)
+
+  @Version
+  private Long version;
 
   @Builder
   private Member(String email, String password, String phoneNumber, MemberRole role) {
@@ -58,5 +71,35 @@ public class Member extends BaseEntity {
         .phoneNumber(signupRequestDto.getPhoneNumber())
         .role(role)
         .build();
+  }
+
+  public boolean isCashGreaterOrEqualsThan(Integer amount){
+    if (this.cash == null || amount == null) {
+      return false;
+    }
+    return this.cash >= amount;
+  }
+
+  public boolean isPointGreaterOrEqualsThan(Integer amount){
+    if(this.point == null || amount == null) {
+      return false;
+    }
+    return this.point >= amount;
+  }
+
+  public void deductCash(Integer amount) {
+    if(this.cash == null) return;
+    if(!this.isCashGreaterOrEqualsThan(amount)){
+      throw CustomException.from(ExceptionCode.USER_CASH_MUST_BE_POSITIVE);
+    }
+    this.cash -= amount;
+  }
+
+  public void deductPoint(Integer amount) {
+    if(this.point == null) return;
+    if (!this.isPointGreaterOrEqualsThan(amount)) {
+      throw CustomException.from(ExceptionCode.USER_POINT_MUST_BE_POSITIVE);
+    }
+    this.point -= amount;
   }
 }

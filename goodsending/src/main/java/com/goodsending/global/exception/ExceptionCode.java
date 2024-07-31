@@ -1,8 +1,8 @@
 package com.goodsending.global.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -17,6 +17,7 @@ public enum ExceptionCode {
   // BAD_REQUEST:400:잘못된요청
   INSUFFICIENT_USER_CASH(BAD_REQUEST, "입력한 금액이 유저 캐시보다 큽니다."),
   INSUFFICIENT_USER_POINT(BAD_REQUEST, "입력한 금액이 유저 포인트보다 큽니다."),
+  EXCESSIVE_POINT(BAD_REQUEST, "포인트가 신청 입찰금을 초과합니다."),
   INSUFFICIENT_BID_AMOUNT(BAD_REQUEST, "경매 기본가가 입력한 금액보다 큽니다."),
   BID_AMOUNT_LESS_THAN_CURRENT_MAX(BAD_REQUEST, "현재 최고 입찰 금액이 입력한 금액보다 큽니다."),
   USER_CASH_MUST_BE_POSITIVE(BAD_REQUEST, "유저 캐시는 양수여야 합니다."),

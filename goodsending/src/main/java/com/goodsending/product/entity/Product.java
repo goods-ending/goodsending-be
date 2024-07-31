@@ -4,14 +4,22 @@ import com.goodsending.global.entity.BaseEntity;
 import com.goodsending.member.entity.Member;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.type.AuctionTime;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -39,6 +47,7 @@ public class Product extends BaseEntity {
   @Column(name = "max_end_date_time", nullable = true)
   private LocalDateTime maxEndDateTime;
 
+  // dynamicEndDateTime은 낙찰자가 정해졌을 때 입력되는 값이다.
   @Column(name = "dynamic_end_date_time")
   private LocalDateTime dynamicEndDateTime;
 
@@ -48,6 +57,9 @@ public class Product extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  @Version
+  private Long version;
 
   @Builder
   public Product(Long id, String name, int price, String introduction, LocalDateTime startDateTime,
@@ -77,5 +89,20 @@ public class Product extends BaseEntity {
         .maxEndDateTime(maxEndDateTime)
         .member(member)
         .build();
+  }
+
+  public boolean isPriceGreaterOrEqualsThan(Integer amount) {
+    if (amount == null) {
+      return false;
+    }
+    return this.price >= amount;
+  }
+
+  public void setBiddingCount(Long biddingCount) {
+    if(biddingCount == null) {
+      this.biddingCount = 0;
+      return;
+    }
+    this.biddingCount = (int)biddingCount.longValue();
   }
 }

@@ -1,7 +1,6 @@
 package com.goodsending.member.entity;
 
 import com.goodsending.global.entity.BaseEntity;
-import com.goodsending.member.dto.request.CashRequestDto;
 import com.goodsending.member.dto.request.SignupRequestDto;
 import com.goodsending.member.type.MemberRole;
 import jakarta.persistence.Column;

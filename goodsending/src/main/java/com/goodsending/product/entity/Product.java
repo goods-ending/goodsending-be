@@ -90,8 +90,7 @@ public class Product extends BaseEntity {
         .build();
   }
 
-  public void update(ProductUpdateRequestDto requestDto, List<ProductImage> savedProductImages,
-      LocalDateTime now) {
+  public void update(ProductUpdateRequestDto requestDto, List<ProductImage> savedProductImages) {
     LocalDate startDate = requestDto.getStartDate();
     AuctionTime auctionTime = requestDto.getAuctionTime();
 

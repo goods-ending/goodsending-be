@@ -182,7 +182,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 정보 수정
-    product.update(requestDto, savedProductImages, now);
+    product.update(requestDto, savedProductImages);
 
     return ProductUpdateResponseDto.from(product);
   }

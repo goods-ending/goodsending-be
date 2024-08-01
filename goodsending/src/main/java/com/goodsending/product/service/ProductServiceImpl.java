@@ -1,5 +1,7 @@
 package com.goodsending.product.service;
 
+import com.goodsending.deposit.entity.Deposit;
+import com.goodsending.deposit.repository.DepositRepository;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.service.S3Uploader;
@@ -14,6 +16,7 @@ import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
   private final ProductImageRepository productImageRepository;
   private final S3Uploader s3Uploader;
   private final MemberRepository memberRepository;
+  private final DepositRepository depositRepository;
 
   /**
    * 상품 등록
@@ -82,6 +86,18 @@ public class ProductServiceImpl implements ProductService {
       savedProductImages.add(productImageCreateResponseDto);
     }
 
+    // 보증금 차감
+    Integer productPrice = savedProduct.getPrice();
+    Integer depositPrice = (int)(productPrice * 0.05); // 보증금은 0.05%를 가져갑니다
+    if (depositPrice < 3000) { // 보증금은 최소 3000원
+      depositPrice = 3000;
+    }
+    member.deductCash(depositPrice);
+
+    // 보증금 내역 저장
+    Deposit deposit = Deposit.of(savedProduct, member, depositPrice);
+    depositRepository.save(deposit);
+
     return ProductCreateResponseDto.of(savedProduct, savedProductImages);
   }
 
@@ -102,22 +118,23 @@ public class ProductServiceImpl implements ProductService {
   }
 
   /**
-   * 경매 상품 검색
-   * @param keyword
-   * @return 검색된 경매 상품 정보 반환
-   */
-  /**
-   * 경매 상품 검색
-   * @param keyword 검색어
-   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자 값
-   * @param size 조회할 데이터 개수
-   * @return 키워드 검색을 통해 조회한 경매 상품 목록 반환
+   * 경매 상품 목록 조회
+   *
+   * @param now                 현재 시각
+   * @param openProduct         구매 가능한 매물 선택 여부
+   * @param closedProduct       마감된 매물 선택 여부
+   * @param keyword             검색어
+   * @param cursorStartDateTime
+   * @param cursorId            사용자에게 응답해준 마지막 데이터의 식별자값
+   * @param size                조회할 데이터 개수
+   * @return 조회한 경매 상품 목록 반환
    * @author : puclpu
    */
   @Override
-  public Slice<ProductSummaryDto> getProductSlice(String keyword, Long cursorId, int size) {
+  public Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct,
+      String closedProduct, String keyword, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
     Pageable pageable = PageRequest.of(0, size);
-    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByKeywordOrAllOrderByIdDescSlice(keyword, cursorId, pageable);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(now, openProduct, closedProduct, keyword, cursorStartDateTime, cursorId, pageable);
     return productSummaryDtoSlice;
   }
 

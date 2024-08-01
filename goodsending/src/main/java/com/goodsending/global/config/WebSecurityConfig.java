@@ -1,5 +1,6 @@
 package com.goodsending.global.config;
 
+import com.goodsending.global.security.JwtAuthenticationEntryPoint;
 import com.goodsending.global.security.JwtAuthenticationFilter;
 import com.goodsending.global.security.JwtAuthorizationFilter;
 import com.goodsending.global.security.MemberDetailsServiceImpl;
@@ -27,6 +28,7 @@ public class WebSecurityConfig {
   private final JwtUtil jwtUtil;
   private final MemberDetailsServiceImpl memberDetailsService;
   private final AuthenticationConfiguration authenticationConfiguration;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final MemberRepository memberRepository;
 
   @Bean
@@ -90,6 +92,9 @@ public class WebSecurityConfig {
     // 필터 관리
     http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+    // 예외 처리
+    http.exceptionHandling(exceptions -> exceptions
+        .authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
     return http.build();
   }

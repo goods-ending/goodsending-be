@@ -3,6 +3,7 @@ package com.goodsending.product.entity;
 import com.goodsending.global.entity.BaseEntity;
 import com.goodsending.member.entity.Member;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
+import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.type.AuctionTime;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -88,6 +89,22 @@ public class Product extends BaseEntity {
         .member(member)
         .build();
   }
+
+  public void update(ProductUpdateRequestDto requestDto, List<ProductImage> savedProductImages,
+      LocalDateTime now) {
+    LocalDate startDate = requestDto.getStartDate();
+    AuctionTime auctionTime = requestDto.getAuctionTime();
+
+    LocalDateTime startDateTime = startDate.atTime(auctionTime.getStartTime());
+    LocalDateTime maxEndDateTime = startDate.atTime(auctionTime.getEndTime());
+
+    this.name = requestDto.getName();
+    this.introduction = requestDto.getIntroduction();
+    this.startDateTime = startDateTime;
+    this.maxEndDateTime = maxEndDateTime;
+    this.productImages = savedProductImages;
+  }
+
   public void setLikeCount(Long likeCount) {
     this.likeCount = likeCount;
   }

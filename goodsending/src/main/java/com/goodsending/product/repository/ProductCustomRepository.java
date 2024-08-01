@@ -9,8 +9,6 @@ import org.springframework.data.domain.Slice;
 
 public interface ProductCustomRepository {
 
-  Slice<ProductSummaryDto> findByKeywordOrAllOrderByIdDescSlice(String keyword, Long cursorId, Pageable pageable);
-
   List<Product> findTop5ByStartDateTimeAfterOrderByLikeCountDesc(LocalDateTime currentDateTime);
 
   Slice<ProductSummaryDto> findByFiltersAndSort(LocalDateTime now, String openProduct, String closedProduct, String keyword,

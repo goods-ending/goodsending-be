@@ -6,6 +6,8 @@ import static com.goodsending.product.entity.QProductImage.productImage;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.entity.Product;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
@@ -25,7 +27,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
   @Override
   public Slice<ProductSummaryDto> findByFiltersAndSort(LocalDateTime now, String openProduct, String closedProduct,
-      String keyword, Long cursorId, Pageable pageable) {
+      String keyword, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable) {
 
     boolean open = false;
     if (openProduct != null && openProduct.equals("true")) {
@@ -50,8 +52,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
     // 커서 기반 페이징
     BooleanBuilder cursorBuilder = new BooleanBuilder();
-    if (cursorId != null) {
-      cursorBuilder.and(product.id.gt(cursorId));
+    if (cursorStartDateTime != null && cursorId != null) {
+      cursorBuilder.and(
+          product.startDateTime.gt(cursorStartDateTime)
+          .or(product.startDateTime.eq(cursorStartDateTime).and(product.id.gt(cursorId))));
     }
 
     // 구매 가능한 상품 중 시작 시간이 가장 가까운 상품
@@ -61,9 +65,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .limit(1)
         .orderBy(product.startDateTime.asc())
         .fetch();
-    Long firstOpenProductId = -1L;
+    Product firstOpenProduct = null;
     if (firstFetch.size() > 0) {
-      firstOpenProductId = firstFetch.get(0).getId();
+      firstOpenProduct = firstFetch.get(0);
     }
 
     // 구매 가능한 상품 중 시작 시간이 가장 먼 상품
@@ -71,18 +75,19 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .selectFrom(product)
         .where(openBuilderExpression(now), keywordBuilder)
         .limit(1)
-        .orderBy(product.startDateTime.desc())
+        .orderBy(
+            new OrderSpecifier<>(Order.DESC, product.startDateTime),
+            new OrderSpecifier<>(Order.DESC, product.id)
+        )
         .fetch();
-    Long lastOpenProductId = -1L;
+    Product lastOpenProduct = null;
     if (lastFetch.size() > 0) {
-      lastOpenProductId = lastFetch.get(0).getId();
+      lastOpenProduct = lastFetch.get(0);
     }
 
     // 구매 가능한 상품 목록
     List<Product> openFetch = new ArrayList<>();
-    if (open && (cursorId == null || cursorId > firstOpenProductId
-                                      && firstOpenProductId > 0
-                                      && cursorId != lastOpenProductId)) {
+    if (open && openCase(firstOpenProduct, lastOpenProduct, cursorStartDateTime, cursorId)) {
       openFetch = jpaQueryFactory
           .selectFrom(product)
           .leftJoin(product.productImages, productImage).fetchJoin()
@@ -101,7 +106,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     // cursorId가 null 이거나
     // 구매 가능 목록과 마감 목록을 함께 조회해 리스트에 담아야 할 경우
     // cursorBuilder 를 초기화하여 사용하지 않음
-    if (cursorId != null && open && (cursorId == lastOpenProductId || (openFetch.size() < pageable.getPageSize() && openFetch.size() > 0))) {
+    if (cursorId != null && open && (
+        cursorId == lastOpenProduct.getId() || (openFetch.size() < pageable.getPageSize() && openFetch.size() > 0))) {
       cursorBuilder = new BooleanBuilder();
     }
 
@@ -135,6 +141,23 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     }
 
     return new SliceImpl<>(productSummaryDtoList, pageable, hasNext);
+  }
+
+  private boolean openCase(Product firstOpenProduct, Product lastOpenProduct,
+      LocalDateTime cursorStartDateTime, Long cursorId) {
+    if (cursorId == null && cursorStartDateTime == null) {
+      return true;
+    } else if (firstOpenProduct == null) {
+      return  false;
+    } else if (cursorStartDateTime.isAfter(firstOpenProduct.getStartDateTime()) || cursorStartDateTime.isEqual(firstOpenProduct.getStartDateTime())) {
+      // 판매 마감 상품 cursor 사용 시 조회되지 않도록
+      // 구매 가능한 첫 번째 상품보다 늦거나 같아야 한다
+      if (cursorId == lastOpenProduct.getId()) { // 구매 가능한 상품 중 가장 마지막 상품이 커서라면 조회하지 않는다.
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   private long closedProductPageSize(boolean open, int openSize, int pageSize) {

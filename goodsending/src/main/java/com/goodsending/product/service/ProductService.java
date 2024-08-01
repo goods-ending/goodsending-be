@@ -17,5 +17,6 @@ public interface ProductService {
 
   ProductInfoDto getProduct(Long productId);
 
-  Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct, String closedProduct, String keyword, Long cursorId, int size);
+  Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct, String closedProduct, String keyword,
+      LocalDateTime cursorStartDateTime, Long cursorId, int size);
 }

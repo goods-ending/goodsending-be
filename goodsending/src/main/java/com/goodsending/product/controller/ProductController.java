@@ -89,10 +89,11 @@ public class ProductController {
                                     @RequestParam(required = false) String openProduct,
                                     @RequestParam(required = false) String closedProduct,
                                     @RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) LocalDateTime cursorStartDateTime,
                                     @RequestParam(required = false) Long cursorId,
                                     @RequestParam(required = true, defaultValue = "15") int size) {
     LocalDateTime now = LocalDateTime.now();
-    Slice<ProductSummaryDto> productSummaryDtoSlice = productService.getProductSlice(now, openProduct, closedProduct, keyword, cursorId, size);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productService.getProductSlice(now, openProduct, closedProduct, keyword, cursorStartDateTime, cursorId, size);
     return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtoSlice);
   }
 }

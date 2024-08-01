@@ -17,18 +17,37 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author : jieun
+ * @Date : 2024. 08. 01.
+ * @Team : GoodsEnding
+ * @Project : goodsending-be :: goodsending
+ */
 @Service("bidPriceMaxKeyExpirationHandler")
 @RequiredArgsConstructor
 public class BidPriceMaxKeyExpirationHandler implements RedisMessageHandler {
+
   private final BidQueryDslRepository bidQueryDslRepository;
   private final OrderRepository orderRepository;
 
+  /**
+   * 낙찰자 자동 선정 후 주문 생성
+   * <p>
+   * <p>입찰 후 5분동안 추가 입찰이 없으면 마지막 입찰자가 낙찰자가 됩니다.
+   * <p>입찰의 상태가 낙찰자는 SUCCESS, 낙찰자를 제외한 입찰은 FAIL로 업데이트 됩니다.
+   * <p>낙찰자의 주문이 자동 생성됩니다.
+   * <p>낙찰자를 제외한 유저는 환불처리(포인트, 캐시) 됩니다.
+   *
+   * @param message PRODUCT_BID_PRICE_MAX:{productId}
+   */
   @Override
   @Transactional
   public void handle(String message) {
     long productId = Long.parseLong(message.split(":")[1]);
     List<Bid> bids = bidQueryDslRepository.findByProductId(productId);
-    if(bids.isEmpty()) throw CustomException.from(ExceptionCode.BID_NOT_FOUND);
+    if (bids.isEmpty()) {
+      throw CustomException.from(ExceptionCode.BID_NOT_FOUND);
+    }
 
     setProduct(bids);
     handlerBids(bids);
@@ -53,7 +72,7 @@ public class BidPriceMaxKeyExpirationHandler implements RedisMessageHandler {
     for (int i = 1; i < bids.size(); i++) {
       Bid bid = bids.get(i);
       bid.setStatus(BidStatus.FAILED);
-      
+
       int price = (bid.getPrice() != null) ? bid.getPrice() : 0;
       int usePoint = (bid.getUsePoint() != null) ? bid.getUsePoint() : 0;
       int refundCash = price - usePoint;

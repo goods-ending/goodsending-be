@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @Date : 2024. 07. 25.
+ * @Date : 2024. 07. 30.
  * @Team : GoodsEnding
  * @author : jieun
  * @Project : goodsending-be :: goodsending

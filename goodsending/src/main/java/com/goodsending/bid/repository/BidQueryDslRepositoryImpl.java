@@ -9,6 +9,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+/**
+ * @Date : 2024. 08. 01.
+ * @Team : GoodsEnding
+ * @author : jieun
+ * @Project : goodsending-be :: goodsending
+ */
 @Repository
 @RequiredArgsConstructor
 public class BidQueryDslRepositoryImpl implements BidQueryDslRepository {

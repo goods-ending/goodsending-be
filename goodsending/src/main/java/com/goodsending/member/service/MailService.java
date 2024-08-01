@@ -52,19 +52,19 @@ public class MailService {
    */
   public ResponseEntity<String> sendCode(MailRequestDto mailRequestDto) throws MessagingException, UnsupportedEncodingException {
 
-      // 이메일 중복 확인
-      Optional<Member> checkEmail = memberRepository.findByEmail(mailRequestDto.getEmail());
-      if (checkEmail.isEmpty()) {
-        String code = this.createCode();
+    // 이메일 중복 확인
+    Optional<Member> checkEmail = memberRepository.findByEmail(mailRequestDto.getEmail());
+    if (checkEmail.isPresent()) {
+      throw CustomException.from(ExceptionCode.EMAIL_ALREADY_EXISTS);
+    }
+    String code = this.createCode();
 
-        // redis 저장 (5분 동안 유효)
-        saveMailAndCodeRepository.setValue(mailRequestDto.getEmail(), code, Duration.ofMinutes(5));
+    // redis 저장 (5분 동안 유효)
+    saveMailAndCodeRepository.setValue(mailRequestDto.getEmail(), code, Duration.ofMinutes(5));
 
-        // 인증코드 메일 전송
-        createMail(mailRequestDto.getEmail(), code);
-      } else {
-        throw CustomException.from(ExceptionCode.EMAIL_ALREADY_EXISTS);
-      }
+    // 인증코드 메일 전송
+    createMail(mailRequestDto.getEmail(), code);
+
     return ResponseEntity.ok("인증코드 전송 완료");
   }
 

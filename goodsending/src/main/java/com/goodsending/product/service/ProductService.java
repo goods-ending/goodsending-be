@@ -24,4 +24,6 @@ public interface ProductService {
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,
       LocalDateTime now);
+
+  void deleteProduct(Long productId, Long memberId, LocalDateTime now);
 }

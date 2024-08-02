@@ -2,6 +2,7 @@ package com.goodsending.product.service;
 
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
+import com.goodsending.deposit.type.DepositStatus;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.service.S3Uploader;
@@ -197,9 +198,48 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 정보 수정
-    product.update(requestDto, savedProductImages);
+    product.update(requestDto);
 
-    return ProductUpdateResponseDto.from(product);
+    return ProductUpdateResponseDto.from(product, savedProductImages);
+  }
+
+  @Override
+//  @Transactional
+  public void deleteProduct(Long productId, Long memberId, LocalDateTime now) {
+    // 등록된 상품인지 판별
+    Product product = findProduct(productId);
+
+    // 수정을 요청한 사용자와 판매자가 동일한지 판별
+    Long writer = product.getMember().getMemberId();
+    if (writer != memberId) {
+      throw CustomException.from(ExceptionCode.MEMBER_ID_MISMATCH);
+    }
+
+    // 경매 마감일이 지났는지 판별
+    LocalDateTime maxEndDateTime = product.getMaxEndDateTime();
+    LocalDateTime dynamicEndDateTime = product.getDynamicEndDateTime();
+    if (maxEndDateTime.isBefore(now) || dynamicEndDateTime != null && dynamicEndDateTime.isBefore(now)) {
+      throw CustomException.from(ExceptionCode.AUCTION_ALREADY_CLOSED);
+    }
+
+    // 입찰자 존재 여부 판별
+    if (product.getBiddingCount() > 0) {
+      // TODO : 입찰가 환불 처리
+
+    }
+
+    // 판매자의 보증금 환불
+    Member member = findMember(memberId);
+    Deposit deposit = depositRepository.findByProduct(product);
+    member.addCash(deposit.getPrice());
+    deposit.setStatus(DepositStatus.RETURNED);
+
+    // 상품 이미지 삭제
+    List<ProductImage> productImageList = findProductImageList(product);
+    productImageRepository.deleteAllInBatch(productImageList);
+
+    // 상품 삭제
+    productRepository.delete(product);
   }
 
   private List<ProductImage> findProductImageList(Product product) {

@@ -116,4 +116,11 @@ public class ProductController {
     ProductUpdateResponseDto responseDto = productService.updateProduct(productId, requestDto, productImages, memberId, now);
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
+
+  @DeleteMapping("/{productId}")
+  public ResponseEntity<Void> deleteProduct(@PathVariable Long productId, @MemberId(required = true) Long memberId) {
+    LocalDateTime now = LocalDateTime.now();
+    productService.deleteProduct(productId, memberId, now);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }

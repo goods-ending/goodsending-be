@@ -21,7 +21,6 @@ public class ProductSummaryDto {
   private String thumbnailUrl;
   // TODO : 입찰 여부 필드
 
-//  @Builder
   @QueryProjection
   public ProductSummaryDto(Long productId, String name, int price, LocalDateTime startDateTime, LocalDateTime dynamicEndDateTime,
       LocalDateTime maxEndDateTime, String thumbnailUrl) {

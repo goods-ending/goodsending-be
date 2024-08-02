@@ -8,10 +8,12 @@ import com.goodsending.global.service.S3Uploader;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
+import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
+import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import com.goodsending.product.repository.ProductImageRepository;
@@ -136,6 +138,68 @@ public class ProductServiceImpl implements ProductService {
     Pageable pageable = PageRequest.of(0, size);
     Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(now, openProduct, closedProduct, keyword, cursorStartDateTime, cursorId, pageable);
     return productSummaryDtoSlice;
+  }
+
+  /**
+   * 경매 상품 수정
+   * @param productId 상품 아이디
+   * @param requestDto 상품 수정 요청 정보
+   * @param productImages 상품 이미지
+   * @param memberId 등록자
+   * @param now 현재 시각
+   * @return
+   */
+  @Override
+  @Transactional
+  public ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto,
+      List<MultipartFile> productImages, Long memberId, LocalDateTime now) {
+
+    // 등록된 상품인지 판별
+    Product product = findProduct(productId);
+
+    // 수정을 요청한 사용자와 판매자가 동일한지 판별
+    Long writer = product.getMember().getMemberId();
+    if (writer != memberId) {
+      throw CustomException.from(ExceptionCode.MEMBER_ID_MISMATCH);
+    }
+
+    // 입찰자 존재 여부 판별
+    if (product.getBiddingCount() > 0) {
+      throw CustomException.from(ExceptionCode.BIDDER_ALREADY_EXIST);
+    }
+
+    // 경매 마감일이 지났는지 판별
+    LocalDateTime maxEndDateTime = product.getMaxEndDateTime();
+    LocalDateTime dynamicEndDateTime = product.getDynamicEndDateTime();
+    if (maxEndDateTime.isBefore(now) || dynamicEndDateTime != null && dynamicEndDateTime.isBefore(now)) {
+      throw CustomException.from(ExceptionCode.AUCTION_ALREADY_CLOSED);
+    }
+
+    // 상품 이미지 변경 시 이미지 삭제 후 새로운 이미지 등록
+    List<ProductImage> savedProductImages = new ArrayList<>();
+    if (productImages.size() > 0) { // 이미지 변동 사항이 있으면
+      // 등록된 이미지 모두 삭제
+      List<ProductImage> productImageList = findProductImageList(product);
+      s3Uploader.deleteProductImageFileList(productImageList);
+      for (ProductImage productImage : productImageList) {
+        productImageRepository.delete(productImage);
+      }
+
+      // 새 이미지 S3 업로드
+      List<String> uploadedFileNames = s3Uploader.uploadProductImageFileList(productImages,
+          "/images/products");
+      // 업로드 된 상품의 url 저장
+      for (String uploadedFileName : uploadedFileNames) {
+        ProductImage productImage = ProductImage.of(product, uploadedFileName);
+        productImageRepository.save(productImage);
+        savedProductImages.add(productImage);
+      }
+    }
+
+    // 상품 정보 수정
+    product.update(requestDto, savedProductImages);
+
+    return ProductUpdateResponseDto.from(product);
   }
 
   private List<ProductImage> findProductImageList(Product product) {

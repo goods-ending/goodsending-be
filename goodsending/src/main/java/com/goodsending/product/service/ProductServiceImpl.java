@@ -44,6 +44,8 @@ import java.util.List;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 
+  private static String S3_IMAGE_PATH = "image/products";
+
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Uploader s3Uploader;
@@ -77,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
     Product savedProduct = productRepository.save(product);
 
     // 버킷에 상품 이미지 업로드
-    List<String> uploadedFileNames = s3Uploader.uploadProductImageFileList(productImages, "images/products");
+    List<String> uploadedFileNames = s3Uploader.uploadProductImageFileList(productImages, S3_IMAGE_PATH);
 
     // 업로드 된 상품의 url 저장
     List<ProductImageCreateResponseDto> savedProductImages = new ArrayList<>();
@@ -182,20 +184,19 @@ public class ProductServiceImpl implements ProductService {
       // 등록된 이미지 모두 삭제
       List<ProductImage> productImageList = findProductImageList(product);
       s3Uploader.deleteProductImageFileList(productImageList);
-      for (ProductImage productImage : productImageList) {
-        productImageRepository.delete(productImage);
-      }
+      productImageRepository.deleteAllInBatch(productImageList);
 
       // 새 이미지 S3 업로드
       List<String> uploadedFileNames = s3Uploader.uploadProductImageFileList(productImages,
-          "/images/products");
+          S3_IMAGE_PATH);
+
       // 업로드 된 상품의 url 저장
       for (String uploadedFileName : uploadedFileNames) {
         ProductImage productImage = ProductImage.of(product, uploadedFileName);
-        productImageRepository.save(productImage);
         savedProductImages.add(productImage);
       }
     }
+    productImageRepository.saveAll(savedProductImages);
 
     // 상품 정보 수정
     product.update(requestDto);

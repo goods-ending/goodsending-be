@@ -203,8 +203,14 @@ public class ProductServiceImpl implements ProductService {
     return ProductUpdateResponseDto.from(product, savedProductImages);
   }
 
+  /**
+   * 경매 상품 삭제
+   * @param productId 상품 아이디
+   * @param memberId 등록자
+   * @param now 현재 시각
+   */
   @Override
-//  @Transactional
+  @Transactional
   public void deleteProduct(Long productId, Long memberId, LocalDateTime now) {
     // 등록된 상품인지 판별
     Product product = findProduct(productId);

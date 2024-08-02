@@ -117,6 +117,12 @@ public class ProductController {
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
+  /**
+   * 경매 상품 삭제
+   * @param productId 상품 아이디
+   * @param memberId 등록자
+   * @return 경매 상품 삭제 성공 여부
+   */
   @DeleteMapping("/{productId}")
   public ResponseEntity<Void> deleteProduct(@PathVariable Long productId, @MemberId(required = true) Long memberId) {
     LocalDateTime now = LocalDateTime.now();

@@ -2,6 +2,8 @@ package com.goodsending.order.entity;
 
 import com.goodsending.bid.entity.Bid;
 import com.goodsending.global.entity.BaseEntity;
+import com.goodsending.order.dto.request.ReceiverInfoRequest;
+import com.goodsending.order.type.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,6 +47,9 @@ public class Order extends BaseEntity {
   @Column(name = "confirmed_date_time", nullable = true)
   private LocalDateTime confirmedDateTime;
 
+  @Column(name = "status", nullable = true)
+  private OrderStatus status;
+
   @MapsId
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "order_id")
@@ -56,5 +61,17 @@ public class Order extends BaseEntity {
 
   public static Order from(Bid bid) {
     return new Order(bid);
+  }
+
+  public boolean isReceiverId(Long memberId){
+    return this.bid.getMember().getMemberId().equals(memberId);
+  }
+
+  public Order updateReceiverInfo(ReceiverInfoRequest request){
+    this.receiverAddress = request.receiverAddress();
+    this.receiverName = request.receiverName();
+    this.receiverCellNumber = request.receiverCellNumber();
+    this.status = OrderStatus.PENDING;
+    return this;
   }
 }

@@ -34,24 +34,4 @@ public class ProductSummaryDto {
     this.thumbnailUrl = thumbnailUrl;
   }
 
-//  public static ProductSummaryDto from(Product product, List<ProductImage> productImageList) {
-//    ProductImage thumbnailProductImage = productImageList.get(0);
-//    String thumbnailUrl = thumbnailProductImage.getUrl();
-//
-//    return ProductSummaryDto.builder()
-//        .productId(product.getId())
-//        .name(product.getName())
-//        .price(product.getPrice())
-//        .startDateTime(product.getStartDateTime())
-//        .dynamicEndDateTime(product.getDynamicEndDateTime())
-//        .maxEndDateTime(product.getMaxEndDateTime())
-//        .thumbnailUrl(thumbnailUrl)
-//        .build();
-//  }
-
-//  public static Page<ProductSummaryDto> from(Page<Product> productPage) {
-//    Page<ProductSummaryDto> productSummaryDtoPage = productPage.map(product -> ProductSummaryDto.from(product));
-//    return productSummaryDtoPage;
-//  }
-
 }

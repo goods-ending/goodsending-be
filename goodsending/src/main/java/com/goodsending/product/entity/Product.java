@@ -5,7 +5,6 @@ import com.goodsending.member.entity.Member;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.type.AuctionTime;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,22 +13,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "products")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE products SET deleted_date_time = NOW() WHERE product_id = ? and version = ?")
 public class Product extends BaseEntity {
 
   @Id
@@ -67,11 +66,11 @@ public class Product extends BaseEntity {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<ProductImage> productImages;
-
   @Version
   private Long version;
+
+  @Column(name = "deleted_date_time", nullable = true)
+  private LocalDateTime deletedDateTime;
 
   @Builder
   public Product(Long id, String name, int price, String introduction, LocalDateTime startDateTime,
@@ -103,7 +102,7 @@ public class Product extends BaseEntity {
         .build();
   }
 
-  public void update(ProductUpdateRequestDto requestDto, List<ProductImage> savedProductImages) {
+  public void update(ProductUpdateRequestDto requestDto) {
     LocalDate startDate = requestDto.getStartDate();
     AuctionTime auctionTime = requestDto.getAuctionTime();
 
@@ -114,7 +113,6 @@ public class Product extends BaseEntity {
     this.introduction = requestDto.getIntroduction();
     this.startDateTime = startDateTime;
     this.maxEndDateTime = maxEndDateTime;
-    this.productImages = savedProductImages;
   }
 
   public void setLikeCount(Long likeCount) {

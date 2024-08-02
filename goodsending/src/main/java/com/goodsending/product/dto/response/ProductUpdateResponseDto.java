@@ -36,9 +36,8 @@ public class ProductUpdateResponseDto {
     this.productImages = productImages;
   }
 
-  public static ProductUpdateResponseDto from(Product product) {
+  public static ProductUpdateResponseDto from(Product product, List<ProductImage> productImageList) {
     List<ProductImageUpdateResponseDto> productImageUpdateResponseDtoList = new ArrayList<>();
-    List<ProductImage> productImageList = product.getProductImages();
     for (ProductImage productImage : productImageList) {
       ProductImageUpdateResponseDto productImageUpdateResponseDto = ProductImageUpdateResponseDto.from(productImage);
       productImageUpdateResponseDtoList.add(productImageUpdateResponseDto);

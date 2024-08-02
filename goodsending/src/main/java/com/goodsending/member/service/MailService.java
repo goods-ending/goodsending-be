@@ -118,7 +118,7 @@ public class MailService {
   /**
    * 인증코드 확인
    * <p>
-   * redis에 저장된 인증코드와 일치하는지 확인한 뒤 일치하면 상태 플래그 추가합니다.
+   * redis에 저장된 인증코드와 일치하는지 확인
    *
    * @param email, code
    * @author : 이아람
@@ -131,10 +131,6 @@ public class MailService {
     if (!storedCode.equals(code)) {
       throw CustomException.from(ExceptionCode.VERIFICATION_CODE_MISMATCH);
     }
-    // 상태 플래그 설정
-    String verifiedKey  = "verified:" + email;
-    saveMailAndCodeRepository.setValue(verifiedKey, "true", Duration.ofMinutes(30));
-
     return ResponseEntity.ok("인증코드 일치");
   }
 }

@@ -69,7 +69,8 @@ public class WebSecurityConfig {
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
             .permitAll() // resources 접근 허용 설정
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-            .requestMatchers("/ws", "/api/members/sendMail", "/api/members/signup", "/api/members/login").permitAll()
+            .requestMatchers("/ws", "/api/members/sendMail", "/api/members/signup",
+                "/api/members/login", "/api/members/checkCode").permitAll()
             //.requestMatchers("/").permitAll()
             .anyRequest().authenticated() // 그 외 모든 요청 인증처리
     );
@@ -85,7 +86,6 @@ public class WebSecurityConfig {
             // 로그인 처리 후 실패 시 URL
             //.failureUrl("/api/members/login-page?error")
             .permitAll()
-
 
     );
 

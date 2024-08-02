@@ -150,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
    * @param productImages 상품 이미지
    * @param memberId 등록자
    * @param now 현재 시각
-   * @return
+   * @return 수정된 상품 정보 반환
    */
   @Override
   @Transactional

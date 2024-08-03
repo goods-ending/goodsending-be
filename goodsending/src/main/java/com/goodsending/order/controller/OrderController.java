@@ -3,10 +3,13 @@ package com.goodsending.order.controller;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.order.dto.request.ReceiverInfoRequest;
 import com.goodsending.order.dto.response.ReceiverInfoResponse;
+import com.goodsending.order.dto.response.UpdateShippingResponse;
 import com.goodsending.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,5 +40,20 @@ public class OrderController {
   public ResponseEntity<ReceiverInfoResponse> updateReceiverInfo(
       @MemberId Long memberId, @RequestBody ReceiverInfoRequest request){
     return ResponseEntity.ok(orderService.updateReceiverInfo(memberId, request));
+  }
+
+  /**
+   * 판매자가 주문을 배송 출발 처리 합니다.
+   * @param memberId 로그인 유저 아이디 => 판매자 id
+   * @param orderId 주문 id
+   * @return 업데이트된 order 정보를 반환합니다.
+   * @author : jieun(je-pa)
+   */
+  @Operation(summary = "주문 배송 출발 처리",
+      description =  "판매자가 주문을 배송 출발 처리 합니다.")
+  @PutMapping("/{orderId}/delivery")
+  public ResponseEntity<UpdateShippingResponse> updateShipping(@MemberId Long memberId,
+      @PathVariable Long orderId){
+    return ResponseEntity.ok(orderService.updateShipping(memberId, orderId, LocalDateTime.now()));
   }
 }

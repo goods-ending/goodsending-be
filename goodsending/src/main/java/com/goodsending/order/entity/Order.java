@@ -6,6 +6,8 @@ import com.goodsending.order.dto.request.ReceiverInfoRequest;
 import com.goodsending.order.type.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -47,6 +49,7 @@ public class Order extends BaseEntity {
   @Column(name = "confirmed_date_time", nullable = true)
   private LocalDateTime confirmedDateTime;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = true)
   private OrderStatus status;
 

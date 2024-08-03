@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * @Date : 2024. 08. 01.
  * @Team : GoodsEnding
- * @author : jieun
+ * @author : jieun(je-pa)
  * @Project : goodsending-be :: goodsending
  */
 public interface OrderRepository extends JpaRepository<Order, Long>, OrderQueryDslRepository {

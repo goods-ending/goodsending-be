@@ -4,7 +4,7 @@ import com.goodsending.order.entity.Order;
 import lombok.Builder;
 
 /**
- * @author : jieun
+ * @author : jieun(je-pa)
  * @Date : 2024. 08. 02.
  * @Team : GoodsEnding
  * @Project : goodsending-be :: goodsending

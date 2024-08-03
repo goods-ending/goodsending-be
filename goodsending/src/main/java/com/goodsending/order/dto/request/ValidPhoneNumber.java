@@ -16,7 +16,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * @author : jieun
+ * @author : jieun(je-pa)
  * @Date : 2024. 08. 03.
  * @Team : GoodsEnding
  * @Project : goodsending-be :: goodsending

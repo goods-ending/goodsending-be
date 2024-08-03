@@ -2,6 +2,12 @@ package com.goodsending.order.type;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * @author : jieun(je-pa)
+ * @Date : 2024. 08. 02.
+ * @Team : GoodsEnding
+ * @Project : goodsending-be :: goodsending
+ */
 @RequiredArgsConstructor
 public enum OrderStatus {
   CANCELLED("취소된"),

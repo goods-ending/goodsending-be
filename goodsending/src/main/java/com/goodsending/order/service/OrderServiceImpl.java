@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @Date : 2024. 08. 02.
  * @Team : GoodsEnding
- * @author : jieun
+ * @author : jieun(je-pa)
  * @Project : goodsending-be :: goodsending
  */
 @Service
@@ -22,6 +22,13 @@ public class OrderServiceImpl implements OrderService{
 
   private final OrderRepository orderRepository;
 
+  /**
+   * 낙찰자가 주문에 대한 배송 정보를 입력합니다.
+   * @param memberId 로그인 유저 아이디
+   * @param request 배송지 주소, 연락처, 수신자명
+   * @return 저장된 주문 정보
+   * @author : jieun(je-pa)
+   */
   @Override
   @Transactional
   public ReceiverInfoResponse updateReceiverInfo(Long memberId, ReceiverInfoRequest request) {

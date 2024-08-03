@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @Date : 2024. 08. 02.
  * @Team : GoodsEnding
- * @author : jieun
+ * @author : jieun(je-pa)
  * @Project : goodsending-be :: goodsending
  */
 @RequiredArgsConstructor
@@ -24,6 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
   private final OrderService orderService;
 
+  /**
+   *
+   * @param memberId 로그인 유저 아이디
+   * @param request 수신자명, 수신자연락처, 수신자 주소를 받습니다.
+   * @return 저장된 order 정보를 반환합니다.
+   * @author : jieun(je-pa)
+   */
   @Operation(summary = "주문 상품 수신자 정보 업데이트",
       description = "주문 상품 수신자 정보(수신자명, 수신자연락처, 수신자 주소)를 업데이트 합니다.")
   @PutMapping("/receiver-info")

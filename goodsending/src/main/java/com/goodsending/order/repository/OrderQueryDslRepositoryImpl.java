@@ -9,6 +9,12 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+/**
+ * @author : jieun(je-pa)
+ * @Date : 2024. 08. 03.
+ * @Team : GoodsEnding
+ * @Project : goodsending-be :: goodsending
+ */
 @Repository
 @RequiredArgsConstructor
 public class OrderQueryDslRepositoryImpl implements  OrderQueryDslRepository {

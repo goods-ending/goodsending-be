@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * @author : jieun
+ * @author : jieun(je-pa)
  * @Date : 2024. 08. 02.
  * @Team : GoodsEnding
  * @Project : goodsending-be :: goodsending

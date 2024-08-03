@@ -25,7 +25,7 @@ public class OrderServiceImpl implements OrderService{
   @Override
   @Transactional
   public ReceiverInfoResponse updateReceiverInfo(Long memberId, ReceiverInfoRequest request) {
-    Order order = findOrderById(request.orderId());
+    Order order = findOrderWithBidById(request.orderId());
 
     if(!order.isReceiverId(memberId)) {
       throw CustomException.from(ExceptionCode.RECEIVER_ID_MISMATCH);
@@ -34,8 +34,8 @@ public class OrderServiceImpl implements OrderService{
     return ReceiverInfoResponse.from(order.updateReceiverInfo(request));
   }
 
-  private Order findOrderById(Long orderId) {
-    return orderRepository.findById(orderId).orElseThrow(
+  private Order findOrderWithBidById(Long orderId) {
+    return orderRepository.findOrderWithBidById(orderId).orElseThrow(
         () -> CustomException.from(ExceptionCode.ORDER_NOT_FOUND)
     );
   }

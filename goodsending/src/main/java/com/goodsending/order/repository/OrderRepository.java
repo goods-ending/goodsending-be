@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author : jieun
  * @Project : goodsending-be :: goodsending
  */
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, OrderQueryDslRepository {
 
 }

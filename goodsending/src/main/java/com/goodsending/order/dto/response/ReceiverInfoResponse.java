@@ -11,6 +11,10 @@ import lombok.Builder;
  */
 @Builder
 public record ReceiverInfoResponse(
+    Long orderId,
+
+    Long bidderId,
+
     String receiverName,
 
     String receiverCellNumber,
@@ -20,6 +24,8 @@ public record ReceiverInfoResponse(
 ) {
     public static ReceiverInfoResponse from(Order order) {
         return ReceiverInfoResponse.builder()
+            .orderId(order.getId())
+            .bidderId(order.getBid().getMember().getMemberId())
             .receiverName(order.getReceiverName())
             .receiverCellNumber(order.getReceiverCellNumber())
             .receiverAddress(order.getReceiverAddress())

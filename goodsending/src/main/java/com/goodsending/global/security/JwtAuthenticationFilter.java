@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.member.dto.request.LoginRequestDto;
-import com.goodsending.member.entity.Member;
+import com.goodsending.member.repository.SaveRefreshToken;
 import com.goodsending.member.type.MemberRole;
 import com.goodsending.member.util.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -12,7 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
+import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,9 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final JwtUtil jwtUtil;
+  private final SaveRefreshToken saveRefreshToken;
 
-  public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+  public JwtAuthenticationFilter(JwtUtil jwtUtil, SaveRefreshToken saveRefreshToken) {
     this.jwtUtil = jwtUtil;
+    this.saveRefreshToken = saveRefreshToken;
     setFilterProcessesUrl("/api/members/login");
   }
 
@@ -61,7 +63,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     MemberRole role = memberDetails.getRole();
 
     String token = jwtUtil.createToken(memberId, email, role);
+    String refresh = jwtUtil.createRefreshToken();
     response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+    response.addHeader(JwtUtil.REFRESH_AUTHORIZATION_HEADER, refresh);
+    saveRefreshToken.setValue(email, refresh, Duration.ofDays(7));
     response.setContentType("text/plain;charset=UTF-8");
     response.getWriter().write("로그인 성공");
   }

@@ -123,14 +123,14 @@ public class MailService {
    * @param email, code
    * @author : 이아람
    */
-  public ResponseEntity<String> checkCode(String email, String code) {
+  public boolean checkCode(String email, String code) {
     String storedCode = saveMailAndCodeRepository.getValueByKey(email);
     if (storedCode == null) {
       throw CustomException.from(ExceptionCode.CODE_EXPIRED_OR_INVALID);
     }
     if (!storedCode.equals(code)) {
-      return ResponseEntity.ok("인증코드가 일치하지 않습니다.");
+      return false;
     }
-    return ResponseEntity.ok("인증코드가 일치합니다.");
+    return true;
   }
 }

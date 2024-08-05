@@ -1,5 +1,6 @@
 package com.goodsending.product.dto.response;
 
+import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,8 +44,7 @@ public class ProductInfoDto {
     this.productImages = productImages;
   }
 
-
-  public static ProductInfoDto of(ProductWithSellingPriceDto productWithSellingPriceDto, List<ProductImage> productImageList) {
+  public static ProductInfoDto of(Product product, List<ProductImage> productImageList, int sellingPrice) {
     List<ProductImageInfoDto> productImages = new ArrayList<>();
     for (ProductImage productImage : productImageList) {
       ProductImageInfoDto productImageInfoDto = ProductImageInfoDto.from(productImage);
@@ -52,16 +52,16 @@ public class ProductInfoDto {
     }
 
     return ProductInfoDto.builder()
-        .productId(productWithSellingPriceDto.getProductId())
-        .memberId(productWithSellingPriceDto.getMemberId())
-        .name(productWithSellingPriceDto.getName())
-        .price(productWithSellingPriceDto.getPrice())
-        .introduction(productWithSellingPriceDto.getIntroduction())
-        .startDateTime(productWithSellingPriceDto.getStartDateTime())
-        .dynamicEndDateTime(productWithSellingPriceDto.getDynamicEndDateTime())
-        .maxEndDateTime(productWithSellingPriceDto.getMaxEndDateTime())
-        .biddingCount(productWithSellingPriceDto.getBiddingCount())
-        .sellingPrice(productWithSellingPriceDto.getSellingPrice())
+        .productId(product.getId())
+        .memberId(product.getMember().getMemberId())
+        .name(product.getName())
+        .price(product.getPrice())
+        .introduction(product.getIntroduction())
+        .startDateTime(product.getStartDateTime())
+        .dynamicEndDateTime(product.getDynamicEndDateTime())
+        .maxEndDateTime(product.getMaxEndDateTime())
+        .biddingCount(product.getBiddingCount())
+        .sellingPrice(sellingPrice)
         .productImages(productImages)
         .build();
   }

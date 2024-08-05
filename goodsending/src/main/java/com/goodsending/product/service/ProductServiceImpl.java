@@ -1,5 +1,6 @@
 package com.goodsending.product.service;
 
+import com.goodsending.bid.repository.BidRepository;
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
 import com.goodsending.deposit.type.DepositStatus;
@@ -16,7 +17,6 @@ import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
-import com.goodsending.product.dto.response.ProductWithSellingPriceDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import com.goodsending.product.repository.ProductImageRepository;
@@ -53,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
   private final S3Uploader s3Uploader;
   private final MemberRepository memberRepository;
   private final DepositRepository depositRepository;
+  private final BidRepository bidRepository;
 
   /**
    * 상품 등록
@@ -115,10 +116,11 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   public ProductInfoDto getProduct(Long productId) {
-    ProductWithSellingPriceDto product = findProductWithSellingPrice(productId);
-    List<ProductImage> productImageList = findProductImageListByProductId(productId);
+    Product product = findProduct(productId);
+    List<ProductImage> productImageList = findProductImageList(product);
+    int sellingPrice = findSellingPrice(product);
 
-    return ProductInfoDto.of(product, productImageList);
+    return ProductInfoDto.of(product, productImageList, sellingPrice);
   }
 
   /**
@@ -262,13 +264,9 @@ public class ProductServiceImpl implements ProductService {
     return myProductSummaryDtoList;
   }
 
-  private List<ProductImage> findProductImageListByProductId(Long productId) {
-    return productImageRepository.findAllByProductId(productId);
-  }
-
-  private ProductWithSellingPriceDto findProductWithSellingPrice(Long productId) {
-    return productRepository.findProductWithSellingPriceByProductId(productId)
-        .orElseThrow(() -> CustomException.from(ExceptionCode.PRODUCT_NOT_FOUND));
+  private int findSellingPrice(Product product) {
+    int biddingCount = product.getBiddingCount();
+    return biddingCount == 0 ? 0 : bidRepository.findPriceByStatusAndProduct(product).orElse(0);
   }
 
   private List<ProductImage> findProductImageList(Product product) {

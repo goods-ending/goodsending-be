@@ -2,13 +2,10 @@ package com.goodsending.product.repository;
 
 import static com.goodsending.product.entity.QProduct.product;
 import static com.goodsending.product.entity.QProductImage.productImage;
-import static com.goodsending.bid.entity.QBid.bid;
 import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
-import com.goodsending.product.dto.response.ProductWithSellingPriceDto;
 import com.goodsending.product.dto.response.QMyProductSummaryDto;
 import com.goodsending.product.dto.response.QProductSummaryDto;
-import com.goodsending.product.dto.response.QProductWithSellingPriceDto;
 import com.goodsending.product.entity.Product;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
@@ -19,7 +16,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -201,27 +197,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     return new SliceImpl<>(myFetch, pageable, hasNext);
   }
 
-  @Override
-  public Optional<ProductWithSellingPriceDto> findProductWithSellingPriceByProductId(
-      Long productId) {
-    return Optional.ofNullable(
-        jpaQueryFactory.select(new QProductWithSellingPriceDto(
-            product.id,
-            product.member.memberId,
-            product.name,
-            product.price,
-            product.introduction,
-            product.startDateTime,
-            product.dynamicEndDateTime,
-            product.maxEndDateTime,
-            product.biddingCount,
-            bid.price))
-            .from(product)
-            .leftJoin(bid).on(bid.product.id.eq(product.id))
-            .where(product.id.eq(productId))
-            .fetchOne()
-    );
-  }
+
 
   private boolean openCase(Product firstOpenProduct, Product lastOpenProduct,
       LocalDateTime cursorStartDateTime, Long cursorId) {

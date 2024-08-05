@@ -16,6 +16,7 @@ import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
+import com.goodsending.product.dto.response.ProductWithSellingPriceDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
 import com.goodsending.product.repository.ProductImageRepository;
@@ -114,11 +115,8 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   public ProductInfoDto getProduct(Long productId) {
-
-    Product product = findProduct(productId);
-    List<ProductImage> productImageList = findProductImageList(product);
-
-    // TODO: 입찰 여부
+    ProductWithSellingPriceDto product = findProductWithSellingPrice(productId);
+    List<ProductImage> productImageList = findProductImageListByProductId(productId);
 
     return ProductInfoDto.of(product, productImageList);
   }
@@ -262,6 +260,15 @@ public class ProductServiceImpl implements ProductService {
     Pageable pageable = PageRequest.of(0, size);
     Slice<MyProductSummaryDto> myProductSummaryDtoList = productRepository.findProductByMember(memberId, pageable, cursorId);
     return myProductSummaryDtoList;
+  }
+
+  private List<ProductImage> findProductImageListByProductId(Long productId) {
+    return productImageRepository.findAllByProductId(productId);
+  }
+
+  private ProductWithSellingPriceDto findProductWithSellingPrice(Long productId) {
+    return productRepository.findProductWithSellingPriceByProductId(productId)
+        .orElseThrow(() -> CustomException.from(ExceptionCode.PRODUCT_NOT_FOUND));
   }
 
   private List<ProductImage> findProductImageList(Product product) {

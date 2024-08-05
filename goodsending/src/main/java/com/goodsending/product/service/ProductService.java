@@ -29,4 +29,5 @@ public interface ProductService {
   void deleteProduct(Long productId, Long memberId, LocalDateTime now);
 
   Slice<MyProductSummaryDto> getMyProductSlice(Long memberId, int size, Long cursorId);
+
 }

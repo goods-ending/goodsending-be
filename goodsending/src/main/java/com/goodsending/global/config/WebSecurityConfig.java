@@ -4,7 +4,7 @@ import com.goodsending.global.security.JwtAuthenticationEntryPoint;
 import com.goodsending.global.security.JwtAuthenticationFilter;
 import com.goodsending.global.security.JwtAuthorizationFilter;
 import com.goodsending.global.security.MemberDetailsServiceImpl;
-import com.goodsending.member.repository.SaveRefreshToken;
+import com.goodsending.member.repository.SaveRefreshTokenRepository;
 import com.goodsending.member.util.JwtUtil;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +35,7 @@ public class WebSecurityConfig {
   private final MemberDetailsServiceImpl memberDetailsService;
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-  private final SaveRefreshToken saveRefreshToken;
+  private final SaveRefreshTokenRepository saveRefreshTokenRepository;
 
   @Value("${front.list}")
   private List<String> frontUrls;
@@ -53,7 +53,8 @@ public class WebSecurityConfig {
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, saveRefreshToken);
+    JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil,
+        saveRefreshTokenRepository);
     filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
     return filter;
   }

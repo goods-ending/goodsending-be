@@ -129,8 +129,8 @@ public class MailService {
       throw CustomException.from(ExceptionCode.CODE_EXPIRED_OR_INVALID);
     }
     if (!storedCode.equals(code)) {
-      throw CustomException.from(ExceptionCode.VERIFICATION_CODE_MISMATCH);
+      return ResponseEntity.ok("인증코드가 일치하지 않습니다.");
     }
-    return ResponseEntity.ok("인증코드 일치");
+    return ResponseEntity.ok("인증코드가 일치합니다.");
   }
 }

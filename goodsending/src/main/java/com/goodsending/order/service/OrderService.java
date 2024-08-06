@@ -1,7 +1,10 @@
 package com.goodsending.order.service;
 
 import com.goodsending.order.dto.request.ReceiverInfoRequest;
+import com.goodsending.order.dto.response.OrderResponse;
 import com.goodsending.order.dto.response.ReceiverInfoResponse;
+import com.goodsending.order.dto.response.UpdateShippingResponse;
+import java.time.LocalDateTime;
 
 /**
  * @author : jieun(je-pa)
@@ -18,5 +21,9 @@ public interface OrderService {
    * @return 저장된 주문 정보
    * @author : jieun(je-pa)
    */
-  ReceiverInfoResponse updateReceiverInfo(Long memberId, ReceiverInfoRequest request);
+  ReceiverInfoResponse updateReceiverInfo(Long memberId, Long orderId, ReceiverInfoRequest request);
+
+  UpdateShippingResponse updateShipping(Long memberId, Long orderId, LocalDateTime now);
+
+  OrderResponse confirmOrder(Long memberId, Long orderId, LocalDateTime now);
 }

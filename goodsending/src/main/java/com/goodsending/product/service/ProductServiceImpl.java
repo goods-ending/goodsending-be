@@ -115,11 +115,11 @@ public class ProductServiceImpl implements ProductService {
    * @return 경매 상품 상세 정보 반환
    */
   @Override
+  @Transactional(readOnly = true)
   public ProductInfoDto getProduct(Long productId) {
     Product product = findProduct(productId);
     List<ProductImage> productImageList = findProductImageList(product);
     int sellingPrice = findSellingPrice(product);
-
     return ProductInfoDto.of(product, productImageList, sellingPrice);
   }
 
@@ -137,6 +137,7 @@ public class ProductServiceImpl implements ProductService {
    * @author : puclpu
    */
   @Override
+  @Transactional(readOnly = true)
   public Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct,
       String closedProduct, String keyword, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
     Pageable pageable = PageRequest.of(0, size);
@@ -258,6 +259,7 @@ public class ProductServiceImpl implements ProductService {
    * @author : puclpu
    */
   @Override
+  @Transactional(readOnly = true)
   public Slice<MyProductSummaryDto> getMyProductSlice(Long memberId, int size, Long cursorId) {
     Pageable pageable = PageRequest.of(0, size);
     Slice<MyProductSummaryDto> myProductSummaryDtoList = productRepository.findProductByMember(memberId, pageable, cursorId);
@@ -268,7 +270,7 @@ public class ProductServiceImpl implements ProductService {
     int biddingCount = product.getBiddingCount();
     return biddingCount == 0 ? 0 : bidRepository.findPriceByStatusAndProduct(product).orElse(0);
   }
-
+  
   private List<ProductImage> findProductImageList(Product product) {
     List<ProductImage> productImageList = productImageRepository.findAllByProduct(product);
     return productImageList;

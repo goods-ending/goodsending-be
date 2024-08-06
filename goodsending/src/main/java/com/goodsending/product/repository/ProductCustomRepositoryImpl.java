@@ -3,9 +3,7 @@ package com.goodsending.product.repository;
 import static com.goodsending.product.entity.QProduct.product;
 import static com.goodsending.product.entity.QProductImage.productImage;
 
-import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
-import com.goodsending.product.dto.response.QMyProductSummaryDto;
 import com.goodsending.product.dto.response.QProductSummaryDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.type.ProductStatus;
@@ -31,7 +29,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
-  public Slice<ProductSummaryDto> findByFiltersAndSort(LocalDateTime now, String openProduct, String closedProduct,
+  public Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, String openProduct, String closedProduct,
       String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable) {
 
     boolean open = openProduct != null && openProduct.equals("true");
@@ -67,7 +65,11 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .from(product)
         .leftJoin(productImage).on(productImage.product.eq(product));
 
-    if (open == closed) {
+    if (memberId != null) {
+      query.where(productImageEq().and(memberIdEq(memberId)))
+          .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
+          .limit(pageable.getPageSize()+1);
+    } else if (open == closed) {
       query.where(productImageEq().and(cursorBuilder).and(keywordBuilder))
           .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
           .limit(pageable.getPageSize()+1);
@@ -107,13 +109,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
   }
 
   @Override
-  public Slice<ProductSummaryDto> findAllProducts(ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable) {
-    NumberExpression<Integer> statusRank = statusRankCaseBuilder();
-
-    BooleanBuilder cursorBuilder = cursorBuilder(cursorStatus, cursorStartDateTime, cursorId, statusRank);
-
-    List<ProductSummaryDto> productSummaryDtoList = jpaQueryFactory
-        .select(new QProductSummaryDto(
+  public List<ProductSummaryDto> findTop5ByBiddingCount() {
+    return jpaQueryFactory.select(new QProductSummaryDto(
             product.id,
             product.name,
             product.price,
@@ -121,62 +118,13 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
             product.dynamicEndDateTime,
             product.maxEndDateTime,
             product.status,
-            productImage.url
-        ))
-        .from(product)
-        .leftJoin(productImage).on(productImage.product.eq(product))
-        .where(productImageEq().and(cursorBuilder))
-        .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
-        .limit(pageable.getPageSize()+1)
-        .fetch();
-
-    boolean hasNext = false;
-    if (productSummaryDtoList.size() > pageable.getPageSize()) {
-      hasNext = true;
-      productSummaryDtoList.remove(pageable.getPageSize());
-    }
-
-    return new SliceImpl<>(productSummaryDtoList, pageable, hasNext);
-  }
-
-  @Override
-  public Slice<MyProductSummaryDto> findProductByMember(Long memberId, Pageable pageable, Long cursorId) {
-
-    BooleanBuilder cursorBuilder = new BooleanBuilder();
-    if (cursorId != null) {
-      cursorBuilder.and(product.id.lt(cursorId));
-    }
-
-    List<MyProductSummaryDto> myFetch = jpaQueryFactory
-        .select(new QMyProductSummaryDto(
-            product.id,
-            product.name,
-            product.price,
-            product.startDateTime,
-            product.dynamicEndDateTime,
-            product.maxEndDateTime,
             productImage.url))
         .from(product)
         .leftJoin(productImage).on(productImage.product.eq(product))
-        .where(product.member.memberId.eq(memberId).and(cursorBuilder)
-            .and(productImage.id.eq(JPAExpressions
-                    .select(productImage.id.min())
-                    .from(productImage)
-                    .where(productImage.product.eq(product))
-                )
-            )
-        )
-        .limit(pageable.getPageSize() + 1)
-        .orderBy(product.id.desc())
+        .where(productImageEq())
+        .orderBy(product.biddingCount.desc())
+        .limit(5)
         .fetch();
-
-    boolean hasNext = false;
-    if (myFetch.size() > pageable.getPageSize()) {
-      hasNext = true;
-      myFetch.remove(pageable.getPageSize());
-    }
-
-    return new SliceImpl<>(myFetch, pageable, hasNext);
   }
 
   @Override
@@ -187,6 +135,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .orderBy(product.likeCount.desc())
         .limit(5)
         .fetch();
+  }
+
+  private BooleanExpression memberIdEq(Long memberId) {
+    return product.member.memberId.eq(memberId);
   }
 
   private BooleanExpression productImageEq(){

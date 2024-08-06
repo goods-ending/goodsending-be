@@ -3,6 +3,7 @@ package com.goodsending.product.controller;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
+import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
@@ -143,4 +144,21 @@ public class ProductController {
     return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtos);
   }
 
+
+  /**
+   * 내가 판매 중인 경매 상품 목록 조회
+   * @param memberId 사용자 아이디
+   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자값
+   * @param size 조회할 데이터 개수
+   * @return 등록한 경매 상품 목록
+   * @author : puclpu
+   */
+  @GetMapping("/products?memberId={memberId}")
+  public ResponseEntity<Slice<MyProductSummaryDto>> getMyProductList(
+                                    @MemberId(required = true) Long memberId,
+                                    @RequestParam(required = false) Long cursorId,
+                                    @RequestParam(required = false, defaultValue = "15") int size) {
+    Slice<MyProductSummaryDto> productSummaryDtoList = productService.getMyProductSlice(memberId, size, cursorId);
+    return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtoList);
+  }
 }

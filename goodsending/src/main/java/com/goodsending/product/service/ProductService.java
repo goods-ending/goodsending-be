@@ -6,6 +6,7 @@ import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
+import com.goodsending.product.type.ProductStatus;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +21,14 @@ public interface ProductService {
   ProductInfoDto getProduct(Long productId);
 
   Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct, String closedProduct, String keyword,
-      LocalDateTime cursorStartDateTime, Long cursorId, int size);
+      ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size);
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,
       LocalDateTime now);
 
   void deleteProduct(Long productId, Long memberId, LocalDateTime now);
+
+  void updateProductStatus(ProductStatus status);
+
+  Slice<ProductSummaryDto> getAllProducts(ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size);
 }

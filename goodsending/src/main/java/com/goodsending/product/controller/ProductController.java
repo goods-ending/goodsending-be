@@ -8,6 +8,7 @@ import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.service.ProductService;
+import com.goodsending.product.type.ProductStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
@@ -86,16 +87,17 @@ public class ProductController {
   @Operation(summary = "경매 상품 검색 기능",
       description = "필터링 조건(구매 가능한 매물, 마감된 매물, 검색어)에 맞춰 검색을 진행하고 조회된 상품 목록을 반환한다."
           + "구매 가능한 매물과 마감된 매물 순으로 정렬하되 시작 시간이 빠른 순으로 정렬한다.")
-  @GetMapping
+  @GetMapping("/search")
   public ResponseEntity<Slice<ProductSummaryDto>> getProductSlice(
                                     @RequestParam(required = false) String openProduct,
                                     @RequestParam(required = false) String closedProduct,
                                     @RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) ProductStatus cursorStatus,
                                     @RequestParam(required = false) LocalDateTime cursorStartDateTime,
                                     @RequestParam(required = false) Long cursorId,
                                     @RequestParam(required = true, defaultValue = "15") int size) {
     LocalDateTime now = LocalDateTime.now();
-    Slice<ProductSummaryDto> productSummaryDtoSlice = productService.getProductSlice(now, openProduct, closedProduct, keyword, cursorStartDateTime, cursorId, size);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productService.getProductSlice(now, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId, size);
     return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtoSlice);
   }
 
@@ -129,4 +131,16 @@ public class ProductController {
     productService.deleteProduct(productId, memberId, now);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
+
+  // 전체 검색
+  @GetMapping
+  public ResponseEntity<Slice<ProductSummaryDto>> getAllProducts(
+      @RequestParam(required = false) ProductStatus cursorStatus,
+      @RequestParam(required = false) LocalDateTime cursorStartDateTime,
+      @RequestParam(required = false) Long cursorId,
+      @RequestParam(defaultValue = "15") int size) {
+    Slice<ProductSummaryDto> productSummaryDtos = productService.getAllProducts(cursorStatus, cursorStartDateTime, cursorId, size);
+    return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtos);
+  }
+
 }

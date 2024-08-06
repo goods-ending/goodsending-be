@@ -1,6 +1,5 @@
 package com.goodsending.product.repository;
 
-import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.type.ProductStatus;
@@ -13,12 +12,9 @@ public interface ProductCustomRepository {
 
   List<Product> findTop5ByStartDateTimeAfterOrderByLikeCountDesc(LocalDateTime currentDateTime);
 
-  Slice<ProductSummaryDto> findByFiltersAndSort(LocalDateTime now, String openProduct, String closedProduct, String keyword,
+  Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, String openProduct, String closedProduct, String keyword,
       ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable);
 
   List<Product> findAllByStatusAndStartDateTime(ProductStatus status, LocalDateTime startDateTime);
 
-  Slice<ProductSummaryDto> findAllProducts(ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable);
-
-  Slice<MyProductSummaryDto> findProductByMember(Long memberId, Pageable pageable, Long cursorId);
 }

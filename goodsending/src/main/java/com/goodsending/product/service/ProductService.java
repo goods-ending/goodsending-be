@@ -2,7 +2,6 @@ package com.goodsending.product.service;
 
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
-import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
@@ -21,7 +20,7 @@ public interface ProductService {
 
   ProductInfoDto getProduct(Long productId);
 
-  Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct, String closedProduct, String keyword,
+  Slice<ProductSummaryDto> getProductSlice(Long memberId, String openProduct, String closedProduct, String keyword,
       ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size);
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,
@@ -31,7 +30,4 @@ public interface ProductService {
 
   void updateProductStatus(ProductStatus status);
 
-  Slice<ProductSummaryDto> getAllProducts(ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size);
-
-  Slice<MyProductSummaryDto> getMyProductSlice(Long memberId, int size, Long cursorId);
 }

@@ -10,7 +10,6 @@ import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
-import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
@@ -126,12 +125,12 @@ public class ProductServiceImpl implements ProductService {
   /**
    * 경매 상품 목록 조회
    *
-   * @param now                 현재 시각
+   * @param memberId 상품 등록 회원 아이디
    * @param openProduct         구매 가능한 매물 선택 여부
    * @param closedProduct       마감된 매물 선택 여부
    * @param keyword             검색어
-   * @param cursorStatus
-   * @param cursorStartDateTime
+   * @param cursorStatus 사용자에게 응답해준 마지막 데이터의 상태
+   * @param cursorStartDateTime 사용자에게 응답해준 마지막 데이터의 경매 시작 시각
    * @param cursorId            사용자에게 응답해준 마지막 데이터의 식별자값
    * @param size                조회할 데이터 개수
    * @return 조회한 경매 상품 목록 반환
@@ -139,10 +138,10 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Slice<ProductSummaryDto> getProductSlice(LocalDateTime now, String openProduct,
+  public Slice<ProductSummaryDto> getProductSlice(Long memberId, String openProduct,
       String closedProduct, String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
     Pageable pageable = PageRequest.of(0, size);
-    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(now, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId, pageable);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(memberId, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId, pageable);
     return productSummaryDtoSlice;
   }
 
@@ -251,23 +250,6 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
-  /**
-   * 내가 판매 중인 경매 상품 목록 조회
-   * @param memberId 사용자 아이디
-   * @param size 조회할 상품 개수
-   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자값
-   * @return 등록한 경매 상품 목록
-   * @author : puclpu
-   */
-  @Override
-  @Transactional(readOnly = true)
-  public Slice<MyProductSummaryDto> getMyProductSlice(Long memberId, int size, Long cursorId) {
-    Pageable pageable = PageRequest.of(0, size);
-    Slice<MyProductSummaryDto> myProductSummaryDtoList = productRepository.findProductByMember(memberId, pageable, cursorId);
-    return myProductSummaryDtoList;
-  }
-
-
   @Override
   @Transactional
   public void updateProductStatus(ProductStatus status) {
@@ -282,12 +264,6 @@ public class ProductServiceImpl implements ProductService {
           product.setStatus(ProductStatus.ENDED);
       }
     }
-  }
-
-  @Override
-  public Slice<ProductSummaryDto> getAllProducts(ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
-    Pageable pageable = PageRequest.of(0, size);
-    return productRepository.findAllProducts(cursorStatus, cursorStartDateTime, cursorId, pageable);
   }
 
   private List<ProductImage> findProductImageList(Product product) {

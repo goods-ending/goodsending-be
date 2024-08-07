@@ -92,15 +92,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
   @Override
   public List<Product> findAllByStatusAndStartDateTime(ProductStatus status, LocalDateTime startDateTime) {
-
-    BooleanBuilder startDateTimeEq = new BooleanBuilder();
-    if (status.equals(ProductStatus.UPCOMING)) {
-      startDateTimeEq.and(product.startDateTime.eq(startDateTime));
-    }
-
     return jpaQueryFactory
         .selectFrom(product)
-        .where(product.status.eq(status).and(startDateTimeEq))
+        .where(product.status.eq(status).and(startDateTimeEq(startDateTime)))
         .fetch();
   }
 
@@ -124,6 +118,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
             .select(productImage.id.min())
             .from(productImage)
             .where(productImage.product.eq(product)));
+  }
+
+  private BooleanExpression startDateTimeEq(LocalDateTime startDateTime) {
+    return startDateTime != null ? product.startDateTime.eq(startDateTime) : null;
   }
 
   private NumberExpression<Integer> statusRankCaseBuilder() {

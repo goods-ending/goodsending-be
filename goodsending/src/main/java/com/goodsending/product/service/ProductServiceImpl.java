@@ -252,8 +252,8 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional
-  public void updateProductStatus(ProductStatus status) {
-    LocalDateTime startDateTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+  public void updateProductStatus(ProductStatus status, LocalDateTime startDateTime) {
+//    LocalDateTime startDateTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
     List<Product> products = productRepository.findAllByStatusAndStartDateTime(status, startDateTime);
     for (Product product : products) {
       switch (status) {

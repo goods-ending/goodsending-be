@@ -28,6 +28,6 @@ public interface ProductService {
 
   void deleteProduct(Long productId, Long memberId, LocalDateTime now);
 
-  void updateProductStatus(ProductStatus status);
+  void updateProductStatus(ProductStatus status, LocalDateTime startDateTime);
 
 }

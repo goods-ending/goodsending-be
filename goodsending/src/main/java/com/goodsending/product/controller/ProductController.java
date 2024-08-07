@@ -74,24 +74,16 @@ public class ProductController {
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
-
   /**
    * 경매 상품 목록 조회
-   * @param memberId 상품 등록 회원 아이디
-   * @param openProduct 구매 가능한 매물 선택 여부 ("true")
-   * @param closedProduct 마감된 매물 선택 여부 ("true")
-   * @param keyword 검색어
-   * @param cursorStatus 사용자에게 응답해준 마지막 데이터의 상태
-   * @param cursorStartDateTime 사용자에게 응답해준 마지막 데이터의 경매 시작 시각
-   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자값
-   * @param size 조회할 데이터 개수
-   * @return 조회한 경매 상품 목록 반환
+   * @param productSearchCondition 경매 상품 목록 조회 조건
+   * @return 조회한 경매 상품 목록
    * @author : puclpu
    */
   @Operation(summary = "경매 상품 검색 기능",
       description = "전체 조회일 경우 조건없이, "
           + "내가 등록한 상품 목록 조회 시 memberId를, "
-          + "필터링 검색의 경우 openProduct(true), closedProduct(true), keyword 를 조건으로 상품 목록을 조회한다.")
+          + "필터링 검색의 경우 openProduct, closedProduct, keyword 를 조건으로 상품 목록을 조회한다.")
   @GetMapping
   public ResponseEntity<Slice<ProductSummaryDto>> getProductSlice(@RequestBody ProductSearchCondition productSearchCondition) {
     Slice<ProductSummaryDto> productSummaryDtoSlice = productService.getProductSlice(productSearchCondition);

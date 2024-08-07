@@ -49,7 +49,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .leftJoin(productImage).on(productImage.product.eq(product))
         .where(productImageEq(), searchConditionEq(productSearchCondition, statusRank))
         .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
-        .limit(pageable.getPageSize()+1);;
+        .limit(pageable.getPageSize()+1);
 
     List<ProductSummaryDto> productSummaryDtoList = query.fetch();
 

@@ -9,6 +9,7 @@ import com.goodsending.global.service.S3Uploader;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
+import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
@@ -124,24 +125,16 @@ public class ProductServiceImpl implements ProductService {
 
   /**
    * 경매 상품 목록 조회
-   *
-   * @param memberId 상품 등록 회원 아이디
-   * @param openProduct         구매 가능한 매물 선택 여부
-   * @param closedProduct       마감된 매물 선택 여부
-   * @param keyword             검색어
-   * @param cursorStatus 사용자에게 응답해준 마지막 데이터의 상태
-   * @param cursorStartDateTime 사용자에게 응답해준 마지막 데이터의 경매 시작 시각
-   * @param cursorId            사용자에게 응답해준 마지막 데이터의 식별자값
-   * @param size                조회할 데이터 개수
-   * @return 조회한 경매 상품 목록 반환
+   * @param productSearchCondition 경매 상품 목록 조회 조건
+   * @return 조회한 경매 상품 목록
    * @author : puclpu
    */
   @Override
   @Transactional(readOnly = true)
-  public Slice<ProductSummaryDto> getProductSlice(Long memberId, String openProduct,
-      String closedProduct, String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
+  public Slice<ProductSummaryDto> getProductSlice(ProductSearchCondition productSearchCondition) {
+    int size = productSearchCondition.getSize();
     Pageable pageable = PageRequest.of(0, size);
-    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(memberId, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId, pageable);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(productSearchCondition, pageable);
     return productSummaryDtoSlice;
   }
 
@@ -252,8 +245,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional
-  public void updateProductStatus(ProductStatus status) {
-    LocalDateTime startDateTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+  public void updateProductStatus(ProductStatus status, LocalDateTime startDateTime) {
     List<Product> products = productRepository.findAllByStatusAndStartDateTime(status, startDateTime);
     for (Product product : products) {
       switch (status) {
@@ -267,9 +259,9 @@ public class ProductServiceImpl implements ProductService {
   }
 
   /**
-   * 경매 상품 입찰자수 TOP5 조회
-   * @return TOP5 상품 목록
-   */
+  * 경매 상품 입찰자수 TOP5 조회
+  * @return TOP5 상품 목록
+  */
   @Override
   public List<ProductSummaryDto> getTop5Products() {
     List<ProductSummaryDto> productSummaryDtoList = findTop5Products();

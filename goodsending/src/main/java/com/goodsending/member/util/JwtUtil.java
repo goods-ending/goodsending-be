@@ -62,10 +62,12 @@ public class JwtUtil {
   }
 
   // Refresh 토큰 생성
-  public String createRefreshToken() {
+  public String createRefreshToken(String email) {
     Date date = new Date();
 
     return Jwts.builder()
+        .setSubject(email) // 사용자 식별자값(ID)
+        .claim("token_type", "refresh") // 토큰 종류 추가
         .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME)) // 만료 시간
         .setIssuedAt(date) // 발급일
         .signWith(key, signatureAlgorithm) // 암호화 알고리즘

@@ -9,6 +9,7 @@ import com.goodsending.global.service.S3Uploader;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
+import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
@@ -138,10 +139,10 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Slice<ProductSummaryDto> getProductSlice(Long memberId, boolean openProduct,
-      boolean closedProduct, String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
+  public Slice<ProductSummaryDto> getProductSlice(ProductSearchCondition productSearchCondition) {
+    int size = productSearchCondition.getSize();
     Pageable pageable = PageRequest.of(0, size);
-    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(memberId, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId, pageable);
+    Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(productSearchCondition, pageable);
     return productSummaryDtoSlice;
   }
 

@@ -3,6 +3,7 @@ package com.goodsending.product.repository;
 import static com.goodsending.product.entity.QProduct.product;
 import static com.goodsending.product.entity.QProductImage.productImage;
 
+import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.QProductSummaryDto;
 import com.goodsending.product.entity.Product;
@@ -29,23 +30,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
-  public Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, boolean openProduct, boolean closedProduct,
-      String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable) {
-
-    // 키워드 검색
-    BooleanBuilder keywordBuilder = new BooleanBuilder();
-    if (keyword != null && !keyword.isEmpty()) {
-      keywordBuilder.and(product.name.containsIgnoreCase(keyword));
-    }
+  public Slice<ProductSummaryDto> findByFiltersAndSort(ProductSearchCondition productSearchCondition, Pageable pageable) {
 
     NumberExpression<Integer> statusRank = statusRankCaseBuilder();
-
-    BooleanBuilder cursorBuilder = cursorBuilder(cursorStatus, cursorStartDateTime, cursorId, statusRank);
-
-    BooleanExpression openExpression = product.status.eq(ProductStatus.UPCOMING)
-                                              .or(product.status.eq(ProductStatus.ONGOING));
-
-    BooleanExpression closedExpression = product.status.eq(ProductStatus.ENDED);
 
     JPAQuery<ProductSummaryDto> query = jpaQueryFactory
         .select(new QProductSummaryDto(
@@ -59,25 +46,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
             productImage.url
         ))
         .from(product)
-        .leftJoin(productImage).on(productImage.product.eq(product));
-
-    if (memberId != null) {
-      query.where(productImageEq().and(memberIdEq(memberId)))
-          .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
-          .limit(pageable.getPageSize()+1);
-    } else if (openProduct == closedProduct) {
-      query.where(productImageEq().and(cursorBuilder).and(keywordBuilder))
-          .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
-          .limit(pageable.getPageSize()+1);
-    } else if (openProduct) {
-      query.where(productImageEq().and(cursorBuilder).and(keywordBuilder).and(openExpression))
-          .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
-          .limit(pageable.getPageSize()+1);
-    } else if (closedProduct) {
-      query.where(productImageEq().and(cursorBuilder).and(keywordBuilder).and(closedExpression))
-          .orderBy(product.startDateTime.asc(), product.id.asc())
-          .limit(pageable.getPageSize()+1);
-    }
+        .leftJoin(productImage).on(productImage.product.eq(product))
+        .where(productImageEq(), searchConditionEq(productSearchCondition, statusRank))
+        .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
+        .limit(pageable.getPageSize()+1);;
 
     List<ProductSummaryDto> productSummaryDtoList = query.fetch();
 
@@ -108,8 +80,24 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .fetch();
   }
 
-  private BooleanExpression memberIdEq(Long memberId) {
-    return product.member.memberId.eq(memberId);
+  private BooleanBuilder searchConditionEq(ProductSearchCondition condition,
+      NumberExpression<Integer> statusRank) {
+
+    BooleanBuilder cursorBuilder = cursorBuilder(condition.getCursorStatus(),
+        condition.getCursorStartDateTime(),
+        condition.getCursorId(), statusRank);
+
+    BooleanBuilder searchConditionBuilder = cursorBuilder
+                                            .and(keywordBuilder(condition.getKeyword()))
+                                            .and(memberBuilder(condition.getMemberId()));
+
+    boolean open = condition.isOpenProduct();
+    boolean closed = condition.isClosedProduct();
+    if (open != closed) {
+      searchConditionBuilder.and(openBuilder(open)).and(closedBuilder(closed));
+    }
+
+    return searchConditionBuilder;
   }
 
   private BooleanExpression productImageEq(){
@@ -133,6 +121,23 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     return statusRank;
   }
 
+  private BooleanBuilder memberBuilder(Long memberId) {
+    BooleanBuilder memberBuilder = new BooleanBuilder();
+    if (memberId != null) {
+      memberBuilder.and(product.member.memberId.eq(memberId));
+    }
+    return memberBuilder;
+  }
+
+  private BooleanBuilder keywordBuilder(String keyword) {
+    // 키워드 검색
+    BooleanBuilder keywordBuilder = new BooleanBuilder();
+    if (keyword != null && !keyword.isEmpty()) {
+      keywordBuilder.and(product.name.containsIgnoreCase(keyword));
+    }
+    return keywordBuilder;
+  }
+
   private BooleanBuilder cursorBuilder(ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, NumberExpression<Integer> statusRank) {
     BooleanBuilder cursorBuilder = new BooleanBuilder();
     if (cursorStatus != null && cursorStartDateTime != null && cursorId != null) {
@@ -143,5 +148,22 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
       );
     }
     return cursorBuilder;
+  }
+
+  private BooleanBuilder openBuilder(boolean open) {
+    BooleanBuilder openBuilder = new BooleanBuilder();
+    if (open) {
+      openBuilder.and(product.status.eq(ProductStatus.UPCOMING)
+          .or(product.status.eq(ProductStatus.ONGOING)));
+    }
+    return openBuilder;
+  }
+
+  private BooleanBuilder closedBuilder(boolean closed) {
+    BooleanBuilder closedBuilder = new BooleanBuilder();
+    if (closed) {
+      closedBuilder.and(product.status.eq(ProductStatus.ENDED));
+    }
+    return closedBuilder;
   }
 }

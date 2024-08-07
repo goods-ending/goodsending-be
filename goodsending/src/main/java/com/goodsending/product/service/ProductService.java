@@ -1,6 +1,7 @@
 package com.goodsending.product.service;
 
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
+import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
@@ -20,8 +21,7 @@ public interface ProductService {
 
   ProductInfoDto getProduct(Long productId);
 
-  Slice<ProductSummaryDto> getProductSlice(Long memberId, boolean openProduct, boolean closedProduct, String keyword,
-      ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size);
+  Slice<ProductSummaryDto> getProductSlice(ProductSearchCondition productSearchCondition);
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,
       LocalDateTime now);

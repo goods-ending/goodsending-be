@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Project : goodsending-be :: goodsending
  */
 public interface ProductMessageHistoryRepository extends
-    JpaRepository<ProductMessageHistory, Long> {
+    JpaRepository<ProductMessageHistory, Long>, ProductMessageHistoryQueryDslRepository {
 
 }

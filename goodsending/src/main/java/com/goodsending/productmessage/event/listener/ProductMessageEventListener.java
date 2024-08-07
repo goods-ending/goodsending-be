@@ -3,7 +3,7 @@ package com.goodsending.productmessage.event.listener;
 import com.goodsending.global.websocket.DestinationPrefix;
 import com.goodsending.global.websocket.dto.ProductMessageDto;
 import com.goodsending.productmessage.event.CreateProductMessageEvent;
-import com.goodsending.productmessage.service.ProductMessageService;
+import com.goodsending.productmessage.service.ProductMessageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class ProductMessageEventListener {
-  private final ProductMessageService productMessageService;
+  private final ProductMessageServiceImpl productMessageService;
   private final SimpMessagingTemplate messagingTemplate;
 
   @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)

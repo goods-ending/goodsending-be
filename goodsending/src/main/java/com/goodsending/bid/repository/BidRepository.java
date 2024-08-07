@@ -3,6 +3,7 @@ package com.goodsending.bid.repository;
 import com.goodsending.bid.entity.Bid;
 import com.goodsending.product.entity.Product;
 import io.lettuce.core.dynamic.annotation.Param;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +17,6 @@ public interface BidRepository extends JpaRepository<Bid, Long>, BidQueryDslRepo
   @Query("SELECT COUNT(b) FROM Bid b WHERE b.product = :product")
   Long countByProduct(@Param("product") Product product);
 
+  @Query("SELECT b.price FROM Bid b WHERE b.product = :product AND b.status = 'SUCCESSFUL'")
+  Optional<Integer> findPriceByStatusAndProduct(Product product);
 }

@@ -2,7 +2,6 @@ package com.goodsending.product.repository;
 
 import static com.goodsending.product.entity.QProduct.product;
 import static com.goodsending.product.entity.QProductImage.productImage;
-
 import com.goodsending.product.dto.response.MyProductSummaryDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.QMyProductSummaryDto;
@@ -197,7 +196,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
     return new SliceImpl<>(myFetch, pageable, hasNext);
   }
-
+  
   private boolean openCase(Product firstOpenProduct, Product lastOpenProduct,
       LocalDateTime cursorStartDateTime, Long cursorId) {
     if (cursorId == null && cursorStartDateTime == null) {

@@ -1,5 +1,6 @@
 package com.goodsending.product.service;
 
+import com.goodsending.bid.repository.BidRepository;
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
 import com.goodsending.deposit.type.DepositStatus;
@@ -52,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
   private final S3Uploader s3Uploader;
   private final MemberRepository memberRepository;
   private final DepositRepository depositRepository;
+  private final BidRepository bidRepository;
 
   /**
    * 상품 등록
@@ -115,11 +117,10 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional(readOnly = true)
   public ProductInfoDto getProduct(Long productId) {
-
     Product product = findProduct(productId);
     List<ProductImage> productImageList = findProductImageList(product);
-
-    return ProductInfoDto.of(product, productImageList);
+    int sellingPrice = findSellingPrice(product);
+    return ProductInfoDto.of(product, productImageList, sellingPrice);
   }
 
   /**
@@ -265,6 +266,11 @@ public class ProductServiceImpl implements ProductService {
     return myProductSummaryDtoList;
   }
 
+  private int findSellingPrice(Product product) {
+    int biddingCount = product.getBiddingCount();
+    return biddingCount == 0 ? 0 : bidRepository.findPriceByStatusAndProduct(product).orElse(0);
+  }
+  
   private List<ProductImage> findProductImageList(Product product) {
     List<ProductImage> productImageList = productImageRepository.findAllByProduct(product);
     return productImageList;

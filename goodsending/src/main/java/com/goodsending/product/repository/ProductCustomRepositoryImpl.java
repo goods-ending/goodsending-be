@@ -144,7 +144,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
       cursorBuilder.and(
           statusRank.gt(cursorStatus.getRank())
               .or(statusRank.eq(cursorStatus.getRank()).and(product.startDateTime.gt(cursorStartDateTime)))
-              .or(statusRank.gt(cursorStatus.getRank()).and(product.startDateTime.eq(cursorStartDateTime)).and(product.id.gt(cursorId)))
+              .or(statusRank.eq(cursorStatus.getRank()).and(product.startDateTime.eq(cursorStartDateTime)).and(product.id.gt(cursorId)))
       );
     }
     return cursorBuilder;

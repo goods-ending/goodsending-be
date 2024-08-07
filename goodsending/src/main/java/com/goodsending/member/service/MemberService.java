@@ -12,6 +12,8 @@ import com.goodsending.member.repository.SaveMailAndCodeRepository;
 import com.goodsending.member.repository.SaveRefreshTokenRepository;
 import com.goodsending.member.type.MemberRole;
 import com.goodsending.member.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -178,13 +180,30 @@ public class MemberService {
    * @return status 상태코드 반환합니다.
    * @author : 이아람
    */
-  public ResponseEntity<Void> tokenReissue(HttpServletRequest request, String email) {
+  public ResponseEntity<Void> tokenReissue(HttpServletRequest request) {
+    // 쿠키에서 refresh token 가져오기
     String cookieRefreshToken = getRefreshTokenFromCookie(request);
-    String redisRefreshToken = saveRefreshTokenRepository.getValueByKey(email);
-
-    if (cookieRefreshToken == null || !cookieRefreshToken.equals(redisRefreshToken)) {
+    if (cookieRefreshToken == null) {
       throw CustomException.from(ExceptionCode.INVALID_TOKEN);
     }
+    // 쿠키에서 가져온 refresh token에서 email 정보 추출
+    String email;
+    try {
+      Claims claims = jwtUtil.getUserInfoFromToken(cookieRefreshToken);
+      email = claims.getSubject();
+    } catch (JwtException e) {
+      throw CustomException.from(ExceptionCode.INVALID_TOKEN);
+    }
+    
+    // redis에 저장된 refresh token 가져오기
+    String redisRefreshToken = saveRefreshTokenRepository.getValueByKey(email);
+    if (redisRefreshToken == null) {
+      throw CustomException.from(ExceptionCode.STORED_TOKEN_HAS_EXPIRED);
+    }
+    if (!cookieRefreshToken.equals(redisRefreshToken)) {
+      throw CustomException.from(ExceptionCode.TOKEN_MISMATCH);
+    }
+
     Optional<Member> memberOptional = memberRepository.findByEmail(email);
     if (memberOptional.isEmpty()) {
       throw CustomException.from(ExceptionCode.MEMBER_NOT_FOUND);

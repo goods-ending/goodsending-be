@@ -29,12 +29,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
-  public Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, String openProduct, String closedProduct,
+  public Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, boolean openProduct, boolean closedProduct,
       String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable) {
-
-    boolean open = openProduct != null && openProduct.equals("true");
-
-    boolean closed = closedProduct != null && closedProduct.equals("true");
 
     // 키워드 검색
     BooleanBuilder keywordBuilder = new BooleanBuilder();
@@ -69,15 +65,15 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
       query.where(productImageEq().and(memberIdEq(memberId)))
           .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
           .limit(pageable.getPageSize()+1);
-    } else if (open == closed) {
+    } else if (openProduct == closedProduct) {
       query.where(productImageEq().and(cursorBuilder).and(keywordBuilder))
           .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
           .limit(pageable.getPageSize()+1);
-    } else if (open) {
+    } else if (openProduct) {
       query.where(productImageEq().and(cursorBuilder).and(keywordBuilder).and(openExpression))
           .orderBy(statusRank.asc(), product.startDateTime.asc(), product.id.asc())
           .limit(pageable.getPageSize()+1);
-    } else if (closed) {
+    } else if (closedProduct) {
       query.where(productImageEq().and(cursorBuilder).and(keywordBuilder).and(closedExpression))
           .orderBy(product.startDateTime.asc(), product.id.asc())
           .limit(pageable.getPageSize()+1);

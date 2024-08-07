@@ -95,8 +95,8 @@ public class ProductController {
   @GetMapping
   public ResponseEntity<Slice<ProductSummaryDto>> getProductSlice(
                                     @RequestParam(required = false) Long memberId,
-                                    @RequestParam(required = false) String openProduct,
-                                    @RequestParam(required = false) String closedProduct,
+                                    @RequestParam(required = false) boolean openProduct,
+                                    @RequestParam(required = false) boolean closedProduct,
                                     @RequestParam(required = false) String keyword,
                                     @RequestParam(required = false) ProductStatus cursorStatus,
                                     @RequestParam(required = false) LocalDateTime cursorStartDateTime,

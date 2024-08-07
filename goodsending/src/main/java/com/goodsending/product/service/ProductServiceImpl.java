@@ -138,8 +138,8 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Slice<ProductSummaryDto> getProductSlice(Long memberId, String openProduct,
-      String closedProduct, String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
+  public Slice<ProductSummaryDto> getProductSlice(Long memberId, boolean openProduct,
+      boolean closedProduct, String keyword, ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
     Pageable pageable = PageRequest.of(0, size);
     Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(memberId, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId, pageable);
     return productSummaryDtoSlice;

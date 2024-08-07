@@ -12,7 +12,7 @@ public interface ProductCustomRepository {
 
   List<Product> findTop5ByStartDateTimeAfterOrderByLikeCountDesc(LocalDateTime currentDateTime);
 
-  Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, String openProduct, String closedProduct, String keyword,
+  Slice<ProductSummaryDto> findByFiltersAndSort(Long memberId, boolean openProduct, boolean closedProduct, String keyword,
       ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, Pageable pageable);
 
   List<Product> findAllByStatusAndStartDateTime(ProductStatus status, LocalDateTime startDateTime);

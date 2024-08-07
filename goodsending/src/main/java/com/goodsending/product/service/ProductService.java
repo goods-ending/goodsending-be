@@ -20,7 +20,7 @@ public interface ProductService {
 
   ProductInfoDto getProduct(Long productId);
 
-  Slice<ProductSummaryDto> getProductSlice(Long memberId, String openProduct, String closedProduct, String keyword,
+  Slice<ProductSummaryDto> getProductSlice(Long memberId, boolean openProduct, boolean closedProduct, String keyword,
       ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size);
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,

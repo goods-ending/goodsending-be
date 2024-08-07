@@ -121,7 +121,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
             productImage.url))
         .from(product)
         .leftJoin(productImage).on(productImage.product.eq(product))
-        .where(productImageEq())
+        .where(productImageEq().and(product.status.eq(ProductStatus.ONGOING)))
         .orderBy(product.biddingCount.desc())
         .limit(5)
         .fetch();

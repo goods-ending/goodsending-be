@@ -53,6 +53,7 @@ public class ProductInfoDto {
         .biddingCount(product.getBiddingCount())
         .bidderCount(product.getBidderCount())
         .likeCount(product.getLikeCount())
+        .status(product.getStatus())
         .productImages(productImages)
         .build();
   }

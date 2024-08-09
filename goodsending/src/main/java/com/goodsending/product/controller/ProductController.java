@@ -6,6 +6,7 @@ import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.service.ProductService;
@@ -132,8 +133,8 @@ public class ProductController {
    */
   @Operation(summary = "경매 상품 입찰자 수 TOP5 조회", description = "입찰자 수를 기준으로 상위 top5 상품을 조회합니다.")
   @GetMapping("/top5")
-  public ResponseEntity<List<ProductSummaryDto>> getTop5Products() {
-    List<ProductSummaryDto> productSummaryDtoList = productService.getTop5Products();
-    return ResponseEntity.status(HttpStatus.OK).body(productSummaryDtoList);
+  public ResponseEntity<List<ProductRankingDto>> getTop5Products() {
+    List<ProductRankingDto> productRankingDtoList = productService.getTop5Products();
+    return ResponseEntity.status(HttpStatus.OK).body(productRankingDtoList);
   }
 }

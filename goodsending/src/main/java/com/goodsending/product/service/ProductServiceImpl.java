@@ -1,5 +1,6 @@
 package com.goodsending.product.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
 import com.goodsending.deposit.type.DepositStatus;
@@ -14,19 +15,23 @@ import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
+import com.goodsending.product.repository.ProductBiddingCountRankingRepository;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.product.type.ProductStatus;
 import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +58,8 @@ public class ProductServiceImpl implements ProductService {
   private final S3Uploader s3Uploader;
   private final MemberRepository memberRepository;
   private final DepositRepository depositRepository;
+  private final ProductBiddingCountRankingRepository productBiddingCountRankingRepository;
+  private final ObjectMapper jacksonObjectMapper;
 
   /**
    * 상품 등록
@@ -259,13 +266,21 @@ public class ProductServiceImpl implements ProductService {
   }
 
   /**
-  * 경매 상품 입찰자수 TOP5 조회
-  * @return TOP5 상품 목록
-  */
+   * 경매 상품 입찰자수 TOP5 조회
+   * @return TOP5 상품 목록
+   * @author : puclpu
+   */
   @Override
-  public List<ProductSummaryDto> getTop5Products() {
-    List<ProductSummaryDto> productSummaryDtoList = findTop5Products();
-    return productSummaryDtoList;
+  public List<ProductRankingDto> getTop5Products() {
+    Set<TypedTuple<ProductRankingDto>> typedTuples = productBiddingCountRankingRepository.getReverseZSetTupleByKey(
+        "RANKING", 0, 4);
+
+    List<ProductRankingDto> top5ProductsList = new ArrayList<>();
+    for (TypedTuple<ProductRankingDto> tuple : typedTuples) {
+      ProductRankingDto productRankingDto = jacksonObjectMapper.convertValue(tuple.getValue(), ProductRankingDto.class);
+      top5ProductsList.add(productRankingDto);
+    }
+    return top5ProductsList;
   }
 
   private List<ProductSummaryDto> findTop5Products() {

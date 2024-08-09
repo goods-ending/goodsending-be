@@ -1,6 +1,7 @@
 package com.goodsending.product.repository;
 
 import com.goodsending.product.dto.request.ProductSearchCondition;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.type.ProductStatus;
@@ -18,4 +19,6 @@ public interface ProductCustomRepository {
   List<Product> findAllByStatusAndStartDateTime(ProductStatus status, LocalDateTime startDateTime);
 
   List<ProductSummaryDto> findTop5ByBiddingCount();
+
+  ProductRankingDto findRankingDtoById(Long productId);
 }

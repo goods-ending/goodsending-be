@@ -62,6 +62,9 @@ public class Product extends BaseEntity {
   @Column(name = "bidding_count", nullable = false)
   private int biddingCount;
 
+  @Column(name = "bidder_count", nullable = false)
+  private int bidderCount;
+
   @Column(name = "like_count", nullable = true)
   private Long likeCount;
 
@@ -141,5 +144,13 @@ public class Product extends BaseEntity {
       return;
     }
     this.biddingCount = (int)biddingCount.longValue();
+  }
+
+  public void setBidderCount(Long bidderCount) {
+    if(bidderCount == null) {
+      this.bidderCount = 0;
+      return;
+    }
+    this.bidderCount = (int)bidderCount.longValue();
   }
 }

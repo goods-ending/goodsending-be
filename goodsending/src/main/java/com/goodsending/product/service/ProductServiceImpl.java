@@ -24,6 +24,7 @@ import com.goodsending.product.repository.ProductBiddingCountRankingRepository;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.product.type.ProductStatus;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -126,8 +127,9 @@ public class ProductServiceImpl implements ProductService {
 
     Product product = findProduct(productId);
     List<ProductImage> productImageList = findProductImageList(product);
+    Duration remainingExpiration = productBidPriceMaxRepository.getRemainingExpiration(productId);
 
-    return ProductInfoDto.of(product, productImageList);
+    return ProductInfoDto.of(product, productImageList, remainingExpiration);
   }
 
   /**

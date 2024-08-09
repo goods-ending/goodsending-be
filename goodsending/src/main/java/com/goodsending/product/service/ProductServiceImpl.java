@@ -1,6 +1,7 @@
 package com.goodsending.product.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goodsending.bid.repository.ProductBidPriceMaxRepository;
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
 import com.goodsending.deposit.type.DepositStatus;
@@ -59,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
   private final S3Uploader s3Uploader;
   private final MemberRepository memberRepository;
   private final DepositRepository depositRepository;
+  private final ProductBidPriceMaxRepository productBidPriceMaxRepository;
   private final ProductBiddingCountRankingRepository productBiddingCountRankingRepository;
   private final ObjectMapper jacksonObjectMapper;
 

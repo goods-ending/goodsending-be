@@ -52,7 +52,7 @@ public class BidFacadeImpl implements BidFacade {
 
         // 입찰자 수: 변동 사항을 알려준다.
         messagingTemplate.convertAndSend(
-            DestinationPrefix.BIDDER_COUNT + bidResponse.productId(),
+            DestinationPrefix.TIME_REMAINING + bidResponse.productId(),
             bidResponse.biddingCount());
 
         // 입찰자 수 랭킹에 변동 사항 적용

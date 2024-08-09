@@ -65,6 +65,12 @@ public class ProductMessageServiceImpl implements ProductMessageService{
     return ProductMessageDto.of(history);
   }
 
+  /**
+   * 커서 기반 페이징으로 상품별 메시지 내역 리스트를 조회합니다.
+   * @param request 커서기반 페이징을 위한 request
+   * @return 커서 기반으로 페이징한 리스트
+   * @author jieun(je-pa)
+   */
   @Override
   public Slice<ProductMessageResponse> read(ProductMessageListRequest request) {
     return productMessageHistoryRepository.findByProductId(request);

@@ -13,6 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * @Date : 2024. 08. 09.
+ * @Team : GoodsEnding
+ * @author : jieun(je-pa)
+ * @Project : goodsending-be :: goodsending
+ */
 @Slf4j
 @Service("sendCommandHandler")
 @RequiredArgsConstructor
@@ -20,6 +26,13 @@ public class SendCommandHandler implements StompCommandHandler{
   private final JwtUtil jwtUtil;
   private final UserDetailsService memberDetailsService;
 
+  /**
+   * SEND Command에 대한 핸들러 입니다.
+   *
+   * 서비스의 회원에게만 허용합니다.
+   * @param accessor STOMP Command, Destination, Session ID, User, Sub ID, Native Headers, Heartbeat
+   * @author jieun(je-pa)
+   */
   @Override
   public void handle(StompHeaderAccessor accessor) {
     String accessToken = resolveAccessTokenFromStompHeaderAccessor(accessor);

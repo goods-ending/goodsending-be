@@ -7,6 +7,12 @@ import com.goodsending.productmessage.dto.response.ProductMessageResponse;
 import com.goodsending.productmessage.event.CreateProductMessageEvent;
 import org.springframework.data.domain.Slice;
 
+/**
+ * @Date : 2024. 08. 07.
+ * @Team : GoodsEnding
+ * @author : jieun(je-pa)
+ * @Project : goodsending-be :: goodsending
+ */
 public interface ProductMessageService {
 
   ProductMessageDto create(CreateProductMessageEvent event);

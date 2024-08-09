@@ -26,6 +26,9 @@ public class ProductScheduler {
   public void updateOnGoingProduct() {
     log.info("경매 종료 상태 전환");
     productService.updateProductStatus(ProductStatus.ONGOING, null);
+
+    // redis 인기 순위 삭제
+    productService.deleteTop5Products();
   }
 
 }

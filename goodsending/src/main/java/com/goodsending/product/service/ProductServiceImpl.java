@@ -283,6 +283,10 @@ public class ProductServiceImpl implements ProductService {
     return top5ProductsList;
   }
 
+  /**
+   * 경매 상품 입찰자수 TOP5 초기화
+   * @author : puclpu
+   */
   @Override
   public void deleteTop5Products() {
     productBiddingCountRankingRepository.deleteZSetKey("RANKING");

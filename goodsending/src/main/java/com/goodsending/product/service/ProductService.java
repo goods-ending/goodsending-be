@@ -32,4 +32,6 @@ public interface ProductService {
   void updateProductStatus(ProductStatus status, LocalDateTime startDateTime);
 
   List<ProductRankingDto> getTop5Products();
+
+  void deleteTop5Products();
 }

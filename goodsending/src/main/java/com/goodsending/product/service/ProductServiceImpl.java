@@ -283,8 +283,9 @@ public class ProductServiceImpl implements ProductService {
     return top5ProductsList;
   }
 
-  private List<ProductSummaryDto> findTop5Products() {
-    return productRepository.findTop5ByBiddingCount();
+  @Override
+  public void deleteTop5Products() {
+    productBiddingCountRankingRepository.deleteZSetKey("RANKING");
   }
 
   private List<ProductImage> findProductImageList(Product product) {

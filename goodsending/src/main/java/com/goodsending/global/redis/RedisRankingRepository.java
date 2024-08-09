@@ -37,4 +37,8 @@ public abstract class RedisRankingRepository<K, V> {
     redisTemplate.opsForZSet().incrementScore(PREFIX + key, value, delta);
   }
 
+  public void deleteZSetKey(K key) {
+    redisTemplate.delete(PREFIX + key);
+  }
+
 }

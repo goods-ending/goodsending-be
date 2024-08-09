@@ -2,7 +2,6 @@ package com.goodsending.global.websocket.handler;
 
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
-import com.goodsending.global.security.MemberDetailsServiceImpl;
 import com.goodsending.member.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,19 +9,16 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-/**
- * @Date : 2024. 07. 27.
- * @Team : GoodsEnding
- * @author : jieun
- * @Project : goodsending-be :: goodsending
- */
 @Slf4j
+@Service("sendCommandHandler")
 @RequiredArgsConstructor
-public class ConnectCommandHandler implements StompCommandHandler{
+public class SendCommandHandler implements StompCommandHandler{
   private final JwtUtil jwtUtil;
-  private final MemberDetailsServiceImpl memberDetailsService;
+  private final UserDetailsService memberDetailsService;
 
   @Override
   public void handle(StompHeaderAccessor accessor) {

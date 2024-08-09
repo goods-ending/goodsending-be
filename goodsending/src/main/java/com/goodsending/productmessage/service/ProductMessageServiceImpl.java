@@ -7,8 +7,9 @@ import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.repository.ProductRepository;
-import com.goodsending.productmessage.dto.ProductMessageListRequest;
-import com.goodsending.productmessage.dto.ProductMessageResponse;
+import com.goodsending.productmessage.dto.request.ProductMessageListRequest;
+import com.goodsending.productmessage.dto.request.ProductMessageRequest;
+import com.goodsending.productmessage.dto.response.ProductMessageResponse;
 import com.goodsending.productmessage.entity.ProductMessageHistory;
 import com.goodsending.productmessage.event.CreateProductMessageEvent;
 import com.goodsending.productmessage.repository.ProductMessageHistoryRepository;
@@ -29,6 +30,12 @@ public class ProductMessageServiceImpl implements ProductMessageService{
   private final ProductRepository productRepository;
   private final MemberRepository memberRepository;
 
+  /**
+   * 입찰, 낙찰 시 발행된 이벤트로 메시지 내역이 저장됩니다.
+   * @param event
+   * @return
+   */
+  @Override
   public ProductMessageDto create(CreateProductMessageEvent event) {
     Member member = findMemberById(event.memberId());
     Product product = findProduct(event.productId());
@@ -40,9 +47,32 @@ public class ProductMessageServiceImpl implements ProductMessageService{
     return ProductMessageDto.of(history, event.price());
   }
 
+
+  /**
+   * 채팅으로 메시지 내역이 저장됩니다.
+   * @param request 채팅 내용, memberId, userId
+   * @return
+   */
+  @Override
+  public ProductMessageDto create(ProductMessageRequest request) {
+    Member member = findMemberByEmail(request.memberEmail());
+    Product product = findProduct(request.productId());
+
+    ProductMessageHistory history = productMessageHistoryRepository.save(
+        ProductMessageHistory.of(
+            member, product, request.type(), request.message()));
+
+    return ProductMessageDto.of(history);
+  }
+
   @Override
   public Slice<ProductMessageResponse> read(ProductMessageListRequest request) {
     return productMessageHistoryRepository.findByProductId(request);
+  }
+
+  private Member findMemberByEmail(String email) {
+    return memberRepository.findByEmail(email)
+        .orElseThrow(() -> CustomException.from(ExceptionCode.USER_NOT_FOUND));
   }
 
   private Member findMemberById(Long memberId) {

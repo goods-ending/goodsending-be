@@ -21,7 +21,7 @@ import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
-import com.goodsending.product.repository.ProductBiddingCountRankingRepository;
+import com.goodsending.product.repository.ProductBidderCountRankingRepository;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.product.type.ProductStatus;
@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
   private final MemberRepository memberRepository;
   private final DepositRepository depositRepository;
   private final ProductBidPriceMaxRepository productBidPriceMaxRepository;
-  private final ProductBiddingCountRankingRepository productBiddingCountRankingRepository;
+  private final ProductBidderCountRankingRepository productBidderCountRankingRepository;
   private final ObjectMapper jacksonObjectMapper;
 
   /**
@@ -276,7 +276,7 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   public List<ProductRankingDto> getTop5Products() {
-    Set<TypedTuple<ProductRankingDto>> typedTuples = productBiddingCountRankingRepository.getReverseZSetTupleByKey(
+    Set<TypedTuple<ProductRankingDto>> typedTuples = productBidderCountRankingRepository.getReverseZSetTupleByKey(
         "RANKING", 0, 4);
 
     List<ProductRankingDto> top5ProductsList = new ArrayList<>();
@@ -293,7 +293,7 @@ public class ProductServiceImpl implements ProductService {
    */
   @Override
   public void deleteTop5Products() {
-    productBiddingCountRankingRepository.deleteZSetKey("RANKING");
+    productBidderCountRankingRepository.deleteZSetKey("RANKING");
   }
 
   private List<ProductImage> findProductImageList(Product product) {

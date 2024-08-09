@@ -6,7 +6,7 @@ import com.goodsending.bid.dto.response.BidWithDurationResponse;
 import com.goodsending.bid.repository.ProductBidPriceMaxRepository;
 import com.goodsending.global.websocket.DestinationPrefix;
 import com.goodsending.product.dto.response.ProductRankingDto;
-import com.goodsending.product.repository.ProductBiddingCountRankingRepository;
+import com.goodsending.product.repository.ProductBidderCountRankingRepository;
 import com.goodsending.product.repository.ProductRepository;
 import jakarta.persistence.OptimisticLockException;
 import java.time.Duration;
@@ -30,7 +30,7 @@ public class BidFacadeImpl implements BidFacade {
   private final BidService bidService;
   private final ProductBidPriceMaxRepository productBidPriceMaxRepository;
   private final SimpMessagingTemplate messagingTemplate;
-  private final ProductBiddingCountRankingRepository productBiddingCountRankingRepository;
+  private final ProductBidderCountRankingRepository productBidderCountRankingRepository;
   private final ProductRepository productRepository;
 
   @Override
@@ -50,13 +50,8 @@ public class BidFacadeImpl implements BidFacade {
             DestinationPrefix.TIME_REMAINING + bidResponse.productId(),
             remainingExpiration);
 
-        // 입찰자 수: 변동 사항을 알려준다.
-        messagingTemplate.convertAndSend(
-            DestinationPrefix.TIME_REMAINING + bidResponse.productId(),
-            bidResponse.biddingCount());
-
         // 입찰자 수 랭킹에 변동 사항 적용
-        updateBiddingCountRanking(bidResponse.productId());
+        updateBidderCountRanking(bidResponse);
 
         return BidWithDurationResponse.of(bidResponse, remainingExpiration);
       } catch (OptimisticLockException | OptimisticLockingFailureException e){
@@ -66,18 +61,10 @@ public class BidFacadeImpl implements BidFacade {
     }
   }
 
-  private void updateBiddingCountRanking(Long productId) {
-    ProductRankingDto rankingDto = productRepository.findRankingDtoById(productId);
+  private void updateBidderCountRanking(BidResponse bidResponse) {
+    ProductRankingDto rankingDto = productRepository.findRankingDtoById(bidResponse.productId());
 
     String key = "RANKING";
-    boolean isExist = productBiddingCountRankingRepository.isExistInRedis(key, rankingDto);
-    if (isExist) {
-      // 입찰 경험이 있는 상품이라면 score increase
-      productBiddingCountRankingRepository.increaseScore(key, rankingDto, 1);
-    } else {
-      // 입찰 경험이 없다면 redis 에 새로 save
-      productBiddingCountRankingRepository.setZSetValue(key, rankingDto, 1);
-    }
-
+    productBidderCountRankingRepository.setZSetValue(key, rankingDto, bidResponse.bidderCount());
   }
 }

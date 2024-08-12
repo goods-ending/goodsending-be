@@ -1,5 +1,6 @@
 package com.goodsending.product.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
@@ -24,7 +25,7 @@ public interface ProductService {
   Slice<ProductSummaryDto> getProductSlice(ProductSearchCondition productSearchCondition);
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,
-      LocalDateTime now);
+      LocalDateTime now) throws JsonProcessingException;
 
   void deleteProduct(Long productId, Long memberId, LocalDateTime now);
 

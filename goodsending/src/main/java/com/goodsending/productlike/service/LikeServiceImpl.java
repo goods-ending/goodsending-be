@@ -18,6 +18,7 @@ import com.goodsending.productlike.dto.ProductRankingDto;
 import com.goodsending.productlike.entity.ProductLikeWithScore;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.repository.LikeRepository;
+import com.goodsending.productlike.type.LikeStatus;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -70,21 +71,37 @@ public class LikeServiceImpl implements LikeService {
     Like like = null;
     boolean existingLike = likeRepository.existsByMemberAndProduct(member, product);
 
+    // 버튼이 true이고 찜이 존재하지 않으면 찜하기 성공, CREATED, SUCCESS 발생
     if (likeButton) {
       if (!existingLike) {
         like = new Like(product, member);
         likeRepository.save(like);
         countLike(product);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.CREATED,
+            LikeStatus.CREATE_SUCCESS);
+        return ResponseEntity.ok(likeResponseDto);
+      // 버튼이 true이고 찜이 이미 존재하면 찜하기 실패, BAD_REQUEST, ALEADYLIKE 발생
+      } else {
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
+            LikeStatus.ALREADY_LIKE);
+        return ResponseEntity.ok(likeResponseDto);
       }
     } else {
-      like = likeRepository.findLikeByMemberAndProduct(member,
-          product).orElseThrow(() -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
-      likeRepository.delete(like);
-      countLike(product);
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+      boolean exist = likeRepository.existsByMemberAndProduct(member, product);
+      // 찜이 존재하지 않으면 삭제 실패, BAD_REQUEST, FAIL 발생
+      if (!exist) {
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
+            LikeStatus.DELETED_LIKE);
+        return ResponseEntity.ok(likeResponseDto);
+      // 찜이 존재하면 삭제 성공, NO_CONTENT, SUCCESS 발생
+      } else {
+        likeRepository.delete(like);
+        countLike(product);
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.NO_CONTENT,
+            LikeStatus.REMOVE_SUCCESS);
+        return ResponseEntity.ok(likeResponseDto);
+      }
     }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
   }
 
   private void countLike(Product product) {

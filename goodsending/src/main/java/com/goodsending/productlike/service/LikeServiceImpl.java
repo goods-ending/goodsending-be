@@ -13,8 +13,8 @@ import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
-import com.goodsending.productlike.entity.Like;
 import com.goodsending.productlike.dto.ProductRankingDto;
+import com.goodsending.productlike.entity.Like;
 import com.goodsending.productlike.entity.ProductLikeWithScore;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.repository.LikeRepository;
@@ -87,14 +87,14 @@ public class LikeServiceImpl implements LikeService {
         return ResponseEntity.ok(likeResponseDto);
       }
     } else {
-      boolean exist = likeRepository.existsByMemberAndProduct(member, product);
       // 찜이 존재하지 않으면 삭제 실패, BAD_REQUEST, FAIL 발생
-      if (!exist) {
+      if (!existingLike) {
         LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
             LikeStatus.DELETED_LIKE);
         return ResponseEntity.ok(likeResponseDto);
       // 찜이 존재하면 삭제 성공, NO_CONTENT, SUCCESS 발생
       } else {
+        like = findLikeByMemberAndProduct(member, product);
         likeRepository.delete(like);
         countLike(product);
         LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.NO_CONTENT,
@@ -102,6 +102,11 @@ public class LikeServiceImpl implements LikeService {
         return ResponseEntity.ok(likeResponseDto);
       }
     }
+  }
+
+  private Like findLikeByMemberAndProduct(Member member, Product product) {
+    return likeRepository.findLikeByMemberAndProduct(member,
+        product).orElseThrow(() -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
   }
 
   private void countLike(Product product) {
@@ -148,7 +153,6 @@ public class LikeServiceImpl implements LikeService {
     Page<Product> productList = productRepository.findLikeProductByMember(member, pageable);
     return productList.map(ProductlikeCountDto::from);
   }
-
 
   /**
    * 찜하기 수 Top 5 상품 조회 기능(queryDSL 사용)
@@ -264,11 +268,16 @@ public class LikeServiceImpl implements LikeService {
   }
 
   @Override
-  public void deleteLikeFromZSet(ProductRankingDto rankingDto) throws JsonProcessingException {
+  public void deleteLikeFromZSet(ProductRankingDto rankingDto){
     {
       ZSetOperations<String, ProductRankingDto> zSetOperations = redisTemplate.opsForZSet();
       // DTO를 직렬화하여 zset의 멤버로 사용
-      String serializedMember = objectMapper.writeValueAsString(rankingDto);
+      String serializedMember = null;
+      try {
+        serializedMember = objectMapper.writeValueAsString(rankingDto);
+      } catch (JsonProcessingException e) {
+        throw CustomException.from(ExceptionCode.LIKE_NOT_FOUND);
+      }
       zSetOperations.remove("ranking", serializedMember);
     }
   }

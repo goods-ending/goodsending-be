@@ -1,6 +1,5 @@
 package com.goodsending.productlike.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
@@ -28,5 +27,5 @@ public interface LikeService{
 
   void deleteTop5Likes();
 
-  void deleteLikeFromZSet(ProductRankingDto rankingDto) throws JsonProcessingException;
+  void deleteLikeFromZSet(ProductRankingDto rankingDto);
 }

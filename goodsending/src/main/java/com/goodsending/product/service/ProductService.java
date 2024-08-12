@@ -1,6 +1,5 @@
 package com.goodsending.product.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
@@ -10,10 +9,9 @@ import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.type.ProductStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface ProductService {
 
@@ -25,7 +23,7 @@ public interface ProductService {
   Slice<ProductSummaryDto> getProductSlice(ProductSearchCondition productSearchCondition);
 
   ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, List<MultipartFile> productImages, Long memberId,
-      LocalDateTime now) throws JsonProcessingException;
+      LocalDateTime now);
 
   void deleteProduct(Long productId, Long memberId, LocalDateTime now);
 

@@ -1,6 +1,5 @@
 package com.goodsending.product.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodsending.bid.repository.ProductBidPriceMaxRepository;
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
@@ -28,6 +27,8 @@ import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.service.LikeService;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -36,9 +37,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -160,8 +158,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional
   public ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto,
-      List<MultipartFile> productImages, Long memberId, LocalDateTime now)
-      throws JsonProcessingException {
+      List<MultipartFile> productImages, Long memberId, LocalDateTime now)  {
 
     // 등록된 상품인지 판별
     Product product = findProduct(productId);

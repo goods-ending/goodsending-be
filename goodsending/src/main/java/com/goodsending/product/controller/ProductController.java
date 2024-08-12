@@ -1,6 +1,5 @@
 package com.goodsending.product.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductSearchCondition;
@@ -13,15 +12,22 @@ import com.goodsending.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  *
@@ -105,7 +111,7 @@ public class ProductController {
                                     @RequestPart("requestDto") @Valid ProductUpdateRequestDto requestDto,
                                     @RequestPart("productImages") List<MultipartFile> productImages,
                                     @MemberId(required = true) Long memberId)
-      throws JsonProcessingException {
+  {
     LocalDateTime now = LocalDateTime.now();
     ProductUpdateResponseDto responseDto = productService.updateProduct(productId, requestDto, productImages, memberId, now);
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);

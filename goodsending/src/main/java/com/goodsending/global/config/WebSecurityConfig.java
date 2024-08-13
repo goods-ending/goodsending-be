@@ -42,14 +42,8 @@ public class WebSecurityConfig {
   private final SaveRefreshTokenRepository saveRefreshTokenRepository;
   private final BlackListAccessTokenRepository blackListAccessTokenRepository;
 
-  @Value("${front.list.1}")
-  private String frontUrl1;
-
-  @Value("${front.list.2}")
-  private String frontUrl2;
-
-  @Value("${front.list.3}")
-  private String frontUrl3;
+  @Value("${front.list}")
+  private List<String> frontUrl;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -129,7 +123,7 @@ public class WebSecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
-    configuration.setAllowedOrigins(Arrays.asList(frontUrl1, frontUrl2, frontUrl3));
+    configuration.setAllowedOrigins(frontUrl);
     configuration.setAllowedHeaders(Collections.singletonList("*"));
     configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setMaxAge(600L); // 10분

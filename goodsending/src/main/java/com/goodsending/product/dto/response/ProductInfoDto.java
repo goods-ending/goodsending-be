@@ -25,7 +25,7 @@ public class ProductInfoDto {
   private LocalDateTime maxEndDateTime;
   private LocalDateTime dynamicEndDateTime;
   private Duration remainingExpiration;
-  private int bidMaxPrice;
+  private Integer bidMaxPrice;
   private int finalPrice;
   private int biddingCount;
   private int bidderCount;
@@ -34,7 +34,7 @@ public class ProductInfoDto {
   private List<ProductImageInfoDto> productImages;
 
   public static ProductInfoDto of(Product product, List<ProductImage> productImageList,
-      Duration remainingExpiration, int bidMaxPrice) {
+      Duration remainingExpiration, Integer bidMaxPrice) {
 
     List<ProductImageInfoDto> productImages = new ArrayList<>();
     for (ProductImage productImage : productImageList) {

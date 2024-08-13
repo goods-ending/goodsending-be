@@ -3,6 +3,8 @@ package com.goodsending.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goodsending.product.dto.response.ProductRankingDto;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.goodsending.productlike.dto.ProductRankingDto;
 import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -70,6 +72,21 @@ public class RedisConfig {
     return createRedisTemplate(redisConnectionFactory, Integer.class);
   }
 
+  @Bean
+  public RedisTemplate<String, ProductRankingDto> redisTemplate(RedisConnectionFactory connectionFactory) {
+    RedisTemplate<String, ProductRankingDto> template = createRedisTemplate(connectionFactory, ProductRankingDto.class);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule()); // Register Java Time module for LocalDateTime
+
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+    template.setHashKeySerializer(new StringRedisSerializer());
+    template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+
+    return template;
+  }
+
   private <T> RedisTemplate<String, T> createRedisTemplate(
       RedisConnectionFactory redisConnectionFactory, Class<T> type) {
     return createRedisTemplate(redisConnectionFactory, type, new ObjectMapper());
@@ -83,24 +100,4 @@ public class RedisConfig {
     redisTemplate.setConnectionFactory(redisConnectionFactory);
     return redisTemplate;
   }
-
-  @Bean
-  public RedisTemplate<String, ProductRankingDto> redisTemplate(RedisConnectionFactory connectionFactory) {
-    RedisTemplate<String, ProductRankingDto> template = new RedisTemplate<>();
-    template.setConnectionFactory(connectionFactory);
-
-    // Configure ObjectMapper for JSON serialization
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule()); // Register Java Time module for LocalDateTime
-
-    // Configure serializers
-    GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setValueSerializer(jsonSerializer);
-    template.setHashKeySerializer(new StringRedisSerializer());
-    template.setHashValueSerializer(jsonSerializer);
-
-    return template;
-  }
-
 }

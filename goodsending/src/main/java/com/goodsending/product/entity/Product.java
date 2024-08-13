@@ -59,6 +59,9 @@ public class Product extends BaseEntity {
   @Column(name = "dynamic_end_date_time")
   private LocalDateTime dynamicEndDateTime;
 
+  @Column(name = "final_price", nullable = false)
+  private int finalPrice;
+
   @Column(name = "bidding_count", nullable = false)
   private int biddingCount;
 

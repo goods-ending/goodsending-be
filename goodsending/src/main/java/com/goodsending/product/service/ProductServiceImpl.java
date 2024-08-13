@@ -25,6 +25,9 @@ import com.goodsending.product.repository.ProductBidderCountRankingRepository;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.product.type.ProductStatus;
+import com.goodsending.productlike.dto.ProductRankingDto;
+import com.goodsending.productlike.repository.LikeCountRankingRepository;
+import com.goodsending.productlike.service.LikeService;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -63,6 +66,8 @@ public class ProductServiceImpl implements ProductService {
   private final ProductBidPriceMaxRepository productBidPriceMaxRepository;
   private final ProductBidderCountRankingRepository productBidderCountRankingRepository;
   private final ObjectMapper jacksonObjectMapper;
+  private final LikeService likeService;
+  private final LikeCountRankingRepository likeCountRankingRepository;
 
   /**
    * 상품 등록
@@ -136,14 +141,23 @@ public class ProductServiceImpl implements ProductService {
 
   /**
    * 경매 상품 목록 조회
-   * @param productSearchCondition 경매 상품 목록 조회 조건
+   * @param memberId 상품 등록 회원 아이디
+   * @param openProduct 구매 가능한 매물 선택 여부
+   * @param closedProduct 마감 된 매물 선택 여부
+   * @param keyword 검색어
+   * @param cursorStatus 사용자에게 응답해준 마지막 데이터의 상태
+   * @param cursorStartDateTime 사용자에게 응답해준 마지막 데이터의 경매 시작 시각
+   * @param cursorId 사용자에게 응답해준 마지막 데이터의 식별자값
+   * @param size 조회할 데이터 개수
    * @return 조회한 경매 상품 목록
    * @author : puclpu
    */
   @Override
   @Transactional(readOnly = true)
-  public Slice<ProductSummaryDto> getProductSlice(ProductSearchCondition productSearchCondition) {
-    int size = productSearchCondition.getSize();
+  public Slice<ProductSummaryDto> getProductSlice(
+          Long memberId, boolean openProduct, boolean closedProduct, String keyword,
+          ProductStatus cursorStatus, LocalDateTime cursorStartDateTime, Long cursorId, int size) {
+    ProductSearchCondition productSearchCondition = ProductSearchCondition.of(memberId, openProduct, closedProduct, keyword, cursorStatus, cursorStartDateTime, cursorId);
     Pageable pageable = PageRequest.of(0, size);
     Slice<ProductSummaryDto> productSummaryDtoSlice = productRepository.findByFiltersAndSort(productSearchCondition, pageable);
     return productSummaryDtoSlice;
@@ -202,10 +216,18 @@ public class ProductServiceImpl implements ProductService {
         savedProductImages.add(productImage);
       }
     }
+
+    ProductRankingDto dto = productRepository.findRankingDtoById(productId);
+    likeService.deleteLikeFromZSet(dto);
+
     productImageRepository.saveAll(savedProductImages);
 
     // 상품 정보 수정
     product.update(requestDto);
+
+    ProductRankingDto productRankingDto = ProductRankingDto.of(product, savedProductImages.get(0));
+    likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
+        product.getLikeCount());
 
     return ProductUpdateResponseDto.from(product, savedProductImages);
   }

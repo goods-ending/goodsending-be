@@ -1,5 +1,6 @@
 package com.goodsending.global.redis;
 
+import com.goodsending.productlike.dto.ProductRankingDto;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,15 +15,6 @@ public abstract class RedisRankingRepository<K, V> {
   public void setZSetValue(K key, V value, double score) {
     redisTemplate.opsForZSet()
         .add(PREFIX + key, value, score);
-  }
-
-  public void setHashValue(K key, String hashKey, V value) {
-    redisTemplate.opsForHash().put(PREFIX + key, hashKey, value);
-  }
-
-  public String getHashValueByKey(K key, String hashKey) {
-    return (String) redisTemplate.opsForHash()
-        .get(PREFIX + key, hashKey);
   }
 
   public Set<TypedTuple<V>> getZSetTupleByKey(K key, long start, long end) {
@@ -51,5 +43,8 @@ public abstract class RedisRankingRepository<K, V> {
     if (size != null && size > 0) {
       redisTemplate.opsForZSet().removeRange(PREFIX + key, 0, size - 1);
     }
+  }
+  public void deleteLikeFromZSet(K key, ProductRankingDto rankingDto) {
+    redisTemplate.opsForZSet().remove(PREFIX + key, rankingDto);
   }
 }

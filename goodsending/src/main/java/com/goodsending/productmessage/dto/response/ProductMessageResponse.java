@@ -1,7 +1,8 @@
-package com.goodsending.productmessage.dto;
+package com.goodsending.productmessage.dto.response;
 
 import com.goodsending.productmessage.type.MessageType;
 import com.querydsl.core.annotations.QueryProjection;
+import java.time.LocalDateTime;
 
 /**
  * @Date : 2024. 08. 08.
@@ -14,7 +15,8 @@ public record ProductMessageResponse(
     Long memberId,
     Long productId,
     String message,
-    MessageType type
+    MessageType type,
+    LocalDateTime createdDateTime
 ) {
 
   @QueryProjection

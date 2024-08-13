@@ -1,10 +1,9 @@
 package com.goodsending.productlike.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
-import com.goodsending.productlike.dto.ProductRankingDto;
 import com.goodsending.productlike.entity.ProductLikeWithScore;
 import java.time.LocalDateTime;
 import java.util.List;

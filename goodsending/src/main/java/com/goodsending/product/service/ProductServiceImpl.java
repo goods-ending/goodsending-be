@@ -25,7 +25,6 @@ import com.goodsending.product.repository.ProductBidderCountRankingRepository;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.product.type.ProductStatus;
-import com.goodsending.productlike.dto.ProductRankingDto;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.service.LikeService;
 import java.time.Duration;

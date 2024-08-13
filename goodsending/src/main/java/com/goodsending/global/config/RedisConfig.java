@@ -3,8 +3,6 @@ package com.goodsending.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goodsending.product.dto.response.ProductRankingDto;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.goodsending.productlike.dto.ProductRankingDto;
 import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

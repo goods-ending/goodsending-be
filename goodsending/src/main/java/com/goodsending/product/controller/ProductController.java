@@ -151,7 +151,7 @@ public class ProductController {
    * @author : puclpu
    */
   @Operation(summary = "경매 상품 입찰자 수 TOP5 조회", description = "입찰자 수를 기준으로 상위 top5 상품을 조회합니다.")
-  @GetMapping("/top5/biddingCount")
+  @GetMapping("/top5/bidderCount")
   public ResponseEntity<List<ProductRankingDto>> getTop5Products() {
     List<ProductRankingDto> productRankingDtoList = productService.getTop5Products();
     return ResponseEntity.status(HttpStatus.OK).body(productRankingDtoList);

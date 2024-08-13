@@ -43,7 +43,7 @@ public class WebSecurityConfig {
   private final BlackListAccessTokenRepository blackListAccessTokenRepository;
 
   @Value("${front.list}")
-  private List<String> frontUrl;
+  private List<String> frontUrls;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -123,7 +123,7 @@ public class WebSecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
-    configuration.setAllowedOrigins(frontUrl);
+    configuration.setAllowedOrigins(frontUrls);
     configuration.setAllowedHeaders(Collections.singletonList("*"));
     configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setMaxAge(600L); // 10분

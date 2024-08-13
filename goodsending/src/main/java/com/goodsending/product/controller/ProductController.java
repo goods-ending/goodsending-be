@@ -6,6 +6,7 @@ import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.service.ProductService;
@@ -115,6 +116,7 @@ public class ProductController {
    * @param productImages 상품 이미지
    * @param memberId 등록자
    * @return 수정된 상품 정보
+   * @author : puclpu
    */
   @Operation(summary = "경매 상품 수정 기능", description = "상품 아이디를 통해 상품명, 상품 소개, 경매시작일, 경매 시간대를 수정할 수 있습니다.")
   @PutMapping("/{productId}")
@@ -133,6 +135,7 @@ public class ProductController {
    * @param productId 상품 아이디
    * @param memberId 등록자
    * @return 경매 상품 삭제 성공 여부
+   * @author : puclpu
    */
   @Operation(summary = "경매 상품 삭제", description = "상품 아이디와 회원 아이디로 상품을 삭제할 수 있습니다.")
   @DeleteMapping("/{productId}")
@@ -140,5 +143,17 @@ public class ProductController {
     LocalDateTime now = LocalDateTime.now();
     productService.deleteProduct(productId, memberId, now);
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  /**
+   * 경매 상품 입찰자수 TOP5 조회
+   * @return TOP5 상품 목록
+   * @author : puclpu
+   */
+  @Operation(summary = "경매 상품 입찰자 수 TOP5 조회", description = "입찰자 수를 기준으로 상위 top5 상품을 조회합니다.")
+  @GetMapping("/top5/bidderCount")
+  public ResponseEntity<List<ProductRankingDto>> getTop5Products() {
+    List<ProductRankingDto> productRankingDtoList = productService.getTop5Products();
+    return ResponseEntity.status(HttpStatus.OK).body(productRankingDtoList);
   }
 }

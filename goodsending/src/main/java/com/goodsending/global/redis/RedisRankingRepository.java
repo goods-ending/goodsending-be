@@ -1,6 +1,6 @@
 package com.goodsending.global.redis;
 
-import com.goodsending.productlike.dto.ProductRankingDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

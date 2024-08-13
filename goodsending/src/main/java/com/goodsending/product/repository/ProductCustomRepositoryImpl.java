@@ -4,12 +4,12 @@ import static com.goodsending.product.entity.QProduct.product;
 import static com.goodsending.product.entity.QProductImage.productImage;
 
 import com.goodsending.product.dto.request.ProductSearchCondition;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
+import com.goodsending.product.dto.response.QProductRankingDto;
 import com.goodsending.product.dto.response.QProductSummaryDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.type.ProductStatus;
-import com.goodsending.productlike.dto.ProductRankingDto;
-import com.goodsending.productlike.dto.QProductRankingDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -68,6 +68,40 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         .selectFrom(product)
         .where(product.status.eq(status).and(startDateTimeEq(startDateTime)))
         .fetch();
+  }
+
+  public List<ProductSummaryDto> findTop5ByBiddingCount() {
+    return jpaQueryFactory.select(new QProductSummaryDto(
+            product.id,
+            product.name,
+            product.price,
+            product.startDateTime,
+            product.dynamicEndDateTime,
+            product.maxEndDateTime,
+            product.status,
+            productImage.url))
+        .from(product)
+        .leftJoin(productImage).on(productImage.product.eq(product))
+        .where(productImageEq().and(product.status.eq(ProductStatus.ONGOING)))
+        .orderBy(product.biddingCount.desc())
+        .limit(5)
+        .fetch();
+  }
+
+  @Override
+  public ProductRankingDto findRankingDtoById(Long productId) {
+    return jpaQueryFactory.select(new QProductRankingDto (
+            product.id,
+            product.name,
+            product.price,
+            product.startDateTime,
+            product.maxEndDateTime,
+            product.status,
+            productImage.url))
+        .from(product)
+        .leftJoin(productImage).on(productImage.product.eq(product))
+        .where(productImageEq().and(product.id.eq(productId)))
+        .fetchOne();
   }
 
   @Override
@@ -165,22 +199,6 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
       closedBuilder.and(product.status.eq(ProductStatus.ENDED));
     }
     return closedBuilder;
-  }
-
-  @Override
-  public ProductRankingDto findRankingDtoById(Long productId) {
-    return jpaQueryFactory.select(new QProductRankingDto(
-            product.id,
-            product.name,
-            product.price,
-            product.startDateTime,
-            product.maxEndDateTime,
-            product.status,
-            productImage.url))
-        .from(product)
-        .leftJoin(productImage).on(productImage.product.eq(product))
-        .where(productImageEq().and(product.id.eq(productId)))
-        .fetchOne();
   }
 }
 

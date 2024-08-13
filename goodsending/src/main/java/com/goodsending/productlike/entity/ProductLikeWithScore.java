@@ -1,6 +1,6 @@
 package com.goodsending.productlike.entity;
 
-import com.goodsending.productlike.dto.ProductRankingDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 
 public class ProductLikeWithScore {
   private ProductRankingDto productRankingDto;

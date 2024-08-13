@@ -4,6 +4,7 @@ import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.type.ProductStatus;
@@ -30,4 +31,7 @@ public interface ProductService {
 
   void updateProductStatus(ProductStatus status, LocalDateTime startDateTime);
 
+  List<ProductRankingDto> getTop5Products();
+
+  void deleteTop5Products();
 }

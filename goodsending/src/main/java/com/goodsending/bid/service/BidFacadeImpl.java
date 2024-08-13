@@ -5,6 +5,9 @@ import com.goodsending.bid.dto.response.BidResponse;
 import com.goodsending.bid.dto.response.BidWithDurationResponse;
 import com.goodsending.bid.repository.ProductBidPriceMaxRepository;
 import com.goodsending.global.websocket.DestinationPrefix;
+import com.goodsending.product.dto.response.ProductRankingDto;
+import com.goodsending.product.repository.ProductBidderCountRankingRepository;
+import com.goodsending.product.repository.ProductRepository;
 import jakarta.persistence.OptimisticLockException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,6 +30,8 @@ public class BidFacadeImpl implements BidFacade {
   private final BidService bidService;
   private final ProductBidPriceMaxRepository productBidPriceMaxRepository;
   private final SimpMessagingTemplate messagingTemplate;
+  private final ProductBidderCountRankingRepository productBidderCountRankingRepository;
+  private final ProductRepository productRepository;
 
   @Override
   public BidWithDurationResponse create(Long memberId, BidRequest request, LocalDateTime now)
@@ -45,11 +50,21 @@ public class BidFacadeImpl implements BidFacade {
             DestinationPrefix.TIME_REMAINING + bidResponse.productId(),
             remainingExpiration);
 
+        // 입찰자 수 랭킹에 변동 사항 적용
+        updateBidderCountRanking(bidResponse);
+
         return BidWithDurationResponse.of(bidResponse, remainingExpiration);
       } catch (OptimisticLockException | OptimisticLockingFailureException e){
         Thread.sleep(50);
         log.info("OptimisticLockException");
       }
     }
+  }
+
+  private void updateBidderCountRanking(BidResponse bidResponse) {
+    ProductRankingDto rankingDto = productRepository.findRankingDtoById(bidResponse.productId());
+
+    String key = "RANKING";
+    productBidderCountRankingRepository.setZSetValue(key, rankingDto, bidResponse.bidderCount());
   }
 }

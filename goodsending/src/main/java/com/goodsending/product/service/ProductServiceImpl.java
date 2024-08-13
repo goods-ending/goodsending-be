@@ -1,6 +1,6 @@
 package com.goodsending.product.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodsending.bid.repository.ProductBidPriceMaxRepository;
 import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
@@ -16,23 +16,26 @@ import com.goodsending.product.dto.request.ProductUpdateRequestDto;
 import com.goodsending.product.dto.response.ProductCreateResponseDto;
 import com.goodsending.product.dto.response.ProductImageCreateResponseDto;
 import com.goodsending.product.dto.response.ProductInfoDto;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.ProductUpdateResponseDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
+import com.goodsending.product.repository.ProductBidderCountRankingRepository;
 import com.goodsending.product.repository.ProductImageRepository;
 import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.product.type.ProductStatus;
-import com.goodsending.productlike.dto.ProductRankingDto;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.service.LikeService;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,6 +63,8 @@ public class ProductServiceImpl implements ProductService {
   private final MemberRepository memberRepository;
   private final DepositRepository depositRepository;
   private final ProductBidPriceMaxRepository productBidPriceMaxRepository;
+  private final ProductBidderCountRankingRepository productBidderCountRankingRepository;
+  private final ObjectMapper jacksonObjectMapper;
   private final LikeService likeService;
   private final LikeCountRankingRepository likeCountRankingRepository;
 
@@ -121,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
    * 선택한 경매 상품 상세 정보 조회
    * @param productId
    * @return 경매 상품 상세 정보 반환
+   * @author : puclpu
    */
   @Override
   @Transactional(readOnly = true)
@@ -165,12 +171,12 @@ public class ProductServiceImpl implements ProductService {
    * @param memberId 등록자
    * @param now 현재 시각
    * @return 수정된 상품 정보 반환
+   * @author : puclpu
    */
   @Override
   @Transactional
   public ProductUpdateResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto,
-      List<MultipartFile> productImages, Long memberId, LocalDateTime now)
-  {
+      List<MultipartFile> productImages, Long memberId, LocalDateTime now) {
 
     // 등록된 상품인지 판별
     Product product = findProduct(productId);
@@ -217,6 +223,7 @@ public class ProductServiceImpl implements ProductService {
 
     productImageRepository.saveAll(savedProductImages);
 
+    // 상품 정보 수정
     product.update(requestDto);
 
     ProductRankingDto productRankingDto = ProductRankingDto.of(product, savedProductImages.get(0));
@@ -231,6 +238,7 @@ public class ProductServiceImpl implements ProductService {
    * @param productId 상품 아이디
    * @param memberId 등록자
    * @param now 현재 시각
+   * @author : puclpu
    */
   @Override
   @Transactional
@@ -270,10 +278,15 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
+  /**
+   * 경매 상품 상태 정기 업데이트
+   * @param status
+   * @param startDateTime
+   * @author : puclpu
+   */
   @Override
   @Transactional
   public void updateProductStatus(ProductStatus status, LocalDateTime startDateTime) {
-//    LocalDateTime startDateTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
     List<Product> products = productRepository.findAllByStatusAndStartDateTime(status, startDateTime);
     for (Product product : products) {
       switch (status) {
@@ -284,6 +297,33 @@ public class ProductServiceImpl implements ProductService {
           product.setStatus(ProductStatus.ENDED);
       }
     }
+  }
+
+  /**
+   * 경매 상품 입찰자수 TOP5 조회
+   * @return TOP5 상품 목록
+   * @author : puclpu
+   */
+  @Override
+  public List<ProductRankingDto> getTop5Products() {
+    Set<TypedTuple<ProductRankingDto>> typedTuples = productBidderCountRankingRepository.getReverseZSetTupleByKey(
+        "RANKING", 0, 4);
+
+    List<ProductRankingDto> top5ProductsList = new ArrayList<>();
+    for (TypedTuple<ProductRankingDto> tuple : typedTuples) {
+      ProductRankingDto productRankingDto = jacksonObjectMapper.convertValue(tuple.getValue(), ProductRankingDto.class);
+      top5ProductsList.add(productRankingDto);
+    }
+    return top5ProductsList;
+  }
+
+  /**
+   * 경매 상품 입찰자수 TOP5 초기화
+   * @author : puclpu
+   */
+  @Override
+  public void deleteTop5Products() {
+    productBidderCountRankingRepository.deleteZSetKey("RANKING");
   }
 
   private List<ProductImage> findProductImageList(Product product) {

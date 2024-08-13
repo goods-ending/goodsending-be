@@ -1,4 +1,4 @@
-package com.goodsending.productlike.dto;
+package com.goodsending.product.dto.response;
 
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
@@ -12,36 +12,35 @@ import lombok.Getter;
 public class ProductRankingDto {
 
   private Long productId;
-  private String productName;
+  private String name;
   private int price;
   private LocalDateTime startDateTime;
   private LocalDateTime maxEndDateTime;
   private ProductStatus status;
-  private String url;
+  private String thumbnailUrl;
 
   @Builder
   @QueryProjection
-  public ProductRankingDto(Long productId, String productName, int price,
-      LocalDateTime startDateTime,
-      LocalDateTime maxEndDateTime, ProductStatus status, String url) {
+  public ProductRankingDto(Long productId, String name, int price, LocalDateTime startDateTime,
+      LocalDateTime maxEndDateTime, ProductStatus status, String thumbnailUrl) {
     this.productId = productId;
-    this.productName = productName;
+    this.name = name;
     this.price = price;
     this.startDateTime = startDateTime;
     this.maxEndDateTime = maxEndDateTime;
     this.status = status;
-    this.url = url;
+    this.thumbnailUrl = thumbnailUrl;
   }
 
   public static ProductRankingDto of(Product product, ProductImage productImage) {
     return ProductRankingDto.builder()
         .productId(product.getId())
-        .productName(product.getName())
+        .name(product.getName())
         .price(product.getPrice())
         .startDateTime(product.getStartDateTime())
         .maxEndDateTime(product.getMaxEndDateTime())
         .status(product.getStatus())
-        .url(productImage.getUrl())
+        .thumbnailUrl(productImage.getUrl())
         .build();
   }
 }

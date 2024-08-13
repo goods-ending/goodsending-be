@@ -10,7 +10,6 @@ import com.goodsending.member.entity.Member;
 import com.goodsending.order.entity.Order;
 import com.goodsending.order.repository.OrderRepository;
 import com.goodsending.product.entity.Product;
-import com.goodsending.product.type.ProductStatus;
 import com.goodsending.productmessage.event.CreateProductMessageEvent;
 import com.goodsending.productmessage.type.MessageType;
 import java.time.LocalDateTime;
@@ -56,14 +55,13 @@ public class BidPriceMaxKeyExpirationHandler implements RedisMessageHandler {
       throw CustomException.from(ExceptionCode.BID_NOT_FOUND);
     }
 
-    setProduct(bids);
+    processProductEnd(bids.get(0));
     handlerBids(bids);
   }
 
-  private void setProduct(List<Bid> bids) {
-    Product product = bids.get(0).getProduct();
-    product.setDynamicEndDateTime(LocalDateTime.now());
-    product.setStatus(ProductStatus.ENDED);
+  private void processProductEnd(Bid successBid) {
+    Product product = successBid.getProduct();
+    product.processEnd(LocalDateTime.now(), successBid.getPrice());
   }
 
   private void handlerBids(List<Bid> bids) {

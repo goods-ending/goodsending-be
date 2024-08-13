@@ -59,6 +59,7 @@ public class Product extends BaseEntity {
   @Column(name = "dynamic_end_date_time")
   private LocalDateTime dynamicEndDateTime;
 
+  @Setter
   @Column(name = "final_price", nullable = false)
   private int finalPrice;
 
@@ -155,5 +156,11 @@ public class Product extends BaseEntity {
       return;
     }
     this.bidderCount = (int)bidderCount.longValue();
+  }
+
+  public void processEnd(LocalDateTime dynamicEndDateTime, int finalPrice) {
+    this.dynamicEndDateTime = dynamicEndDateTime;
+    this.finalPrice = finalPrice;
+    this.status = ProductStatus.ENDED;
   }
 }

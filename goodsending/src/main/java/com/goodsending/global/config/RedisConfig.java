@@ -1,6 +1,8 @@
 package com.goodsending.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.goodsending.productlike.dto.ProductRankingDto;
 import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -66,6 +68,21 @@ public class RedisConfig {
   public RedisTemplate<String, Integer> longRedisTemplate(
       RedisConnectionFactory redisConnectionFactory) {
     return createRedisTemplate(redisConnectionFactory, Integer.class);
+  }
+
+  @Bean
+  public RedisTemplate<String, ProductRankingDto> redisTemplate(RedisConnectionFactory connectionFactory) {
+    RedisTemplate<String, ProductRankingDto> template = createRedisTemplate(connectionFactory, ProductRankingDto.class);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule()); // Register Java Time module for LocalDateTime
+
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+    template.setHashKeySerializer(new StringRedisSerializer());
+    template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+
+    return template;
   }
 
   private <T> RedisTemplate<String, T> createRedisTemplate(

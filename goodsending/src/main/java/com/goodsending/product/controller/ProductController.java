@@ -1,5 +1,6 @@
 package com.goodsending.product.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.product.dto.request.ProductCreateRequestDto;
 import com.goodsending.product.dto.request.ProductUpdateRequestDto;
@@ -120,7 +121,8 @@ public class ProductController {
   public ResponseEntity<ProductUpdateResponseDto> updateProduct (@PathVariable Long productId,
                                     @RequestPart("requestDto") @Valid ProductUpdateRequestDto requestDto,
                                     @RequestPart("productImages") List<MultipartFile> productImages,
-                                    @MemberId(required = true) Long memberId) {
+                                    @MemberId(required = true) Long memberId)
+  {
     LocalDateTime now = LocalDateTime.now();
     ProductUpdateResponseDto responseDto = productService.updateProduct(productId, requestDto, productImages, memberId, now);
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);

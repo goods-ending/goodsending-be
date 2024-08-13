@@ -61,5 +61,4 @@ public class ProductCreateResponseDto {
         .maxEndDate(product.getMaxEndDateTime())
         .build();
   }
-
 }

@@ -25,6 +25,7 @@ public class ProductInfoDto {
   private LocalDateTime maxEndDateTime;
   private LocalDateTime dynamicEndDateTime;
   private Duration remainingExpiration;
+  private int finalPrice;
   private int biddingCount;
   private int bidderCount;
   private Long likeCount;
@@ -50,6 +51,7 @@ public class ProductInfoDto {
         .maxEndDateTime(product.getMaxEndDateTime())
         .dynamicEndDateTime(product.getDynamicEndDateTime())
         .remainingExpiration(remainingExpiration)
+        .finalPrice(product.getFinalPrice())
         .biddingCount(product.getBiddingCount())
         .bidderCount(product.getBidderCount())
         .likeCount(product.getLikeCount())

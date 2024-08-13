@@ -134,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
     Product product = findProduct(productId);
     List<ProductImage> productImageList = findProductImageList(product);
     Duration remainingExpiration = productBidPriceMaxRepository.getRemainingExpiration(productId);
-    int bidMaxPrice = productBidPriceMaxRepository.getValueByKey(productId);
+    Integer bidMaxPrice = productBidPriceMaxRepository.getValueByKey(productId);
 
     return ProductInfoDto.of(product, productImageList, remainingExpiration, bidMaxPrice);
   }

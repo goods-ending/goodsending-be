@@ -126,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
    * 선택한 경매 상품 상세 정보 조회
    * @param productId
    * @return 경매 상품 상세 정보 반환
+   * @author : puclpu
    */
   @Override
   @Transactional(readOnly = true)
@@ -170,6 +171,7 @@ public class ProductServiceImpl implements ProductService {
    * @param memberId 등록자
    * @param now 현재 시각
    * @return 수정된 상품 정보 반환
+   * @author : puclpu
    */
   @Override
   @Transactional
@@ -236,6 +238,7 @@ public class ProductServiceImpl implements ProductService {
    * @param productId 상품 아이디
    * @param memberId 등록자
    * @param now 현재 시각
+   * @author : puclpu
    */
   @Override
   @Transactional
@@ -275,6 +278,12 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
+  /**
+   * 경매 상품 상태 정기 업데이트
+   * @param status
+   * @param startDateTime
+   * @author : puclpu
+   */
   @Override
   @Transactional
   public void updateProductStatus(ProductStatus status, LocalDateTime startDateTime) {

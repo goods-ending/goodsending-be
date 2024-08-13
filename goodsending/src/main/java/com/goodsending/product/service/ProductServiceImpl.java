@@ -29,6 +29,8 @@ import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.service.LikeService;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +41,6 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -135,8 +134,9 @@ public class ProductServiceImpl implements ProductService {
     Product product = findProduct(productId);
     List<ProductImage> productImageList = findProductImageList(product);
     Duration remainingExpiration = productBidPriceMaxRepository.getRemainingExpiration(productId);
+    int bidMaxPrice = productBidPriceMaxRepository.getValueByKey(productId);
 
-    return ProductInfoDto.of(product, productImageList, remainingExpiration);
+    return ProductInfoDto.of(product, productImageList, remainingExpiration, bidMaxPrice);
   }
 
   /**

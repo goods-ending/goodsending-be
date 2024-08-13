@@ -7,6 +7,7 @@ import com.goodsending.global.security.MemberDetailsServiceImpl;
 import com.goodsending.member.repository.BlackListAccessTokenRepository;
 import com.goodsending.member.repository.SaveRefreshTokenRepository;
 import com.goodsending.member.util.JwtUtil;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -40,8 +42,14 @@ public class WebSecurityConfig {
   private final SaveRefreshTokenRepository saveRefreshTokenRepository;
   private final BlackListAccessTokenRepository blackListAccessTokenRepository;
 
-  @Value("${front.list}")
-  private List<String> frontUrls;
+  @Value("${front.list.1}")
+  private String frontUrl1;
+
+  @Value("${front.list.2}")
+  private String frontUrl2;
+
+  @Value("${front.list.3}")
+  private String frontUrl3;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -84,6 +92,7 @@ public class WebSecurityConfig {
         authorizeHttpRequests
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
             .permitAll() // resources 접근 허용 설정
+            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/check").permitAll()
             .requestMatchers("/ws", "/api/members/sendMail", "/api/members/signup",
                 "/api/members/login", "/api/members/checkCode", "/api/members/tokenReissue").permitAll()
@@ -120,9 +129,9 @@ public class WebSecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
-    configuration.setAllowedOrigins(frontUrls);
+    configuration.setAllowedOrigins(Arrays.asList(frontUrl1, frontUrl2, frontUrl3));
     configuration.setAllowedHeaders(Collections.singletonList("*"));
-    configuration.setAllowedMethods(Collections.singletonList("*"));
+    configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setMaxAge(600L); // 10분
     configuration.setExposedHeaders(Collections.singletonList(JwtUtil.AUTHORIZATION_HEADER));
 

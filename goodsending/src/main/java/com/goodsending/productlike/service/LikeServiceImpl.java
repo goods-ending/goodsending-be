@@ -18,6 +18,7 @@ import com.goodsending.productlike.entity.Like;
 import com.goodsending.productlike.entity.ProductLikeWithScore;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.repository.LikeRepository;
+import com.goodsending.productlike.type.LikeStatus;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -75,17 +76,38 @@ public class LikeServiceImpl implements LikeService {
         like = new Like(product, member);
         likeRepository.save(like);
         countLike(product);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.CREATED,
+            LikeStatus.CREATE_SUCCESS);
+        return ResponseEntity.ok(likeResponseDto);
+        // 버튼이 true이고 찜이 이미 존재하면 찜하기 실패, BAD_REQUEST, ALEADYLIKE 발생
+      } else {
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
+            LikeStatus.ALREADY_LIKE);
+        return ResponseEntity.ok(likeResponseDto);
       }
     } else {
-      like = likeRepository.findLikeByMemberAndProduct(member,
-          product).orElseThrow(() -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
-      likeRepository.delete(like);
-      countLike(product);
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+      // 찜이 존재하지 않으면 삭제 실패, BAD_REQUEST, FAIL 발생
+      if (!existingLike) {
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
+            LikeStatus.DELETED_LIKE);
+        return ResponseEntity.ok(likeResponseDto);
+        // 찜이 존재하면 삭제 성공, NO_CONTENT, SUCCESS 발생
+      } else {
+        like = findLikeByMemberAndProduct(member, product);
+        likeRepository.delete(like);
+        countLike(product);
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.NO_CONTENT,
+            LikeStatus.REMOVE_SUCCESS);
+        return ResponseEntity.ok(likeResponseDto);
+      }
     }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
   }
+
+  private Like findLikeByMemberAndProduct(Member member, Product product) {
+    return likeRepository.findLikeByMemberAndProduct(member,
+        product).orElseThrow(() -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
+  }
+
 
   private void countLike(Product product) {
     Long likeCount = likeRepository.countByProduct(product);
@@ -163,14 +185,15 @@ public class LikeServiceImpl implements LikeService {
   public ResponseEntity<LikeResponseDto> toggleLikeRedis(Long memberId, LikeRequestDto requestDto) {
     Member member = findMemberById(memberId);
     Product product = findProductById(requestDto.getProductId());
+    boolean likeButton = requestDto.isPress();
+    Like like = null;
+    boolean existingLike = likeRepository.existsByMemberAndProduct(member, product);
+
     ProductImage productImage = productImageRepository.findFirstByProduct(product);
     ProductRankingDto productRankingDto = new ProductRankingDto(product.getId(), product.getName(),
         product.getPrice(), product.getStartDateTime(), product.getMaxEndDateTime(),
         product.getStatus(),
         productImage.getUrl());
-    boolean likeButton = requestDto.isPress();
-    Like like = null;
-    boolean existingLike = likeRepository.existsByMemberAndProduct(member, product);
 
     if (likeButton) {
       if (!existingLike) {
@@ -179,85 +202,96 @@ public class LikeServiceImpl implements LikeService {
         countLike(product);
         likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
             product.getLikeCount());
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.CREATED,
+            LikeStatus.CREATE_SUCCESS);
+        return ResponseEntity.ok(likeResponseDto);
       } else {
         likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
             product.getLikeCount());
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
+            LikeStatus.ALREADY_LIKE);
+        return ResponseEntity.ok(likeResponseDto);
       }
-      return ResponseEntity.status(HttpStatus.CREATED).build();
     } else {
-      like = likeRepository.findLikeByMemberAndProduct(member,
-          product).orElseThrow(() -> CustomException.from(ExceptionCode.MEMBER_NOT_FOUND));
-      likeRepository.delete(like);
-      countLike(product);
-
-      likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
-          product.getLikeCount());
-
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-  }
-
-  /**
-   * 찜하기 수 Top 5 상품 조회 기능(Redis 사용)
-   *
-   * 미래에 진행되는 찜하기 Top 5 상품을 Redis을 사용해서 조회합니다
-   *
-   * @return 정렬된 Top5 찜하기 상품 목록
-   * @author : zz6331300zz
-   */
-
-  public List<ProductLikeWithScore> readTop5LikeProduct() {
-    Set<TypedTuple<ProductRankingDto>> allProducts = likeCountRankingRepository.getZSetTupleByKey(
-        "ranking", 0, -1);
-
-    if (allProducts != null) {
-      return allProducts.stream()
-          .sorted(
-              (p1, p2) -> Double.compare(p2.getScore(), p1.getScore())) // Sort in descending order
-          .limit(5)
-          .map(tuple -> {
-            Object value = tuple.getValue();
-            ProductRankingDto dto = convertMapToDto(
-                (Map<String, Object>) value); // Convert Map to DTO
-            if ("UPCOMING".equals(dto.getStatus().toString())) {
-              return new ProductLikeWithScore(dto, tuple.getScore());
-            } else {
-              return null;
-            }
-          })
-          .filter(dtoWithScore -> dtoWithScore != null)
-          .collect(Collectors.toList());
-    }
-
-    return Collections.emptyList();
-
-  }
-
-  public ProductRankingDto convertMapToDto(Map<String, Object> map) {
-    try {
-      return objectMapper.convertValue(map, ProductRankingDto.class);
-    } catch (IllegalArgumentException e) {
-      throw new RuntimeException("Error converting map to ProductLikeDto", e);
-    }
-  }
-
-  @Override
-  public void deleteTop5Likes() {
-    likeCountRankingRepository.deleteZSetValue("ranking");
-  }
-
-  @Override
-  public void deleteLikeFromZSet(ProductRankingDto rankingDto) {
-    {
-      ZSetOperations<String, ProductRankingDto> zSetOperations = redisTemplate.opsForZSet();
-      // DTO를 직렬화하여 zset의 멤버로 사용
-      String serializedMember = null;
-      try {
-        serializedMember = objectMapper.writeValueAsString(rankingDto);
-      } catch (JsonProcessingException e) {
-        throw CustomException.from(ExceptionCode.LIKE_NOT_FOUND);
+      if (!existingLike) {
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.BAD_REQUEST,
+            LikeStatus.DELETED_LIKE);
+        return ResponseEntity.ok(likeResponseDto);
+      } else {
+        like = findLikeByMemberAndProduct(member, product);
+        likeRepository.delete(like);
+        countLike(product);
+        likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
+            product.getLikeCount());
+        LikeResponseDto likeResponseDto = LikeResponseDto.of(HttpStatus.NO_CONTENT,
+            LikeStatus.REMOVE_SUCCESS);
+        return ResponseEntity.ok(likeResponseDto);
       }
-      zSetOperations.remove("ranking", serializedMember);
     }
   }
-}
+
+    /**
+     * 찜하기 수 Top 5 상품 조회 기능(Redis 사용)
+     *
+     * 미래에 진행되는 찜하기 Top 5 상품을 Redis을 사용해서 조회합니다
+     *
+     * @return 정렬된 Top5 찜하기 상품 목록
+     * @author : zz6331300zz
+     */
+
+    public List<ProductLikeWithScore> readTop5LikeProduct () {
+      Set<TypedTuple<ProductRankingDto>> allProducts = likeCountRankingRepository.getZSetTupleByKey(
+          "ranking", 0, -1);
+
+      if (allProducts != null) {
+        return allProducts.stream()
+            .sorted(
+                (p1, p2) -> Double.compare(p2.getScore(),
+                    p1.getScore())) // Sort in descending order
+            .limit(5)
+            .map(tuple -> {
+              Object value = tuple.getValue();
+              ProductRankingDto dto = convertMapToDto(
+                  (Map<String, Object>) value); // Convert Map to DTO
+              if ("UPCOMING".equals(dto.getStatus().toString())) {
+                return new ProductLikeWithScore(dto, tuple.getScore());
+              } else {
+                return null;
+              }
+            })
+            .filter(dtoWithScore -> dtoWithScore != null)
+            .collect(Collectors.toList());
+      }
+
+      return Collections.emptyList();
+
+    }
+
+    public ProductRankingDto convertMapToDto (Map < String, Object > map){
+      try {
+        return objectMapper.convertValue(map, ProductRankingDto.class);
+      } catch (IllegalArgumentException e) {
+        throw new RuntimeException("Error converting map to ProductLikeDto", e);
+      }
+    }
+
+    @Override
+    public void deleteTop5Likes () {
+      likeCountRankingRepository.deleteZSetValue("ranking");
+    }
+
+    @Override
+    public void deleteLikeFromZSet (ProductRankingDto rankingDto){
+      {
+        ZSetOperations<String, ProductRankingDto> zSetOperations = redisTemplate.opsForZSet();
+        // DTO를 직렬화하여 zset의 멤버로 사용
+        String serializedMember = null;
+        try {
+          serializedMember = objectMapper.writeValueAsString(rankingDto);
+        } catch (JsonProcessingException e) {
+          throw CustomException.from(ExceptionCode.LIKE_NOT_FOUND);
+        }
+        zSetOperations.remove("ranking", serializedMember);
+      }
+    }
+  }

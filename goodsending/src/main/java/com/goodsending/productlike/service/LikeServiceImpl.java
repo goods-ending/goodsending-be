@@ -150,8 +150,10 @@ public class LikeServiceImpl implements LikeService {
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    Page<Product> productList = productRepository.findLikeProductByMember(member, pageable);
-    return productList.map(ProductlikeCountDto::from);
+    Page<ProductlikeCountDto> productListDto = productRepository.findProductsWithImageUrlByMember(
+        member,pageable);
+
+    return productListDto;
   }
 
 

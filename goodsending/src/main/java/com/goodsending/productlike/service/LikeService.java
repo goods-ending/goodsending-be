@@ -21,7 +21,7 @@ public interface LikeService{
 
   ResponseEntity<LikeResponseDto> toggleLikeRedis(Long memberId, LikeRequestDto requestDto);
 
-  List<ProductLikeWithScore> readTop5LikeProduct();
+  List<ProductRankingDto> readTop5LikeProduct();
 
   ProductRankingDto convertMapToDto(Map<String, Object> map);
 

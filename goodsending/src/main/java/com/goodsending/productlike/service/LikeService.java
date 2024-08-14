@@ -4,7 +4,6 @@ import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
-import com.goodsending.productlike.entity.ProductLikeWithScore;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ public interface LikeService{
 
   ProductRankingDto convertMapToDto(Map<String, Object> map);
 
-  void deleteTop5Likes();
+  void resetTop5Likes(LocalDateTime startDateTime);
 
   void deleteLikeFromZSet(ProductRankingDto rankingDto);
 }

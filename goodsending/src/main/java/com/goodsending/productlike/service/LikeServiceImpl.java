@@ -15,7 +15,6 @@ import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
 import com.goodsending.productlike.entity.Like;
-import com.goodsending.productlike.entity.ProductLikeWithScore;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.repository.LikeRepository;
 import com.goodsending.productlike.type.LikeStatus;
@@ -280,8 +279,17 @@ public class LikeServiceImpl implements LikeService {
   }
 
   @Override
-  public void deleteTop5Likes() {
+  public void resetTop5Likes(LocalDateTime startDateTime) {
     likeCountRankingRepository.deleteZSetValue("ranking");
+    List<Product> productList = productRepository.findTop5ByStartDateTimeAfterOrderByLikeCountDesc(
+        startDateTime);
+
+    for (Product product : productList) {
+      ProductImage productImage = productImageRepository.findFirstByProduct(product);
+      ProductRankingDto productRankingDto = new ProductRankingDto(product, productImage);
+      likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
+          product.getLikeCount());
+    }
   }
 
   @Override

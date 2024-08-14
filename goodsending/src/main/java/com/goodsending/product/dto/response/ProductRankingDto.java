@@ -32,6 +32,16 @@ public class ProductRankingDto {
     this.thumbnailUrl = thumbnailUrl;
   }
 
+  public ProductRankingDto(Product product, ProductImage productImage) {
+    this.productId = product.getId();
+    this.name = product.getName();
+    this.price = product.getPrice();
+    this.startDateTime = product.getStartDateTime();
+    this.maxEndDateTime = product.getMaxEndDateTime();
+    this.status = product.getStatus();
+    this.thumbnailUrl = productImage.getUrl();
+  }
+
   public static ProductRankingDto of(Product product, ProductImage productImage) {
     return ProductRankingDto.builder()
         .productId(product.getId())

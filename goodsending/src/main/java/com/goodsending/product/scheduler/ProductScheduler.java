@@ -19,11 +19,12 @@ public class ProductScheduler {
 
   @Scheduled(cron = "0 0 12,18 * * *") // 매일 12시, 18시
   public void updateUpComingProduct() {
-    log.info("경매 진행 상태 전환 ");
-    LocalDateTime startDateTime = LocalDateTime.now().withHour(12).withMinute(0).withSecond(0).withNano(0);
+    log.info("경매 진행 상태 전환");
+    LocalDateTime startDateTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
     productService.updateProductStatus(ProductStatus.UPCOMING, startDateTime);
-    likeService.deleteTop5Likes();
 
+    // 찜 기준 인기 순위 redis 에서 삭제
+    likeService.deleteTop5Likes();
   }
 
   @Scheduled(cron = "59 59 14,20 * * *") // 매일 14시, 20시 59분 59초
@@ -31,7 +32,7 @@ public class ProductScheduler {
     log.info("경매 종료 상태 전환");
     productService.updateProductStatus(ProductStatus.ONGOING, null);
 
-    // redis 인기 순위 삭제
+    // 입찰자 기준 인기 순위 redis 에서 삭제
     productService.deleteTop5Products();
   }
 

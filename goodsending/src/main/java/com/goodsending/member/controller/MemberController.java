@@ -1,7 +1,5 @@
 package com.goodsending.member.controller;
 
-import com.goodsending.global.exception.CustomException;
-import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.member.dto.request.CashRequestDto;
 import com.goodsending.member.dto.request.PasswordRequestDto;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -142,6 +139,15 @@ public class MemberController {
     return memberService.deleteRefreshToken(refreshToken, request, response);
   }
 
+  /**
+   * Access Token 만료 여부 확인
+   * <p>
+   * Access Token 단순 만료 여부 확인
+   *
+   * @param HttpServletRequest
+   * @return String 결과 값을 반환합니다.
+   * @author : 이아람
+   */
   @Operation(summary = "Access Token 만료 여부 확인", description = "Access Token 만료 여부 확인")
   @GetMapping("/members/validateAccessToken")
   public ResponseEntity<String> validateAccessToken(HttpServletRequest request) {

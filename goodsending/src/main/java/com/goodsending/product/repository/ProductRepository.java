@@ -16,13 +16,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductCustomRepository {
 
-  @Query("SELECT p "
-      + "FROM Product p "
-      + "JOIN Like l ON l.product = p "
-      + "WHERE l.member = :member")
-  Page<Product> findLikeProductByMember(Member member, Pageable pageable);
-
-  @Query("SELECT new com.goodsending.product.dto.response.ProductlikeCountDto(p.id, p.name, p.price, p.startDateTime,p.maxEndDateTime,pi.url,p.likeCount) " +
+  @Query("SELECT new com.goodsending.product.dto.response.ProductlikeCountDto" +
+      "(p.id, p.name, p.price, p.startDateTime,p.maxEndDateTime,pi.url,p.likeCount) " +
       "FROM Product p JOIN ProductImage pi ON p.id = pi.id " +
       "WHERE p.member = :member")
   Page<ProductlikeCountDto> findProductsWithImageUrlByMember(Member member, Pageable pageable);

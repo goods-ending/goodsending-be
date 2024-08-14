@@ -53,4 +53,16 @@ public class ProductRankingDto {
         .thumbnailUrl(productImage.getUrl())
         .build();
   }
+
+  public static ProductRankingDto from(ProductRankingLikeCountDto dto) {
+    return ProductRankingDto.builder()
+        .productId(dto.getProductId())
+        .name(dto.getName())
+        .price(dto.getPrice())
+        .startDateTime(dto.getStartDateTime())
+        .maxEndDateTime(dto.getStartDateTime())
+        .status(dto.getStatus())
+        .thumbnailUrl(dto.getThumbnailUrl())
+        .build();
+  }
 }

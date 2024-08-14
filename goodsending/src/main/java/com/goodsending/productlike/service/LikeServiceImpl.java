@@ -7,6 +7,7 @@ import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.response.ProductRankingDto;
+import com.goodsending.product.dto.response.ProductRankingLikeCountDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
@@ -281,14 +282,12 @@ public class LikeServiceImpl implements LikeService {
   @Override
   public void resetTop5Likes(LocalDateTime startDateTime) {
     likeCountRankingRepository.deleteZSetValue("ranking");
-    List<Product> productList = productRepository.findTop5ByStartDateTimeAfterOrderByLikeCountDesc(
+    List<ProductRankingLikeCountDto> dtoList = productRepository.getTopProductDtoList(
         startDateTime);
 
-    for (Product product : productList) {
-      ProductImage productImage = productImageRepository.findFirstByProduct(product);
-      ProductRankingDto productRankingDto = new ProductRankingDto(product, productImage);
-      likeCountRankingRepository.setZSetValue("ranking", productRankingDto,
-          product.getLikeCount());
+    for (ProductRankingLikeCountDto dto : dtoList) {
+      likeCountRankingRepository.setZSetValue("ranking", ProductRankingDto.from(dto),
+          dto.getLikeCount());
     }
   }
 

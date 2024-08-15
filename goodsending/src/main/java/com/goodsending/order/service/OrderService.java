@@ -1,10 +1,13 @@
 package com.goodsending.order.service;
 
+import com.goodsending.order.dto.request.OrderListBySellerRequest;
 import com.goodsending.order.dto.request.ReceiverInfoRequest;
 import com.goodsending.order.dto.response.OrderResponse;
+import com.goodsending.order.dto.response.OrderWithProductResponse;
 import com.goodsending.order.dto.response.ReceiverInfoResponse;
 import com.goodsending.order.dto.response.UpdateShippingResponse;
 import java.time.LocalDateTime;
+import org.springframework.data.domain.Slice;
 
 /**
  * @author : jieun(je-pa)
@@ -13,6 +16,8 @@ import java.time.LocalDateTime;
  * @Project : goodsending-be :: goodsending
  */
 public interface OrderService {
+
+  Slice<OrderWithProductResponse> readBySeller(OrderListBySellerRequest request);
 
   /**
    * 낙찰자가 주문에 대한 배송 정보를 입력합니다.
@@ -26,4 +31,5 @@ public interface OrderService {
   UpdateShippingResponse updateShipping(Long memberId, Long orderId, LocalDateTime now);
 
   OrderResponse confirmOrder(Long memberId, Long orderId, LocalDateTime now);
+
 }

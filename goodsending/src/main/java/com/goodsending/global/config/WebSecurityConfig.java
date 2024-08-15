@@ -90,7 +90,7 @@ public class WebSecurityConfig {
             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/check").permitAll()
             .requestMatchers("/ws", "/api/members/sendMail", "/api/members/signup",
                 "/api/members/login", "/api/members/checkCode", "/api/members/tokenReissue").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/product-message-histories", "/api/likes/redis").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/likes/top5", "/api/products/**", "/api/product-message-histories", "/api/likes/redis").permitAll()
             //.requestMatchers("/").permitAll()
             .anyRequest().authenticated() // 그 외 모든 요청 인증처리
     );

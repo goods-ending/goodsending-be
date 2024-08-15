@@ -18,8 +18,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
   @Query("SELECT new com.goodsending.product.dto.response.ProductlikeCountDto" +
       "(p.id, p.name, p.price, p.startDateTime,p.maxEndDateTime,pi.url,p.likeCount) " +
-      "FROM Product p JOIN ProductImage pi ON p.id = pi.id " +
-      "WHERE p.member = :member")
+      "FROM Product p JOIN ProductImage pi ON p.id = pi.product.id " +
+      "WHERE p.member = :member AND pi.id = " +
+      "(SELECT MIN(pi2.id) " +
+      "FROM ProductImage pi2 " +
+      "WHERE pi2.product.id = p.id)")
   Page<ProductlikeCountDto> findProductsWithImageUrlByMember(Member member, Pageable pageable);
 
 

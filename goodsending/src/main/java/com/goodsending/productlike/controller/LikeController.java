@@ -88,7 +88,7 @@ public class LikeController {
 
   @Operation(summary = "찜하기 수 top5 상품 조회", description = "찜하기 수 top5 상품조회 한다.")
   @GetMapping("/likes/top5")
-  public ResponseEntity<List<ProductlikeCountDto>> getTop5LikeProduct(
+  public ResponseEntity<List<ProductRankingDto>> getTop5LikeProduct(
   ) {
     LocalDateTime dateTime = LocalDateTime.now();
     return ResponseEntity.ok(

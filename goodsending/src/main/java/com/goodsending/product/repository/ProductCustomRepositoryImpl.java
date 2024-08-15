@@ -212,6 +212,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
         "p.id, p.name, p.price, p.startDateTime, p.maxEndDateTime, p.status, pi.url, p.likeCount) " +
         "FROM Product p JOIN ProductImage pi ON p.id = pi.product.id " +
         "WHERE p.startDateTime > :currentDateTime " +
+        "AND pi.id = "+
+        "(SELECT MIN(pi1.id) "+
+        "FROM ProductImage pi1 "+
+        "WHERE pi1.product.id = p.id) "+
         "ORDER BY p.likeCount DESC";
 
     TypedQuery<ProductRankingLikeCountDto> query = entityManager.createQuery(jpqlQuery, ProductRankingLikeCountDto.class);
@@ -222,5 +226,23 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
   }
 
 
+  @Override
+  public List<ProductRankingDto> getTopProductRankingDtoList(LocalDateTime currentDateTime) {
+    String jpqlQuery = "SELECT new com.goodsending.product.dto.response.ProductRankingDto(" +
+        "p.id, p.name, p.price, p.startDateTime, p.maxEndDateTime, p.status, pi.url) " +
+        "FROM Product p JOIN ProductImage pi ON p.id = pi.product.id " +
+        "WHERE p.startDateTime > :currentDateTime " +
+        "AND pi.id = "+
+        "(SELECT MIN(pi1.id) "+
+        "FROM ProductImage pi1 "+
+        "WHERE pi1.product.id = p.id) "+
+        "ORDER BY p.likeCount DESC";;
+
+    TypedQuery<ProductRankingDto> query = entityManager.createQuery(jpqlQuery, ProductRankingDto.class);
+    query.setParameter("currentDateTime", currentDateTime);
+    query.setMaxResults(5); // Limit to top 5 products
+
+    return query.getResultList();
+  }
 }
 

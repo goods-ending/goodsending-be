@@ -167,9 +167,8 @@ public class LikeServiceImpl implements LikeService {
    * @author : zz6331300zz
    */
 
-  public List<ProductlikeCountDto> getTop5LikeProduct(LocalDateTime dateTime) {
-    return productRepository.findTop5ByStartDateTimeAfterOrderByLikeCountDesc(dateTime).stream()
-        .map(ProductlikeCountDto::from).toList();
+  public List<ProductRankingDto> getTop5LikeProduct(LocalDateTime dateTime) {
+    return productRepository.getTopProductRankingDtoList(dateTime);
   }
 
   /**

@@ -4,8 +4,10 @@ import com.goodsending.product.entity.Product;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ProductlikeCountDto {
 
   private Long productId;
@@ -29,15 +31,16 @@ public class ProductlikeCountDto {
     this.likeCount = likeCount;
   }
 
-  public static ProductlikeCountDto from(String productName, Long likeCount,
-      LocalDateTime startDateTime, LocalDateTime maxEndDateTime, int price, String thumbnailUrl) {
+  public static ProductlikeCountDto from(Long productId, String productName, int price, Long likeCount,
+      LocalDateTime startDateTime, LocalDateTime maxEndDateTime, String thumbnailUrl) {
     return ProductlikeCountDto.builder()
+        .productId(productId)
         .productName(productName)
-        .likeCount(likeCount)
+        .price(price)
         .startDateTime(startDateTime)
         .maxEndDateTime(maxEndDateTime)
-        .price(price)
         .thumbnailUrl(thumbnailUrl)
+        .likeCount(likeCount)
         .build();
   }
 
@@ -46,8 +49,9 @@ public class ProductlikeCountDto {
         .productId(product.getId())
         .productName(product.getName())
         .price(product.getPrice())
-        .likeCount(product.getLikeCount())
         .startDateTime(product.getStartDateTime())
+        .maxEndDateTime(product.getMaxEndDateTime())
+        .likeCount(product.getLikeCount())
         .build();
   }
 

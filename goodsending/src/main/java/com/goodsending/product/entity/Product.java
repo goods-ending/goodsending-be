@@ -69,8 +69,8 @@ public class Product extends BaseEntity {
   @Column(name = "bidder_count", nullable = false)
   private int bidderCount;
 
-  @Column(name = "like_count", nullable = true)
-  private Long likeCount;
+  @Column(name = "like_count", nullable = false)
+  private Long likeCount = 0L;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")

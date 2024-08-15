@@ -7,6 +7,7 @@ import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.response.ProductRankingDto;
+import com.goodsending.product.dto.response.ProductRankingLikeCountDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
@@ -15,7 +16,6 @@ import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
 import com.goodsending.productlike.entity.Like;
-import com.goodsending.productlike.entity.ProductLikeWithScore;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.repository.LikeRepository;
 import com.goodsending.productlike.type.LikeStatus;
@@ -150,8 +150,10 @@ public class LikeServiceImpl implements LikeService {
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    Page<Product> productList = productRepository.findLikeProductByMember(member, pageable);
-    return productList.map(ProductlikeCountDto::from);
+    Page<ProductlikeCountDto> productListDto = productRepository.findProductsWithImageUrlByMember(
+        member,pageable);
+
+    return productListDto;
   }
 
 
@@ -230,68 +232,77 @@ public class LikeServiceImpl implements LikeService {
     }
   }
 
-    /**
-     * 찜하기 수 Top 5 상품 조회 기능(Redis 사용)
-     *
-     * 미래에 진행되는 찜하기 Top 5 상품을 Redis을 사용해서 조회합니다
-     *
-     * @return 정렬된 Top5 찜하기 상품 목록
-     * @author : zz6331300zz
-     */
+  /**
+   * 찜하기 수 Top 5 상품 조회 기능(Redis 사용)
+   * <p>
+   * 미래에 진행되는 찜하기 Top 5 상품을 Redis을 사용해서 조회합니다
+   *
+   * @return 정렬된 Top5 찜하기 상품 목록
+   * @author : zz6331300zz
+   */
 
-    public List<ProductLikeWithScore> readTop5LikeProduct () {
-      Set<TypedTuple<ProductRankingDto>> allProducts = likeCountRankingRepository.getZSetTupleByKey(
-          "ranking", 0, -1);
+  public List<ProductRankingDto> readTop5LikeProduct() {
+    Set<TypedTuple<ProductRankingDto>> allProducts = likeCountRankingRepository.getZSetTupleByKey(
+        "ranking", 0, -1);
 
-      if (allProducts != null) {
-        return allProducts.stream()
-            .sorted(
-                (p1, p2) -> Double.compare(p2.getScore(),
-                    p1.getScore())) // Sort in descending order
-            .limit(5)
-            .map(tuple -> {
-              Object value = tuple.getValue();
-              ProductRankingDto dto = convertMapToDto(
-                  (Map<String, Object>) value); // Convert Map to DTO
-              if ("UPCOMING".equals(dto.getStatus().toString())) {
-                return new ProductLikeWithScore(dto, tuple.getScore());
-              } else {
-                return null;
-              }
-            })
-            .filter(dtoWithScore -> dtoWithScore != null)
-            .collect(Collectors.toList());
-      }
-
-      return Collections.emptyList();
-
+    if (allProducts != null) {
+      return allProducts.stream()
+          .sorted(
+              (p1, p2) -> Double.compare(p2.getScore(),
+                  p1.getScore())) // Sort in descending order
+          .limit(5)
+          .map(tuple -> {
+            Object value = tuple.getValue();
+            ProductRankingDto dto = convertMapToDto(
+                (Map<String, Object>) value); // Convert Map to DTO
+            if ("UPCOMING".equals(dto.getStatus().toString())) {
+              return new ProductRankingDto(dto.getProductId(),
+                  dto.getName(),dto.getPrice(),dto.getStartDateTime(),
+                  dto.getMaxEndDateTime(),dto.getStatus(),dto.getThumbnailUrl());
+            } else {
+              return null;
+            }
+          })
+          .filter(dtoWithScore -> dtoWithScore != null)
+          .collect(Collectors.toList());
     }
 
-    public ProductRankingDto convertMapToDto (Map < String, Object > map){
-      try {
-        return objectMapper.convertValue(map, ProductRankingDto.class);
-      } catch (IllegalArgumentException e) {
-        throw new RuntimeException("Error converting map to ProductLikeDto", e);
-      }
-    }
+    return Collections.emptyList();
 
-    @Override
-    public void deleteTop5Likes () {
-      likeCountRankingRepository.deleteZSetValue("ranking");
-    }
+  }
 
-    @Override
-    public void deleteLikeFromZSet (ProductRankingDto rankingDto){
-      {
-        ZSetOperations<String, ProductRankingDto> zSetOperations = redisTemplate.opsForZSet();
-        // DTO를 직렬화하여 zset의 멤버로 사용
-        String serializedMember = null;
-        try {
-          serializedMember = objectMapper.writeValueAsString(rankingDto);
-        } catch (JsonProcessingException e) {
-          throw CustomException.from(ExceptionCode.LIKE_NOT_FOUND);
-        }
-        zSetOperations.remove("ranking", serializedMember);
-      }
+  public ProductRankingDto convertMapToDto(Map<String, Object> map) {
+    try {
+      return objectMapper.convertValue(map, ProductRankingDto.class);
+    } catch (IllegalArgumentException e) {
+      throw new RuntimeException("Error converting map to ProductLikeDto", e);
     }
   }
+
+  @Override
+  public void resetTop5Likes(LocalDateTime startDateTime) {
+    likeCountRankingRepository.deleteZSetValue("ranking");
+    List<ProductRankingLikeCountDto> dtoList = productRepository.getTopProductDtoList(
+        startDateTime);
+
+    for (ProductRankingLikeCountDto dto : dtoList) {
+      likeCountRankingRepository.setZSetValue("ranking", ProductRankingDto.from(dto),
+          dto.getLikeCount());
+    }
+  }
+
+  @Override
+  public void deleteLikeFromZSet(ProductRankingDto rankingDto) {
+    {
+      ZSetOperations<String, ProductRankingDto> zSetOperations = redisTemplate.opsForZSet();
+      // DTO를 직렬화하여 zset의 멤버로 사용
+      String serializedMember = null;
+      try {
+        serializedMember = objectMapper.writeValueAsString(rankingDto);
+      } catch (JsonProcessingException e) {
+        throw CustomException.from(ExceptionCode.LIKE_NOT_FOUND);
+      }
+      zSetOperations.remove("ranking", serializedMember);
+    }
+  }
+}

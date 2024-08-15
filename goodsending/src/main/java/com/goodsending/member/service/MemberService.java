@@ -187,6 +187,11 @@ public class MemberService {
    * @author : 이아람
    */
   public ResponseEntity<Void> tokenReissue(String refreshToken) {
+    // refreshToken이 null인 경우
+    if (refreshToken == null || refreshToken.isEmpty()) {
+      throw CustomException.from(ExceptionCode.STORED_TOKEN_HAS_EXPIRED);
+    }
+
     // 쿠키에서 가져온 refresh token에서 email 정보 추출
     String email;
     try {
@@ -248,6 +253,11 @@ public class MemberService {
    */
   public ResponseEntity<Void> deleteRefreshToken(String refreshToken, HttpServletRequest request,
       HttpServletResponse response) {
+    // refreshToken이 null인 경우
+    if (refreshToken == null || refreshToken.isEmpty()) {
+      throw CustomException.from(ExceptionCode.STORED_TOKEN_HAS_EXPIRED);
+    }
+
     // header에서 추출
     String accessToken = jwtUtil.getJwtFromHeader(request);
     if (accessToken != null) {

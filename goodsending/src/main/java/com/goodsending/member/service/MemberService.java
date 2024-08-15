@@ -18,6 +18,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -247,28 +248,37 @@ public class MemberService {
    */
   public ResponseEntity<Void> deleteRefreshToken(String refreshToken, HttpServletRequest request,
       HttpServletResponse response) {
-    // email 추출
-    Claims claims = jwtUtil.getUserInfoFromToken(refreshToken);
-    String email = claims.getSubject();
-    log.info("로그아웃 1 : " + email);
-    // redis에서 삭제
-    saveRefreshTokenRepository.deleteByKey(email);
-    // refresh token 만료 시간 0으로 변경 = 삭제
-    ResponseCookie cookie = ResponseCookie.from(JwtUtil.REFRESH_TOKEN_NAME)
-        .httpOnly(true)
-        .secure(true)
-        .sameSite("None")
-        .path("/")
-        .maxAge(0)
-        .build();
-    // Response Header에 쿠키 추가
-    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
+    // header에서 추출
     String accessToken = jwtUtil.getJwtFromHeader(request);
-    log.info("로그아웃 2 : " + accessToken);
-    // access token 만료 시간 계산
-    long expirationTime = jwtUtil.getExpirationTime(accessToken) - System.currentTimeMillis();
-    blackListAccessTokenRepository.setValue(accessToken, "true", Duration.ofMillis(expirationTime));
+    if (accessToken != null) {
+      Claims accessClaims = jwtUtil.getUserInfoFromToken(accessToken);
+      Date expirationDate = accessClaims.getExpiration();
+
+      // 액세스 토큰이 만료되지 않은 경우
+      if (expirationDate != null && expirationDate.after(new Date())) {
+        long expirationTime = expirationDate.getTime() - System.currentTimeMillis();
+        blackListAccessTokenRepository.setValue(accessToken, "true",
+            Duration.ofMillis(expirationTime));
+
+        // Refresh Token의 유저 정보 추출
+        Claims refreshClaims = jwtUtil.getUserInfoFromToken(refreshToken);
+        String email = refreshClaims.getSubject();
+
+        // Redis에서 refresh token 삭제
+        saveRefreshTokenRepository.deleteByKey(email);
+
+        // Refresh Token 만료 시간 0으로 설정 = 삭제
+        ResponseCookie cookie = ResponseCookie.from(JwtUtil.REFRESH_TOKEN_NAME)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .maxAge(0)
+            .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+      }
+    }
+    log.info("로그아웃 성공");
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

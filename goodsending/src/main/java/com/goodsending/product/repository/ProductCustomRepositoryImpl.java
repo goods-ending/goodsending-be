@@ -5,6 +5,7 @@ import static com.goodsending.product.entity.QProductImage.productImage;
 
 import com.goodsending.product.dto.request.ProductSearchCondition;
 import com.goodsending.product.dto.response.ProductRankingDto;
+import com.goodsending.product.dto.response.ProductRankingLikeCountDto;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.goodsending.product.dto.response.QProductRankingDto;
 import com.goodsending.product.dto.response.QProductSummaryDto;
@@ -17,6 +18,8 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import org.springframework.data.domain.SliceImpl;
 public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
   private final JPAQueryFactory jpaQueryFactory;
+  private final EntityManager entityManager;
 
   @Override
   public Slice<ProductSummaryDto> findByFiltersAndSort(ProductSearchCondition productSearchCondition, Pageable pageable) {
@@ -200,5 +204,23 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
     }
     return closedBuilder;
   }
+
+
+  @Override
+  public List<ProductRankingLikeCountDto> getTopProductDtoList(LocalDateTime currentDateTime) {
+    String jpqlQuery = "SELECT new com.goodsending.product.dto.response.ProductRankingLikeCountDto(" +
+        "p.id, p.name, p.price, p.startDateTime, p.maxEndDateTime, p.status, pi.url, p.likeCount) " +
+        "FROM Product p JOIN ProductImage pi ON p.id = pi.product.id " +
+        "WHERE p.startDateTime > :currentDateTime " +
+        "ORDER BY p.likeCount DESC";
+
+    TypedQuery<ProductRankingLikeCountDto> query = entityManager.createQuery(jpqlQuery, ProductRankingLikeCountDto.class);
+    query.setParameter("currentDateTime", currentDateTime);
+    query.setMaxResults(5); // Limit to top 5 products
+
+    return query.getResultList();
+  }
+
+
 }
 

@@ -1,6 +1,7 @@
 package com.goodsending.product.repository;
 
 import com.goodsending.member.entity.Member;
+import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.product.entity.Product;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,11 +16,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductCustomRepository {
 
-  @Query("SELECT p "
-      + "FROM Product p "
-      + "JOIN Like l ON l.product = p "
-      + "WHERE l.member = :member")
-  Page<Product> findLikeProductByMember(Member member, Pageable pageable);
+  @Query("SELECT new com.goodsending.product.dto.response.ProductlikeCountDto" +
+      "(p.id, p.name, p.price, p.startDateTime,p.maxEndDateTime,pi.url,p.likeCount) " +
+      "FROM Product p JOIN ProductImage pi ON p.id = pi.product.id " +
+      "WHERE p.member = :member AND pi.id = " +
+      "(SELECT MIN(pi2.id) " +
+      "FROM ProductImage pi2 " +
+      "WHERE pi2.product.id = p.id)")
+  Page<ProductlikeCountDto> findProductsWithImageUrlByMember(Member member, Pageable pageable);
+
 
   @Lock(value = LockModeType.OPTIMISTIC)
   @Query("select p from Product p where  p.id = :id")

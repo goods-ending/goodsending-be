@@ -1,5 +1,7 @@
 package com.goodsending.member.controller;
 
+import com.goodsending.global.exception.CustomException;
+import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.member.dto.request.CashRequestDto;
 import com.goodsending.member.dto.request.PasswordRequestDto;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

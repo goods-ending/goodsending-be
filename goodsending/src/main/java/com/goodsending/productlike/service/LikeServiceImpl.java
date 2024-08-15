@@ -7,6 +7,7 @@ import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.member.entity.Member;
 import com.goodsending.member.repository.MemberRepository;
 import com.goodsending.product.dto.response.ProductRankingDto;
+import com.goodsending.product.dto.response.ProductRankingLikeCountDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.product.entity.Product;
 import com.goodsending.product.entity.ProductImage;
@@ -15,7 +16,6 @@ import com.goodsending.product.repository.ProductRepository;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
 import com.goodsending.productlike.entity.Like;
-import com.goodsending.productlike.entity.ProductLikeWithScore;
 import com.goodsending.productlike.repository.LikeCountRankingRepository;
 import com.goodsending.productlike.repository.LikeRepository;
 import com.goodsending.productlike.type.LikeStatus;
@@ -150,8 +150,10 @@ public class LikeServiceImpl implements LikeService {
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    Page<Product> productList = productRepository.findLikeProductByMember(member, pageable);
-    return productList.map(ProductlikeCountDto::from);
+    Page<ProductlikeCountDto> productListDto = productRepository.findProductsWithImageUrlByMember(
+        member,pageable);
+
+    return productListDto;
   }
 
 
@@ -165,9 +167,8 @@ public class LikeServiceImpl implements LikeService {
    * @author : zz6331300zz
    */
 
-  public List<ProductlikeCountDto> getTop5LikeProduct(LocalDateTime dateTime) {
-    return productRepository.findTop5ByStartDateTimeAfterOrderByLikeCountDesc(dateTime).stream()
-        .map(ProductlikeCountDto::from).toList();
+  public List<ProductRankingDto> getTop5LikeProduct(LocalDateTime dateTime) {
+    return productRepository.getTopProductRankingDtoList(dateTime);
   }
 
   /**
@@ -278,8 +279,15 @@ public class LikeServiceImpl implements LikeService {
   }
 
   @Override
-  public void deleteTop5Likes() {
+  public void resetTop5Likes(LocalDateTime startDateTime) {
     likeCountRankingRepository.deleteZSetValue("ranking");
+    List<ProductRankingLikeCountDto> dtoList = productRepository.getTopProductDtoList(
+        startDateTime);
+
+    for (ProductRankingLikeCountDto dto : dtoList) {
+      likeCountRankingRepository.setZSetValue("ranking", ProductRankingDto.from(dto),
+          dto.getLikeCount());
+    }
   }
 
   @Override

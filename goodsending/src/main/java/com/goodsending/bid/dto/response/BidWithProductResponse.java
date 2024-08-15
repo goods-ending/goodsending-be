@@ -1,5 +1,8 @@
 package com.goodsending.bid.dto.response;
 
+import com.goodsending.bid.type.BidStatus;
+import com.goodsending.order.dto.response.OrderResponse;
+import com.goodsending.order.type.OrderStatus;
 import com.goodsending.product.dto.response.ProductSummaryDto;
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -18,6 +21,10 @@ public record BidWithProductResponse(
     Integer usePoint,
 
     Long memberId,
+
+    BidStatus bidStatus,
+
+    OrderResponse orderResponse,
 
     ProductSummaryDto productSummaryDto
 

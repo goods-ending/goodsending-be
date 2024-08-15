@@ -52,7 +52,7 @@ public class BidController {
   /**
    * 멤버별 입찰 내역 리스트를 조회합니다.
    * @param loginMemberId 로그인 유저 id
-   * @param memberId 입찰 내열 조회할 멤버 id
+   * @param memberId 입찰 내역 조회할 멤버 id
    * @param cursorId 사용자에게 응답해준 마지막 데이터 id
    * @return 입찰 정보 리스트
    * @author : jieun(je-pa)

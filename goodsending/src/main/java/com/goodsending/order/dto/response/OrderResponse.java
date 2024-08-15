@@ -2,6 +2,7 @@ package com.goodsending.order.dto.response;
 
 import com.goodsending.order.entity.Order;
 import com.goodsending.order.type.OrderStatus;
+import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
@@ -41,5 +42,8 @@ public record OrderResponse(
             .confirmedDateTime(order.getConfirmedDateTime())
             .status(order.getStatus())
             .build();
+    }
+    @QueryProjection
+    public OrderResponse {
     }
 }

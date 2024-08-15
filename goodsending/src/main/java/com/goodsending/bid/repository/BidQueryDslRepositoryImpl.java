@@ -2,6 +2,7 @@ package com.goodsending.bid.repository;
 
 import static com.goodsending.bid.entity.QBid.bid;
 import static com.goodsending.member.entity.QMember.member;
+import static com.goodsending.order.entity.QOrder.order;
 import static com.goodsending.product.entity.QProduct.product;
 import static com.goodsending.product.entity.QProductImage.productImage;
 
@@ -10,6 +11,8 @@ import com.goodsending.bid.dto.response.BidWithProductResponse;
 import com.goodsending.bid.dto.response.QBidWithProductResponse;
 import com.goodsending.bid.entity.Bid;
 import com.goodsending.bid.entity.QBid;
+import com.goodsending.order.dto.response.QOrderResponse;
+import com.goodsending.order.entity.QOrder;
 import com.goodsending.product.dto.response.QProductSummaryDto;
 import com.goodsending.product.entity.QProductImage;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -77,6 +80,17 @@ public class BidQueryDslRepositoryImpl implements BidQueryDslRepository {
             bid.price,
             bid.usePoint,
             bid.member.memberId,
+            bid.status,
+            new QOrderResponse(
+                order.id,
+                bid.product.member.memberId,
+                order.receiverName,
+                order.receiverCellNumber,
+                order.receiverAddress,
+                order.deliveryDateTime,
+                order.confirmedDateTime,
+                order.status
+            ),
             new QProductSummaryDto(
                 product.id,
                 product.name,
@@ -95,6 +109,7 @@ public class BidQueryDslRepositoryImpl implements BidQueryDslRepository {
                 .from(subProductImage)
                 .where(subProductImage.product.id.eq(product.id))
         ))
+        .leftJoin(order).on(order.bid.id.eq(bid.id))
         .where(
             ltBidId(bidListRequest.cursorId()),
             equalsBidderId(bidListRequest.memberId())

@@ -16,7 +16,7 @@ public interface LikeService{
   Page<ProductlikeCountDto> getLikeProductsPage(Long memberId, int page, int size,
       String sortBy, boolean isAsc);
 
-  List<ProductlikeCountDto> getTop5LikeProduct(LocalDateTime dateTime);
+  List<ProductRankingDto> getTop5LikeProduct(LocalDateTime dateTime);
 
   ResponseEntity<LikeResponseDto> toggleLikeRedis(Long memberId, LikeRequestDto requestDto);
 

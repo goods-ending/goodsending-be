@@ -22,4 +22,6 @@ public interface ProductCustomRepository {
   ProductRankingDto findRankingDtoById(Long productId);
 
   List<ProductRankingLikeCountDto> getTopProductDtoList(LocalDateTime currentDateTime);
+
+  List<ProductRankingDto> getTopProductRankingDtoList(LocalDateTime currentDateTime);
 }

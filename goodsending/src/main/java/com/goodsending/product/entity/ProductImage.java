@@ -22,7 +22,7 @@ public class ProductImage extends BaseEntity {
   @JoinColumn(name = "product_id")
   Product product;
 
-  @Column(name = "url", nullable = false, length = 255)
+  @Column(name = "url", nullable = false, length = 1024)
   private String url;
 
   @Builder

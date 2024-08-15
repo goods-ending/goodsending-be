@@ -4,7 +4,6 @@ import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
-import com.goodsending.productlike.entity.ProductLikeWithScore;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +16,15 @@ public interface LikeService{
   Page<ProductlikeCountDto> getLikeProductsPage(Long memberId, int page, int size,
       String sortBy, boolean isAsc);
 
-  List<ProductlikeCountDto> getTop5LikeProduct(LocalDateTime dateTime);
+  List<ProductRankingDto> getTop5LikeProduct(LocalDateTime dateTime);
 
   ResponseEntity<LikeResponseDto> toggleLikeRedis(Long memberId, LikeRequestDto requestDto);
 
-  List<ProductLikeWithScore> readTop5LikeProduct();
+  List<ProductRankingDto> readTop5LikeProduct();
 
   ProductRankingDto convertMapToDto(Map<String, Object> map);
 
-  void deleteTop5Likes();
+  void resetTop5Likes(LocalDateTime startDateTime);
 
   void deleteLikeFromZSet(ProductRankingDto rankingDto);
 }

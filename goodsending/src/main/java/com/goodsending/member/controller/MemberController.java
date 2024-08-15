@@ -1,5 +1,7 @@
 package com.goodsending.member.controller;
 
+import com.goodsending.global.exception.CustomException;
+import com.goodsending.global.exception.ExceptionCode;
 import com.goodsending.global.security.anotation.MemberId;
 import com.goodsending.member.dto.request.CashRequestDto;
 import com.goodsending.member.dto.request.PasswordRequestDto;
@@ -13,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
   private final MemberService memberService;
+  private final JwtUtil jwtUtil;
 
   /**
    * 회원가입
@@ -135,6 +140,30 @@ public class MemberController {
       @CookieValue(value = JwtUtil.REFRESH_TOKEN_NAME, required = false) String refreshToken,
       HttpServletRequest request, HttpServletResponse response) {
     return memberService.deleteRefreshToken(refreshToken, request, response);
+  }
+
+  /**
+   * Access Token 만료 여부 확인
+   * <p>
+   * Access Token 단순 만료 여부 확인
+   *
+   * @param HttpServletRequest
+   * @return String 결과 값을 반환합니다.
+   * @author : 이아람
+   */
+  @Operation(summary = "Access Token 만료 여부 확인", description = "Access Token 만료 여부 확인")
+  @GetMapping("/members/validateAccessToken")
+  public ResponseEntity<String> validateAccessToken(HttpServletRequest request) {
+    String accessToken = jwtUtil.getJwtFromHeader(request);
+    if (accessToken != null) {
+      boolean isValid = jwtUtil.validateToken(accessToken);
+      if (isValid) {
+        log.info("유효한 토큰");
+        return ResponseEntity.ok("유효한 토큰입니다.");
+      }
+    }
+    // 유효하지 않은 토큰에 대한 처리는 자동으로 이루어짐
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 }
 

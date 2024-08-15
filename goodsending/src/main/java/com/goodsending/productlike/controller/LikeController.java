@@ -1,6 +1,7 @@
 package com.goodsending.productlike.controller;
 
 import com.goodsending.global.security.anotation.MemberId;
+import com.goodsending.product.dto.response.ProductRankingDto;
 import com.goodsending.product.dto.response.ProductlikeCountDto;
 import com.goodsending.productlike.dto.LikeRequestDto;
 import com.goodsending.productlike.dto.LikeResponseDto;
@@ -87,7 +88,7 @@ public class LikeController {
 
   @Operation(summary = "찜하기 수 top5 상품 조회", description = "찜하기 수 top5 상품조회 한다.")
   @GetMapping("/likes/top5")
-  public ResponseEntity<List<ProductlikeCountDto>> getTop5LikeProduct(
+  public ResponseEntity<List<ProductRankingDto>> getTop5LikeProduct(
   ) {
     LocalDateTime dateTime = LocalDateTime.now();
     return ResponseEntity.ok(
@@ -122,7 +123,7 @@ public class LikeController {
 
   @Operation(summary = "찜하기 수 top5 상품 조회 redis", description = "찜하기 수 top5 상품조회 한다. redis")
   @GetMapping("/likes/redis")
-  public ResponseEntity<List<ProductLikeWithScore>> read() {
+  public ResponseEntity<List<ProductRankingDto>> read() {
     return ResponseEntity.ok(likeService.readTop5LikeProduct());
   }
 }

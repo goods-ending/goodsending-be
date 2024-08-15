@@ -6,16 +6,18 @@ import com.goodsending.deposit.entity.Deposit;
 import com.goodsending.deposit.repository.DepositRepository;
 import com.goodsending.global.exception.CustomException;
 import com.goodsending.global.exception.ExceptionCode;
+import com.goodsending.order.dto.request.OrderListBySellerRequest;
 import com.goodsending.order.dto.request.ReceiverInfoRequest;
 import com.goodsending.order.dto.response.OrderResponse;
+import com.goodsending.order.dto.response.OrderWithProductResponse;
 import com.goodsending.order.dto.response.ReceiverInfoResponse;
 import com.goodsending.order.dto.response.UpdateShippingResponse;
 import com.goodsending.order.entity.Order;
 import com.goodsending.order.repository.OrderRepository;
-import java.time.LocalDateTime;
 import com.goodsending.product.entity.Product;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,15 @@ public class OrderServiceImpl implements OrderService{
   private final DepositRepository depositRepository;
   private static final double CHARGE_PERCENT = 0.05;
   private static final double POINT_PERCENT = 0.025;
+
+
+  @Override
+  public Slice<OrderWithProductResponse> readBySeller(OrderListBySellerRequest request) {
+    if(request.loginMemberId() != request.memberId()){
+      throw CustomException.from(ExceptionCode.ONLY_SELF_ACCESS);
+    }
+    return orderRepository.findOrderWithProductBySeller(request);
+  }
 
   /**
    * 낙찰자가 주문에 대한 배송 정보를 입력합니다.
@@ -102,6 +113,8 @@ public class OrderServiceImpl implements OrderService{
 
     return OrderResponse.from(order.processConfirm(now));
   }
+
+
 
   // TODO: 동시성 문제 처리 필요
   // 수수료, 포인트, 판매자 수익, 보증금 정산

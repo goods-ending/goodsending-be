@@ -1,19 +1,24 @@
 package com.goodsending.order.controller;
 
 import com.goodsending.global.security.anotation.MemberId;
+import com.goodsending.order.dto.request.OrderListBySellerRequest;
 import com.goodsending.order.dto.request.ReceiverInfoRequest;
 import com.goodsending.order.dto.response.OrderResponse;
+import com.goodsending.order.dto.response.OrderWithProductResponse;
 import com.goodsending.order.dto.response.ReceiverInfoResponse;
 import com.goodsending.order.dto.response.UpdateShippingResponse;
 import com.goodsending.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -27,6 +32,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/orders")
 public class OrderController {
   private final OrderService orderService;
+
+  /**
+   * 멤버별 판매 주문 내역 리스트를 조회합니다.
+   * @param loginSellerId 로그인 유저 id
+   * @param memberId  내역 조회할 멤버 id
+   * @param cursorId 사용자에게 응답해준 마지막 데이터 id
+   * @return 주문 정보 리스트
+   * @author : jieun(je-pa)
+   */
+  @Operation(summary = "멤버별 판매 주문 내역 리스트를 조회합니다.",
+      description = "본인의 판매 주문 내역 리스트만 조회할 수 있습니다.")
+  @GetMapping
+  public ResponseEntity<Slice<OrderWithProductResponse>> readByMember(
+      @MemberId Long loginSellerId,
+      @RequestParam Long memberId,
+      @RequestParam(required = false) Long cursorId,
+      @RequestParam(defaultValue = "15") Integer pageSize) {
+    return ResponseEntity.ok(orderService.readBySeller(
+        new OrderListBySellerRequest(loginSellerId, memberId, cursorId, pageSize)));
+  }
 
   /**
    *

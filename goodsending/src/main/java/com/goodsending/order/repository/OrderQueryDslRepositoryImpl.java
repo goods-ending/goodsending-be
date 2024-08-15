@@ -76,6 +76,7 @@ public class OrderQueryDslRepositoryImpl implements  OrderQueryDslRepository {
                 product.id,
                 product.name,
                 product.price,
+                product.finalPrice,
                 product.startDateTime,
                 product.dynamicEndDateTime,
                 product.maxEndDateTime,

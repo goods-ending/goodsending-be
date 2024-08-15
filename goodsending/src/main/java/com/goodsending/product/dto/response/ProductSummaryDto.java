@@ -11,6 +11,7 @@ public class ProductSummaryDto {
   private Long productId;
   private String name;
   private int price;
+  private int finalPrice;
   private LocalDateTime startDateTime;
   private LocalDateTime dynamicEndDateTime;
   private LocalDateTime maxEndDateTime;
@@ -18,11 +19,12 @@ public class ProductSummaryDto {
   private String thumbnailUrl;
 
   @QueryProjection
-  public ProductSummaryDto(Long productId, String name, int price, LocalDateTime startDateTime, LocalDateTime dynamicEndDateTime,
+  public ProductSummaryDto(Long productId, String name, int price, int finalPrice, LocalDateTime startDateTime, LocalDateTime dynamicEndDateTime,
       LocalDateTime maxEndDateTime, ProductStatus status, String thumbnailUrl) {
     this.productId = productId;
     this.name = name;
     this.price = price;
+    this.finalPrice = finalPrice;
     this.startDateTime = startDateTime;
     this.dynamicEndDateTime = dynamicEndDateTime;
     this.maxEndDateTime = maxEndDateTime;

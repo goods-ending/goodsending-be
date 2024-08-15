@@ -12,7 +12,6 @@ import com.goodsending.bid.dto.response.QBidWithProductResponse;
 import com.goodsending.bid.entity.Bid;
 import com.goodsending.bid.entity.QBid;
 import com.goodsending.order.dto.response.QOrderResponse;
-import com.goodsending.order.entity.QOrder;
 import com.goodsending.product.dto.response.QProductSummaryDto;
 import com.goodsending.product.entity.QProductImage;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -95,6 +94,7 @@ public class BidQueryDslRepositoryImpl implements BidQueryDslRepository {
                 product.id,
                 product.name,
                 product.price,
+                product.finalPrice,
                 product.startDateTime,
                 product.dynamicEndDateTime,
                 product.maxEndDateTime,

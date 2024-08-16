@@ -21,8 +21,7 @@ public class ProductScheduler {
   @Scheduled(cron = "0 0 12,18 * * *") // 매일 12시, 18시
   public void updateUpComingProduct() {
     log.info("경매 진행 상태 전환 ");
-    LocalDateTime startDateTime = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0)
-        .withNano(0);
+    LocalDateTime startDateTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
     productService.updateProductStatus(ProductStatus.UPCOMING, startDateTime);
     likeService.resetTop5Likes(startDateTime);
 

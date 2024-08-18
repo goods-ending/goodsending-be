@@ -3,7 +3,6 @@ package com.goodsending;
 import com.goodsending.global.config.MailConfig;
 import com.goodsending.global.config.S3Config;
 import com.goodsending.global.config.WebSecurityConfig;
-import com.goodsending.global.redis.listener.RedisKeyExpirationListener;
 import com.goodsending.global.service.S3Uploader;
 import com.goodsending.global.websocket.handler.SendCommandHandler;
 import com.goodsending.member.util.JwtUtil;
@@ -25,9 +24,6 @@ public abstract class IntegrationTestSupport {
 
   @MockBean
   protected WebSecurityConfig securityConfig;
-
-  @MockBean
-  protected RedisKeyExpirationListener redisKeyExpirationListener;
 
   @MockBean
   protected S3Uploader s3Uploader;

@@ -202,7 +202,7 @@ class BidRepositoryTest extends IntegrationTestSupport {
         .price(10000)
         .introduction("상품소개")
         .startDateTime(LocalDateTime.now())
-        .startDateTime(LocalDateTime.now().plusHours(3))
+        .maxEndDateTime(LocalDateTime.now().plusHours(3))
         .member(member)
         .build();
   }

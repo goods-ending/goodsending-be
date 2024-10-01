@@ -42,12 +42,1085 @@
 
 
 ### 🚏 API 설계
-![스크린샷 2024-08-17 오전 11 22 29](https://github.com/user-attachments/assets/67c637d4-8503-4336-8d5d-97c8f44efa8c)
-![스크린샷 2024-08-17 오전 11 22 58](https://github.com/user-attachments/assets/b1168bcf-22b8-4878-8e6e-a504e40b4a28)
-![스크린샷 2024-08-17 오전 11 31 33](https://github.com/user-attachments/assets/c738c152-624f-4979-9a66-219b2a364266)
-![스크린샷 2024-08-17 오전 11 31 49](https://github.com/user-attachments/assets/4ad86c83-9be1-41c8-9f00-bb511e9cc1df)
-![스크린샷 2024-08-17 오전 11 34 52](https://github.com/user-attachments/assets/4ce8163c-06e5-4121-9821-cd02fa31ebec)
-![스크린샷 2024-08-17 오전 11 36 11](https://github.com/user-attachments/assets/ac8bc942-7058-4cb2-9808-d9f196786ce2)
+
+### 유저 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>PUT</td>
+            <td>/api/members/login</td>
+            <td>로그인</td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "email": "string",
+  "password": "string"
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td>/api/members/{memberId}/password</td>
+            <td>비밀번호 변경 </td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "currentPassword": "string",
+  "password": "string",
+  "confirmPassword": "string"
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td>/api/members/{memberId}/cash</td>
+            <td>캐시 충전 </td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "cash": 0
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/api/members/tokenReissue</td>
+            <td>Access Token 재발급 </td>
+            <td>
+                <details>
+                    <summary>Request (cookie)</summary>
+                    <pre>Refresh_Token: string</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/api/members/signup</td>
+            <td>회원 가입 </td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "email": "string",
+  "password": "string",
+  "confirmPassword": "string",
+  "code": "string"
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/members/validateAccessToken</td>
+            <td>Access Token 만료 여부 확인</td>
+            <td>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/members/info</td>
+            <td>회원 정보 조회 </td>
+            <td>
+                <details>
+                    <summary>Response (application/json)</summary>
+                    <pre>{
+  "memberId": 0,
+  "email": "string",
+  "cash": 0,
+  "point": 0,
+  "role": "ADMIN"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>DELETE</td>
+            <td>/api/members/logout</td>
+            <td>로그아웃 </td>
+            <td>
+                <details>
+                    <summary>Request (cookie)</summary>
+                    <pre>Refresh_Token: string</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No content</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+### 상품 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>GET</td>
+            <td>/api/products/{productId}</td>
+            <td>경매 상품 상세 정보 조회  - 상품 아이디를 통해 선택한 상품의 상세 정보를 조회할 수 있다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+productId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "productId": 0,
+  "memberId": 0,
+  "name": "string",
+  "price": 0,
+  "introduction": "string",
+  "startDateTime": "2024-10-01T02:53:43.859Z",
+  "maxEndDateTime": "2024-10-01T02:53:43.859Z",
+  "dynamicEndDateTime": "2024-10-01T02:53:43.859Z",
+  "remainingExpiration": {
+    "seconds": 0,
+    "zero": true,
+    "nano": 0,
+    "negative": true,
+    "units": [
+      {
+        "durationEstimated": true,
+        "timeBased": true,
+        "dateBased": true
+      }
+    ]
+  },
+  "bidMaxPrice": 0,
+  "finalPrice": 0,
+  "biddingCount": 0,
+  "bidderCount": 0,
+  "likeCount": 0,
+  "status": "ONGOING",
+  "productImages": [
+    {
+      "productImageId": 0,
+      "url": "string",
+      "productId": 0
+    }
+  ]
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td>/api/products/{productId}</td>
+            <td>경매 상품 수정  - 상품 아이디를 통해 상품명, 상품 소개, 경매시작일, 경매 시간대를 수정할 수 있습니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+productId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
+                    <pre>application/json
+{
+  "requestDto": {
+    "name": "string",
+    "introduction": "string",
+    "startDate": "2024-10-01",
+    "auctionTime": "AFTERNOON"
+  },
+  "productImages": [
+    "string"
+  ]
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "productId": 0,
+  "memberId": 0,
+  "name": "string",
+  "price": 0,
+  "introduction": "string",
+  "likeCount": 0,
+  "startDateTime": "2024-10-01T02:53:43.831Z",
+  "maxEndDateTime": "2024-10-01T02:53:43.831Z",
+  "productImages": [
+    {
+      "productImageId": 0,
+      "url": "string",
+      "productId": 0
+    }
+  ]
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>DELETE</td>
+            <td>/api/products/{productId}</td>
+            <td>경매 상품 삭제 - 상품 아이디와 회원 아이디로 상품을 삭제할 수 있습니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+productId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>No response body</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/products</td>
+            <td>경매 상품 검색 - 전체 조회일 경우 조건없이, 내가 등록한 상품 목록 조회 시 memberId를, 필터링 검색의 경우 openProduct, closedProduct, keyword 조건으로 상품 목록을 조회한다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name                    Description
+memberId                integer($int64) (query)
+openProduct             boolean (query)
+closedProduct           boolean (query)
+keyword                 string (query)
+cursorStatus            string (query) - Available values : ONGOING, UPCOMING, ENDED
+cursorStartDateTime    string($date-time) (query)
+cursorId               integer($int64) (query)
+size                   integer($int32) (query) - Default value: 15
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "first": true,
+  "last": true,
+  "size": 0,
+  "content": [
+    {
+      "productId": 0,
+      "name": "string",
+      "price": 0,
+      "finalPrice": 0,
+      "startDateTime": "2024-10-01T02:53:43.838Z",
+      "dynamicEndDateTime": "2024-10-01T02:53:43.838Z",
+      "maxEndDateTime": "2024-10-01T02:53:43.838Z",
+      "status": "ONGOING",
+      "thumbnailUrl": "string"
+    }
+  ],
+  "number": 0,
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": true,
+      "property": "string",
+      "ignoreCase": true
+    }
+  ],
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": true,
+        "property": "string",
+        "ignoreCase": true
+      }
+    ],
+    "pageSize": 0,
+    "paged": true,
+    "pageNumber": 0,
+    "unpaged": true
+  },
+  "empty": true
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/api/products</td>
+            <td>경매 상품 등록 - 상품명, 판매가, 상품소개, 경매시작일, 경매시간대, 상품 이미지를 입력하면 상품을 등록할 수 있다.</td>
+            <td>
+                <details>
+                    <summary>Request Body</summary>
+                    <pre>application/json
+{
+  "requestDto": {
+    "name": "string",
+    "price": 0,
+    "introduction": "string",
+    "startDate": "2024-10-01",
+    "auctionTime": "AFTERNOON"
+  },
+  "productImages": [
+    "string"
+  ]
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "productId": 0,
+  "memberId": 0,
+  "name": "string",
+  "price": 0,
+  "introduction": "string",
+  "likeCount": 0,
+  "startDateTime": "2024-10-01T02:53:43.846Z",
+  "maxEndDate": "2024-10-01T02:53:43.846Z",
+  "productImages": [
+    {
+      "productImageId": 0,
+      "url": "string",
+      "productId": 0
+    }
+  ]
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/products/top5/bidderCount</td>
+            <td>경매 상품 입찰자 수 TOP5 조회 - 입찰자 수를 기준으로 상위 top5 상품을 조회합니다.</td>
+            <td>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>[
+  {
+    "productId": 0,
+    "name": "string",
+    "price": 0,
+    "startDateTime": "2024-10-01T02:53:43.853Z",
+    "maxEndDateTime": "2024-10-01T02:53:43.853Z",
+    "status": "ONGOING",
+    "thumbnailUrl": "string"
+  }
+]</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+### 입찰 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>GET</td>
+            <td>/api/bids</td>
+            <td>멤버별 입찰 내역 리스트를 조회합니다. 본인의 입찰 내역 리스트만 조회할 수 있습니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+memberId * integer($int64) (query)
+cursorId    integer($int64) (query)
+pageSize    integer($int32) (query)
+            Default value: 15
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "first": true,
+  "last": true,
+  "size": 0,
+  "content": [
+    {
+      "bidId": 0,
+      "bidPrice": 0,
+      "usePoint": 0,
+      "memberId": 0,
+      "bidStatus": "SUCCESSFUL",
+      "orderResponse": {
+        "orderId": 0,
+        "sellerId": 0,
+        "receiverName": "string",
+        "receiverCellNumber": "string",
+        "receiverAddress": "string",
+        "deliveryDateTime": "2024-10-01T02:40:04.476Z",
+        "confirmedDateTime": "2024-10-01T02:40:04.476Z",
+        "status": "CANCELLED"
+      },
+      "productSummaryDto": {
+        "productId": 0,
+        "name": "string",
+        "price": 0,
+        "finalPrice": 0,
+        "startDateTime": "2024-10-01T02:40:04.476Z",
+        "dynamicEndDateTime": "2024-10-01T02:40:04.476Z",
+        "maxEndDateTime": "2024-10-01T02:40:04.476Z",
+        "status": "ONGOING",
+        "thumbnailUrl": "string"
+      },
+      "useCash": 0
+    }
+  ],
+  "number": 0,
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": true,
+      "property": "string",
+      "ignoreCase": true
+    }
+  ],
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": true,
+        "property": "string",
+        "ignoreCase": true
+      }
+    ],
+    "pageSize": 0,
+    "paged": true,
+    "pageNumber": 0,
+    "unpaged": true
+  },
+  "empty": true
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/api/bids</td>
+            <td>입찰 신청 - 유저가 캐시와 포인트를 사용하여 입찰합니다.</td>
+            <td>
+                <details>
+                    <summary>Request Body</summary>
+                    <pre>{
+  "bidPrice": 0,
+  "usePoint": 0,
+  "productId": 0
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "bidId": 0,
+  "price": 0,
+  "usePoint": 0,
+  "memberId": 0,
+  "productId": 0,
+  "biddingCount": 0,
+  "bidderCount": 0,
+  "remainDuration": {
+    "seconds": 0,
+    "zero": true,
+    "nano": 0,
+    "negative": true,
+    "units": [
+      {
+        "durationEstimated": true,
+        "timeBased": true,
+        "dateBased": true
+      }
+    ]
+  }
+}</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+### 주문 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>PUT</td>
+            <td>/api/orders/{orderId}/receiver-info</td>
+            <td>주문 상품 수신자 정보 업데이트 - 주문 상품의 수신자명, 수신자연락처, 수신자 주소를 업데이트합니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+orderId *  integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
+                    <pre>application/json
+{
+  "receiverName": "string",
+  "receiverCellNumber": "string",
+  "receiverAddress": "string"
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "orderId": 0,
+  "bidderId": 0,
+  "receiverName": "string",
+  "receiverCellNumber": "string",
+  "receiverAddress": "string"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td>/api/orders/{orderId}/delivery</td>
+            <td>주문 배송 출발 처리 - 판매자가 주문을 배송 출발 처리합니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+orderId *  integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "orderId": 0,
+  "sellerId": 0,
+  "receiverName": "string",
+  "receiverCellNumber": "string",
+  "receiverAddress": "string",
+  "deliveryDateTime": "2024-10-01T02:57:14.028Z",
+  "status": "CANCELLED"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td>/api/orders/{orderId}/confirm</td>
+            <td>수신자가 거래를 확정합니다 - 수신자가 배송을 받은 후 거래확정을 합니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+orderId *  integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "orderId": 0,
+  "sellerId": 0,
+  "receiverName": "string",
+  "receiverCellNumber": "string",
+  "receiverAddress": "string",
+  "deliveryDateTime": "2024-10-01T02:57:14.030Z",
+  "confirmedDateTime": "2024-10-01T02:57:14.030Z",
+  "status": "CANCELLED"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/orders</td>
+            <td>멤버별 판매 주문 내역 리스트를 조회합니다 - 본인의 판매 주문 내역 리스트만 조회할 수 있습니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+memberId    * integer($int64) (query)
+cursorId    integer($int64) (query)
+pageSize    integer($int32) (query) - Default value: 15
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre> {
+  "first": true,
+  "last": true,
+  "size": 0,
+  "content": [
+    {
+      "productSummaryDto": {
+        "productId": 0,
+        "name": "string",
+        "price": 0,
+        "finalPrice": 0,
+        "startDateTime": "2024-10-01T02:57:14.035Z",
+        "dynamicEndDateTime": "2024-10-01T02:57:14.035Z",
+        "maxEndDateTime": "2024-10-01T02:57:14.035Z",
+        "status": "ONGOING",
+        "thumbnailUrl": "string"
+      },
+      "orderResponse": {
+        "orderId": 0,
+        "sellerId": 0,
+        "receiverName": "string",
+        "receiverCellNumber": "string",
+        "receiverAddress": "string",
+        "deliveryDateTime": "2024-10-01T02:57:14.035Z",
+        "confirmedDateTime": "2024-10-01T02:57:14.035Z",
+        "status": "CANCELLED"
+      }
+    }
+  ],
+  "number": 0,
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": true,
+      "property": "string",
+      "ignoreCase": true
+    }
+  ],
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": true,
+        "property": "string",
+        "ignoreCase": true
+      }
+    ],
+    "pageSize": 0,
+    "paged": true,
+    "pageNumber": 0,
+    "unpaged": true
+  },
+  "empty": true
+}</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+### 채팅 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>GET</td>
+            <td>/api/product-message-histories</td>
+            <td>상품별 메시지 내역 조회 - 상품별 메시지 내역을 커서 기반 페이징으로 조회합니다.</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name        Description
+productId * integer($int64) (query)
+size       integer($int32) (query)
+            Default value: 15
+cursorId   integer($int64) (query)
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "first": true,
+  "last": true,
+  "size": 0,
+  "content": [
+    {
+      "id": 0,
+      "memberId": 0,
+      "productId": 0,
+      "message": "string",
+      "type": "BID",
+      "createdDateTime": "2024-10-01T02:50:21.671Z"
+    }
+  ],
+  "number": 0,
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": true,
+      "property": "string",
+      "ignoreCase": true
+    }
+  ],
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": true,
+        "property": "string",
+        "ignoreCase": true
+      }
+    ],
+    "pageSize": 0,
+    "paged": true,
+    "pageNumber": 0,
+    "unpaged": true
+  },
+  "empty": true
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>STOMP</td>
+            <td>/app/message</td>
+            <td>채팅 메시지 전송</td>
+            <td>
+                <details>
+                    <summary>Message Content (application/json)</summary>
+                    <pre>{
+  "productId": 97,
+  "message": "채팅메시지",
+  "type": "GENERAL_CHAT"
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (application/json)</summary>
+                    <pre>{
+  "memberId": 7,
+  "productId": 97,
+  "message": "채팅메시지",
+  "price": 0,
+  "biddingCount": 0,
+  "bidderCount": 0,
+  "type": "GENERAL_CHAT"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>STOMP</td>
+            <td>/topic/products/{productId}</td>
+            <td>제품 관련 채팅 메시지 수신 구독</td>
+            <td>
+                <details>
+                    <summary>Response (application/json)</summary>
+                    <pre>{
+  "memberId": 7,
+  "productId": 97,
+  "message": "채팅메시지",
+  "price": 0,
+  "biddingCount": 0,
+  "bidderCount": 0,
+  "type": "GENERAL_CHAT"
+}</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+### 메일 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>POST</td>
+            <td>/api/members/sendMail</td>
+            <td>인증코드 발송</td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "email": "string"
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>string</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/members/checkCode</td>
+            <td>인증코드 확인</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name          Description
+email *      string (query)
+code *       string (query)
+</pre>
+                </details>
+                <details>
+                    <summary>Response</summary>
+                    <pre>200 OK</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+###  찜 API
+
+<table>
+    <thead>
+        <tr style="font-weight: bold;">
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Request & Response Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>GET</td>
+            <td>/api/likes</td>
+            <td>찜한 상품 목록 조회 페이징</td>
+            <td>
+                <details>
+                    <summary>Request Parameters</summary>
+                    <pre>
+Name          Description
+page *       integer($int32) (query)
+size *       integer($int32) (query)
+sortBy *     string (query)
+isAsc *      boolean (query)
+</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "totalPages": 0,
+  "totalElements": 0,
+  "first": true,
+  "last": true,
+  "size": 0,
+  "content": [
+    {
+      "productId": 0,
+      "productName": "string",
+      "price": 0,
+      "startDateTime": "2024-10-01T02:37:43.478Z",
+      "maxEndDateTime": "2024-10-01T02:37:43.478Z",
+      "thumbnailUrl": "string",
+      "likeCount": 0
+    }
+  ],
+  "number": 0,
+  "sort": [
+    {
+      "direction": "string",
+      "nullHandling": "string",
+      "ascending": true,
+      "property": "string",
+      "ignoreCase": true
+    }
+  ],
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": [
+      {
+        "direction": "string",
+        "nullHandling": "string",
+        "ascending": true,
+        "property": "string",
+        "ignoreCase": true
+      }
+    ],
+    "pageSize": 0,
+    "paged": true,
+    "pageNumber": 0,
+    "unpaged": true
+  },
+  "empty": true
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/api/likes</td>
+            <td>찜하기 토글</td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "productId": 0,
+  "press": true
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "code": 0,
+  "status": "100 CONTINUE",
+  "message": "ALREADY_LIKE"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/likes/redis</td>
+            <td>찜하기 수 top5 상품 조회 redis</td>
+            <td>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>[
+  {
+    "productId": 0,
+    "name": "string",
+    "price": 0,
+    "startDateTime": "2024-10-01T02:37:43.481Z",
+    "maxEndDateTime": "2024-10-01T02:37:43.481Z",
+    "status": "ONGOING",
+    "thumbnailUrl": "string"
+  }
+]</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/api/likes/redis</td>
+            <td>찜하기 수 top5 상품 등록 redis</td>
+            <td>
+                <details>
+                    <summary>Request (application/json)</summary>
+                    <pre>{
+  "productId": 0,
+  "press": true
+}</pre>
+                </details>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>{
+  "code": 0,
+  "status": "100 CONTINUE",
+  "message": "ALREADY_LIKE"
+}</pre>
+                </details>
+            </td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/api/likes/top5</td>
+            <td>찜하기 수 top5 상품 조회</td>
+            <td>
+                <details>
+                    <summary>Response (200 OK)</summary>
+                    <pre>[
+  {
+    "productId": 0,
+    "name": "string",
+    "price": 0,
+    "startDateTime": "2024-10-01T02:37:43.484Z",
+    "maxEndDateTime": "2024-10-01T02:37:43.484Z",
+    "status": "ONGOING",
+    "thumbnailUrl": "string"
+  }
+]</pre>
+                </details>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 
 ### 💡 주요 기능 소개

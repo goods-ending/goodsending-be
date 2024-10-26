@@ -2,7 +2,7 @@
 > 더 이상 필요 없는 굿즈들을 실시간 경매를 통해 구매, 판매 할 수 있는 서비스 플랫폼
 
 🔗 [굿즈엔딩 소개 브로셔](https://www.notion.so/8528ca6a974e4795ba2ea971cbe62f53?pvs=4)
-🔗 *[프로젝트 서비스 링크](https://goodsending.shop/)*
+🔗 [프로젝트 서비스 링크](https://goodsending.shop/)
 
 
 ## 📌 프로젝트 소개

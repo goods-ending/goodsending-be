@@ -1,9 +1,15 @@
 # ❤️‍🩹 GOODSENDING
-> 굿즈가 필요한 사람과 그렇지 않은 사람을 연결하는 실시간 경매 플랫폼으로, 원하는 굿즈를 쉽고 빠르게 사고팔 수 있는 공간을 제공합니다.
 
-🔗 [굿즈엔딩 소개 브로셔](https://www.notion.so/8528ca6a974e4795ba2ea971cbe62f53?pvs=4)
-🔗 [프로젝트 서비스 링크](https://goodsending.shop/)
+> GoodsEnding은 굿즈가 필요한 사람과 그렇지 않은 사람을 연결하는 실시간 경매 플랫폼으로, 원하는 굿즈를 쉽고 빠르게 사고팔 수 있는 공간을 제공합니다.
 
+> 🔗 [시연 영상](https://www.youtube.com/watch?v=0cbSPnoaRMQ)
+> 🔗 [굿즈엔딩 소개 브로셔](https://www.notion.so/8528ca6a974e4795ba2ea971cbe62f53?pvs=4)
+> 
+> 🔗 [GitHub 링크](https://github.com/goods-ending)
+> 🔗 [GOODSENDING-FE GITHUB](https://github.com/goods-ending/goodsending-fe)
+> 🔗 [GOODSENDING-BE GITHUB](https://github.com/goods-ending/goodsending-be)
+> 
+> 🔗 [프로젝트 서비스 링크](https://goodsending.shop/) (현재 백엔드 서버는 중단되었습니다.)
 
 ## 📌 프로젝트 소개
 
@@ -12,24 +18,23 @@
 ![굿즈엔딩 목업](https://github.com/user-attachments/assets/e19980ec-61bb-4ec6-952b-fef4573ba56f)
 
 🧸 판매하고 싶은 상품을 경매에 등록해보세요!
+
 💸 실시간으로 경매에 참여하여 원하는 물건을 구매해보세요!
+
 ⌨️ 경매 참여한 유저들과 채팅으로 소통해보아요!
 
-**GoodsEnding**은 더 이상 필요 없어진 굿즈를 실시간 경매를 통해 구매하고 판매할 수 있는 플랫폼입니다. 사용자는 간편하게 상품을 등록하고, 다른 사용자와 실시간 채팅으로 소통하며 경매에 참여할 수 있습니다.
-
-🔗 [GitHub 링크](https://github.com/goods-ending)
-
-🔗 [GOODSENDING-FE GITHUB](https://github.com/goods-ending/goodsending-fe)
-
-🔗 [팀 프로젝트 노션](https://nervous-mule-411.notion.site/GoodsEnding-51dccf65d0b843639f070db0a3866105?pvs=4)
-
-🔗 [시연 영상](https://www.youtube.com/watch?v=0cbSPnoaRMQ)
-
+GoodsEnding은 더 이상 필요 없어진 굿즈를 실시간 경매를 통해 구매하고 판매할 수 있는 플랫폼입니다. 사용자는 간편하게 상품을 등록하고, 다른 사용자와 실시간 채팅으로 소통하며 경매에 참여할 수 있습니다.
 
 ### 🧬 프로젝트 아키텍처
 
 ![아키텍처](https://github.com/user-attachments/assets/82dc10e9-decd-4d94-85a4-403dbe49674f)
 
+### 경매 플로우
+
+![유저플로우](https://github.com/user-attachments/assets/c4dff895-39e7-4dbd-bcf8-8f46586da13d)
+
+한 판매자가 사용하지 않는 굿즈를 '굿즈 엔딩' 플랫폼에 판매를 등록하여 경매가 시작되면 다른 유저들은 마음에 드는 가격으로 입찰을 시도할 수 있습니다. 
+마지막 입찰 후 5분간 추가 입찰이 없으면 자동으로 낙찰자가 선정되고, 주문 및 배송 프로세스가 진행되어 거래가 종료됩니다.
 
 ### 🧙 기술적 의사결정
 
@@ -40,7 +45,8 @@
 | Language : JavaScript (ES6)<br>- Framework : React<br>- State Management : Redux<br>- Build Tool : AWS Amplify<br>- Package Manager : yarn<br>- UI Library : Tailwind CSS<br>- HTTP Client : Axios<br>- Formatting : Prettier<br>- Version Control : Git | Language : Java 17<br>- Framework : SpringBoot<br>- Build Toole : Gradle<br>- DB : MySQL, Redis<br>- Test : Postman<br>- JPA<br>- Auth : JWT<br>- Spring Security<br>- Docker<br>- Cloud Storage Service : AWS S3<br>- WebSocket<br>- Spring Scheduler<br>- Query DSL<br>- SMTP<br>- swagger | Deploy<br>    - AWS EC2<br>    - Docker<br>    - Github Actions<br>    - AWS ECR<br>- Communication<br>    - Slack<br>    - Github<br>    - Notion |
 
 ### 🗄 ERD
-![image (2) (1)](https://github.com/user-attachments/assets/4c2464b5-1681-485c-a6c1-88f1a3a5b212)
+
+![erd-goodsending](https://github.com/user-attachments/assets/f4720370-e64a-4c72-806c-8d96705aec3c)
 
 
 ### 🚏 API 설계

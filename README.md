@@ -6,6 +6,9 @@
 
 
 ## 📌 프로젝트 소개
+
+📅 프로젝트 기간 : 2024.07.19 ~ 2024.08.16
+
 ![굿즈엔딩 목업](https://github.com/user-attachments/assets/e19980ec-61bb-4ec6-952b-fef4573ba56f)
 
 🧸 판매하고 싶은 상품을 경매에 등록해보세요!
@@ -21,9 +24,6 @@
 🔗 [팀 프로젝트 노션](https://nervous-mule-411.notion.site/GoodsEnding-51dccf65d0b843639f070db0a3866105?pvs=4)
 
 🔗 [시연 영상](https://www.youtube.com/watch?v=0cbSPnoaRMQ)
-
-
-📅 프로젝트 기간 : 2024.07.19 ~ 2024.08.16
 
 
 ### 🧬 프로젝트 아키텍처

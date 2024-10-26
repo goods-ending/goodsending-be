@@ -27,7 +27,9 @@
 
 
 ### 🧬 프로젝트 아키텍처
-![아키텍처](https://github.com/user-attachments/assets/6941d249-e189-4dd4-b6ee-c2ad8b725aa9)
+
+![아키텍처](https://github.com/user-attachments/assets/82dc10e9-decd-4d94-85a4-403dbe49674f)
+
 
 ### 🧙 기술적 의사결정
 

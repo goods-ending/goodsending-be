@@ -36,13 +36,58 @@ GoodsEnding은 더 이상 필요 없어진 굿즈를 실시간 경매를 통해 
 한 판매자가 사용하지 않는 굿즈를 '굿즈 엔딩' 플랫폼에 판매를 등록하여 경매가 시작되면 다른 유저들은 마음에 드는 가격으로 입찰을 시도할 수 있습니다. 
 마지막 입찰 후 5분간 추가 입찰이 없으면 자동으로 낙찰자가 선정되고, 주문 및 배송 프로세스가 진행되어 거래가 종료됩니다.
 
-### 🧙 기술적 의사결정
-
 ### 🔨 기술 스택
 
 | Frontend                                                                                                                                                                                                                                                 | Backend                                                                                                                                                                                                                                                                                      | CI / CD                                                                                                                                            |
 | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Language : JavaScript (ES6)<br>- Framework : React<br>- State Management : Redux<br>- Build Tool : AWS Amplify<br>- Package Manager : yarn<br>- UI Library : Tailwind CSS<br>- HTTP Client : Axios<br>- Formatting : Prettier<br>- Version Control : Git | Language : Java 17<br>- Framework : SpringBoot<br>- Build Toole : Gradle<br>- DB : MySQL, Redis<br>- Test : Postman<br>- JPA<br>- Auth : JWT<br>- Spring Security<br>- Docker<br>- Cloud Storage Service : AWS S3<br>- WebSocket<br>- Spring Scheduler<br>- Query DSL<br>- SMTP<br>- swagger | Deploy<br>    - AWS EC2<br>    - Docker<br>    - Github Actions<br>    - AWS ECR<br>- Communication<br>    - Slack<br>    - Github<br>    - Notion |
+<table>
+  <tr>
+    <th>Frontend</th>
+    <th>Backend</th>
+    <th>CI / CD</th>
+  </tr>
+  <tr>
+    <td>
+      Language: JavaScript (ES6)<br>
+      - Framework: React<br>
+      - State Management: Redux<br>
+      - Build Tool: AWS Amplify<br>
+      - Package Manager: yarn<br>
+      - UI Library: Tailwind CSS<br>
+      - HTTP Client: Axios<br>
+      - Formatting: Prettier<br>
+      - Version Control: Git
+    </td>
+    <td>
+      Language: Java 17<br>
+      - Framework: Spring Boot<br>
+      - Build Tool: Gradle<br>
+      - DB: MySQL, Redis<br>
+      - JPA<br>
+      - Auth: JWT<br>
+      - Spring Security<br>
+      - Docker<br>
+      - Cloud Storage Service: AWS S3<br>
+      - WebSocket<br>
+      - Spring Scheduler<br>
+      - Query DSL<br>
+      - SMTP<br>
+      - Swagger
+    </td>
+    <td>
+      Deploy:<br>
+      - AWS EC2<br>
+      - Docker<br>
+      - GitHub Actions<br>
+      - AWS ECR<br>
+      Communication:<br>
+      - Slack<br>
+      - GitHub<br>
+      - Notion
+    </td>
+  </tr>
+</table>
 
 ### 🗄 ERD
 

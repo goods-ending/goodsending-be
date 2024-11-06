@@ -1393,7 +1393,7 @@ Body
     🔥Remove code or files: 코드 or 파일 삭제
     📝 Add or Update documentation: 문서 생성 및 수정
     💡 Add or Update comments: 주석 생성 및 수정
-    ✏️ Fix typos:
+    ✏️ Fix typos
     ✅ Test
     🔊 Add or Update logs
     ➕ Add a dependency

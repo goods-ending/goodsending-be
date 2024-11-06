@@ -222,16 +222,20 @@ Body
             <td>로그인</td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "email": "string",
   "password": "string"
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -240,17 +244,29 @@ Body
             <td>비밀번호 변경 </td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
+                    <pre>
+Name        Description
+memberId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "currentPassword": "string",
   "password": "string",
   "confirmPassword": "string"
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -259,15 +275,27 @@ Body
             <td>캐시 충전 </td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
+                    <pre>
+Name        Description
+memberId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "cash": 0
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -279,10 +307,9 @@ Body
                     <summary>Request (cookie)</summary>
                     <pre>Refresh_Token: string</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -291,7 +318,12 @@ Body
             <td>회원 가입 </td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "email": "string",
   "password": "string",
@@ -299,10 +331,9 @@ Body
   "code": "string"
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -310,10 +341,9 @@ Body
             <td>/api/members/validateAccessToken</td>
             <td>Access Token 만료 여부 확인</td>
             <td>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -322,7 +352,13 @@ Body
             <td>회원 정보 조회 </td>
             <td>
                 <details>
-                    <summary>Response (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Response Body</summary>
                     <pre>{
   "memberId": 0,
   "email": "string",
@@ -342,10 +378,9 @@ Body
                     <summary>Request (cookie)</summary>
                     <pre>Refresh_Token: string</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
     </tbody>
@@ -369,7 +404,7 @@ Body
             <td>경매 상품 상세 정보 조회  - 상품 아이디를 통해 선택한 상품의 상세 정보를 조회할 수 있다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 productId * integer($int64) (path)
@@ -422,7 +457,13 @@ productId * integer($int64) (path)
             <td>경매 상품 수정  - 상품 아이디를 통해 상품명, 상품 소개, 경매시작일, 경매 시간대를 수정할 수 있습니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 productId * integer($int64) (path)
@@ -471,7 +512,13 @@ productId * integer($int64) (path)
             <td>경매 상품 삭제 - 상품 아이디와 회원 아이디로 상품을 삭제할 수 있습니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 productId * integer($int64) (path)
@@ -559,6 +606,12 @@ size                   integer($int32) (query) - Default value: 15
             <td>경매 상품 등록 - 상품명, 판매가, 상품소개, 경매시작일, 경매시간대, 상품 이미지를 입력하면 상품을 등록할 수 있다.</td>
             <td>
                 <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
                     <summary>Request Body</summary>
                     <pre>application/json
 {
@@ -638,6 +691,12 @@ size                   integer($int32) (query) - Default value: 15
             <td>/api/bids</td>
             <td>멤버별 입찰 내역 리스트를 조회합니다. 본인의 입찰 내역 리스트만 조회할 수 있습니다.</td>
             <td>
+                <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
                 <details>
                     <summary>Request Parameters</summary>
                     <pre>
@@ -723,6 +782,12 @@ pageSize    integer($int32) (query)
             <td>입찰 신청 - 유저가 캐시와 포인트를 사용하여 입찰합니다.</td>
             <td>
                 <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
                     <summary>Request Body</summary>
                     <pre>{
   "bidPrice": 0,
@@ -779,7 +844,13 @@ pageSize    integer($int32) (query)
             <td>주문 상품 수신자 정보 업데이트 - 주문 상품의 수신자명, 수신자연락처, 수신자 주소를 업데이트합니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 orderId *  integer($int64) (path)
@@ -812,7 +883,13 @@ orderId *  integer($int64) (path)
             <td>주문 배송 출발 처리 - 판매자가 주문을 배송 출발 처리합니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 orderId *  integer($int64) (path)
@@ -838,7 +915,13 @@ orderId *  integer($int64) (path)
             <td>수신자가 거래를 확정합니다 - 수신자가 배송을 받은 후 거래확정을 합니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 orderId *  integer($int64) (path)
@@ -864,6 +947,12 @@ orderId *  integer($int64) (path)
             <td>/api/orders</td>
             <td>멤버별 판매 주문 내역 리스트를 조회합니다 - 본인의 판매 주문 내역 리스트만 조회할 수 있습니다.</td>
             <td>
+                <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
                 <details>
                     <summary>Request Parameters</summary>
                     <pre>
@@ -1021,6 +1110,12 @@ cursorId   integer($int64) (query)
             <td>채팅 메시지 전송</td>
             <td>
                 <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
                     <summary>Message Content (application/json)</summary>
                     <pre>{
   "productId": 97,
@@ -1047,6 +1142,13 @@ cursorId   integer($int64) (query)
             <td>/topic/products/{productId}</td>
             <td>제품 관련 채팅 메시지 수신 구독</td>
             <td>
+                <details>
+                    <summary>Path Variable</summary>
+                    <pre>
+Name        Description
+productId *  integer($int64) (path)
+</pre>
+                </details>
                 <details>
                     <summary>Response (application/json)</summary>
                     <pre>{
@@ -1133,6 +1235,12 @@ code *       string (query)
             <td>/api/likes</td>
             <td>찜한 상품 목록 조회 페이징</td>
             <td>
+<details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
                 <details>
                     <summary>Request Parameters</summary>
                     <pre>
@@ -1199,8 +1307,14 @@ isAsc *      boolean (query)
             <td>/api/likes</td>
             <td>찜하기 토글</td>
             <td>
+<details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
                 <details>
-                    <summary>Request (application/json)</summary>
+                    <summary>Request</summary>
                     <pre>{
   "productId": 0,
   "press": true
@@ -1242,8 +1356,14 @@ isAsc *      boolean (query)
             <td>/api/likes/redis</td>
             <td>찜하기 수 top5 상품 등록 redis</td>
             <td>
+<details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
                 <details>
-                    <summary>Request (application/json)</summary>
+                    <summary>Request</summary>
                     <pre>{
   "productId": 0,
   "press": true

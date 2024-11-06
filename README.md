@@ -1,44 +1,94 @@
 # ❤️‍🩹 GOODSENDING
-> 더 이상 필요 없는 굿즈들을 실시간 경매를 통해 구매, 판매 할 수 있는 서비스 플랫폼
 
-🔗 [굿즈엔딩 소개 브로셔](https://www.notion.so/8528ca6a974e4795ba2ea971cbe62f53?pvs=4)
-🔗 *[프로젝트 서비스 링크](https://goodsending.shop/)*
+> GoodsEnding은 굿즈가 필요한 사람과 그렇지 않은 사람을 연결하는 실시간 경매 플랫폼으로, 원하는 굿즈를 쉽고 빠르게 사고팔 수 있는 공간을 제공합니다.
 
+> 🔗 [시연 영상](https://www.youtube.com/watch?v=0cbSPnoaRMQ)
+> 🔗 [굿즈엔딩 소개 브로셔](https://www.notion.so/8528ca6a974e4795ba2ea971cbe62f53?pvs=4)
+> 
+> 🔗 [GitHub 링크](https://github.com/goods-ending)
+> 🔗 [GOODSENDING-FE GITHUB](https://github.com/goods-ending/goodsending-fe)
+> 🔗 [GOODSENDING-BE GITHUB](https://github.com/goods-ending/goodsending-be)
+> 
+> 🔗 [프로젝트 서비스 링크](https://goodsending.shop/) (현재 운영 중단되었습니다.)
 
 ## 📌 프로젝트 소개
-![굿즈엔딩 목업](https://github.com/user-attachments/assets/e19980ec-61bb-4ec6-952b-fef4573ba56f)
-
-🧸 판매하고 싶은 상품을 경매에 등록해보세요!
-💸 실시간으로 경매에 참여하여 원하는 물건을 구매해보세요!
-⌨️ 경매 참여한 유저들과 채팅으로 소통해보아요!
-
-**GoodsEnding**은 더 이상 필요 없어진 굿즈를 실시간 경매를 통해 구매하고 판매할 수 있는 플랫폼입니다. 사용자는 간편하게 상품을 등록하고, 다른 사용자와 실시간 채팅으로 소통하며 경매에 참여할 수 있습니다.
-
-🔗 [GitHub 링크](https://github.com/goods-ending)
-
-🔗 [GOODSENDING-FE GITHUB](https://github.com/goods-ending/goodsending-fe)
-
-🔗 [팀 프로젝트 노션](https://nervous-mule-411.notion.site/GoodsEnding-51dccf65d0b843639f070db0a3866105?pvs=4)
-
-🔗 [시연 영상](https://www.youtube.com/watch?v=0cbSPnoaRMQ)
-
 
 📅 프로젝트 기간 : 2024.07.19 ~ 2024.08.16
 
+![굿즈엔딩 목업](https://github.com/user-attachments/assets/e19980ec-61bb-4ec6-952b-fef4573ba56f)
+
+🧸 판매하고 싶은 상품을 경매에 등록해보세요!
+
+💸 실시간으로 경매에 참여하여 원하는 물건을 구매해보세요!
+
+⌨️ 경매 참여한 유저들과 채팅으로 소통해보아요!
+
+GoodsEnding은 더 이상 필요 없어진 굿즈를 실시간 경매를 통해 구매하고 판매할 수 있는 플랫폼입니다. 사용자는 간편하게 상품을 등록하고, 다른 사용자와 실시간 채팅으로 소통하며 경매에 참여할 수 있습니다.
 
 ### 🧬 프로젝트 아키텍처
-![아키텍처](https://github.com/user-attachments/assets/6941d249-e189-4dd4-b6ee-c2ad8b725aa9)
 
-### 🧙 기술적 의사결정
+![아키텍처](https://github.com/user-attachments/assets/82dc10e9-decd-4d94-85a4-403dbe49674f)
+
+### 경매 플로우
+
+![유저플로우](https://github.com/user-attachments/assets/c4dff895-39e7-4dbd-bcf8-8f46586da13d)
+
+한 판매자가 사용하지 않는 굿즈를 '굿즈 엔딩' 플랫폼에 판매를 등록하여 경매가 시작되면 다른 유저들은 마음에 드는 가격으로 입찰을 시도할 수 있습니다. 
+마지막 입찰 후 5분간 추가 입찰이 없으면 자동으로 낙찰자가 선정되고, 주문 및 배송 프로세스가 진행되어 거래가 종료됩니다.
 
 ### 🔨 기술 스택
 
-| Frontend                                                                                                                                                                                                                                                 | Backend                                                                                                                                                                                                                                                                                      | CI / CD                                                                                                                                            |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Language : JavaScript (ES6)<br>- Framework : React<br>- State Management : Redux<br>- Build Tool : AWS Amplify<br>- Package Manager : yarn<br>- UI Library : Tailwind CSS<br>- HTTP Client : Axios<br>- Formatting : Prettier<br>- Version Control : Git | Language : Java 17<br>- Framework : SpringBoot<br>- Build Toole : Gradle<br>- DB : MySQL, Redis<br>- Test : Postman<br>- JPA<br>- Auth : JWT<br>- Spring Security<br>- Docker<br>- Cloud Storage Service : AWS S3<br>- WebSocket<br>- Spring Scheduler<br>- Query DSL<br>- SMTP<br>- swagger | Deploy<br>    - AWS EC2<br>    - Docker<br>    - Github Actions<br>    - AWS ECR<br>- Communication<br>    - Slack<br>    - Github<br>    - Notion |
+<table>
+  <tr>
+    <th>Frontend</th>
+    <th>Backend</th>
+    <th>CI / CD</th>
+  </tr>
+  <tr>
+    <td>
+      Language: JavaScript (ES6)<br>
+      - Framework: React<br>
+      - State Management: Redux<br>
+      - Build Tool: AWS Amplify<br>
+      - Package Manager: yarn<br>
+      - UI Library: Tailwind CSS<br>
+      - HTTP Client: Axios<br>
+      - Formatting: Prettier<br>
+      - Version Control: Git
+    </td>
+    <td>
+      Language: Java 17<br>
+      - Framework: Spring Boot<br>
+      - Build Tool: Gradle<br>
+      - DB: MySQL, Redis<br>
+      - JPA<br>
+      - Auth: JWT<br>
+      - Spring Security<br>
+      - Docker<br>
+      - Cloud Storage Service: AWS S3<br>
+      - WebSocket<br>
+      - Spring Scheduler<br>
+      - Query DSL<br>
+      - SMTP<br>
+      - Swagger
+    </td>
+    <td>
+      Deploy:<br>
+      - AWS EC2<br>
+      - Docker<br>
+      - GitHub Actions<br>
+      - AWS ECR<br>
+      Communication:<br>
+      - Slack<br>
+      - GitHub<br>
+      - Notion
+    </td>
+  </tr>
+</table>
 
 ### 🗄 ERD
-![image (2) (1)](https://github.com/user-attachments/assets/4c2464b5-1681-485c-a6c1-88f1a3a5b212)
+
+![erd-goodsending](https://github.com/user-attachments/assets/f4720370-e64a-4c72-806c-8d96705aec3c)
 
 
 ### 🚏 API 설계
@@ -61,16 +111,20 @@
             <td>로그인</td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "email": "string",
   "password": "string"
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -79,17 +133,29 @@
             <td>비밀번호 변경 </td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
+                    <pre>
+Name        Description
+memberId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "currentPassword": "string",
   "password": "string",
   "confirmPassword": "string"
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -98,15 +164,27 @@
             <td>캐시 충전 </td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
+                    <pre>
+Name        Description
+memberId * integer($int64) (path)
+</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "cash": 0
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -118,10 +196,9 @@
                     <summary>Request (cookie)</summary>
                     <pre>Refresh_Token: string</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -130,7 +207,12 @@
             <td>회원 가입 </td>
             <td>
                 <details>
-                    <summary>Request (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Request Body</summary>
                     <pre>{
   "email": "string",
   "password": "string",
@@ -138,10 +220,9 @@
   "code": "string"
 }</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -149,10 +230,9 @@
             <td>/api/members/validateAccessToken</td>
             <td>Access Token 만료 여부 확인</td>
             <td>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
         <tr>
@@ -161,7 +241,13 @@
             <td>회원 정보 조회 </td>
             <td>
                 <details>
-                    <summary>Response (application/json)</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Response Body</summary>
                     <pre>{
   "memberId": 0,
   "email": "string",
@@ -181,10 +267,9 @@
                     <summary>Request (cookie)</summary>
                     <pre>Refresh_Token: string</pre>
                 </details>
-                <details>
-                    <summary>Response (200 OK)</summary>
-                    <pre>No content</pre>
-                </details>
+                <div>
+                    ▪️ Response (200 OK)
+                </div>
             </td>
         </tr>
     </tbody>
@@ -208,7 +293,7 @@
             <td>경매 상품 상세 정보 조회  - 상품 아이디를 통해 선택한 상품의 상세 정보를 조회할 수 있다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 productId * integer($int64) (path)
@@ -261,7 +346,13 @@ productId * integer($int64) (path)
             <td>경매 상품 수정  - 상품 아이디를 통해 상품명, 상품 소개, 경매시작일, 경매 시간대를 수정할 수 있습니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 productId * integer($int64) (path)
@@ -310,7 +401,13 @@ productId * integer($int64) (path)
             <td>경매 상품 삭제 - 상품 아이디와 회원 아이디로 상품을 삭제할 수 있습니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 productId * integer($int64) (path)
@@ -398,6 +495,12 @@ size                   integer($int32) (query) - Default value: 15
             <td>경매 상품 등록 - 상품명, 판매가, 상품소개, 경매시작일, 경매시간대, 상품 이미지를 입력하면 상품을 등록할 수 있다.</td>
             <td>
                 <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
                     <summary>Request Body</summary>
                     <pre>application/json
 {
@@ -477,6 +580,12 @@ size                   integer($int32) (query) - Default value: 15
             <td>/api/bids</td>
             <td>멤버별 입찰 내역 리스트를 조회합니다. 본인의 입찰 내역 리스트만 조회할 수 있습니다.</td>
             <td>
+                <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
                 <details>
                     <summary>Request Parameters</summary>
                     <pre>
@@ -562,6 +671,12 @@ pageSize    integer($int32) (query)
             <td>입찰 신청 - 유저가 캐시와 포인트를 사용하여 입찰합니다.</td>
             <td>
                 <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
                     <summary>Request Body</summary>
                     <pre>{
   "bidPrice": 0,
@@ -618,7 +733,13 @@ pageSize    integer($int32) (query)
             <td>주문 상품 수신자 정보 업데이트 - 주문 상품의 수신자명, 수신자연락처, 수신자 주소를 업데이트합니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 orderId *  integer($int64) (path)
@@ -651,7 +772,13 @@ orderId *  integer($int64) (path)
             <td>주문 배송 출발 처리 - 판매자가 주문을 배송 출발 처리합니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 orderId *  integer($int64) (path)
@@ -677,7 +804,13 @@ orderId *  integer($int64) (path)
             <td>수신자가 거래를 확정합니다 - 수신자가 배송을 받은 후 거래확정을 합니다.</td>
             <td>
                 <details>
-                    <summary>Request Parameters</summary>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
+                <details>
+                    <summary>Path Variable</summary>
                     <pre>
 Name        Description
 orderId *  integer($int64) (path)
@@ -703,6 +836,12 @@ orderId *  integer($int64) (path)
             <td>/api/orders</td>
             <td>멤버별 판매 주문 내역 리스트를 조회합니다 - 본인의 판매 주문 내역 리스트만 조회할 수 있습니다.</td>
             <td>
+                <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+</pre>
+                </details>
                 <details>
                     <summary>Request Parameters</summary>
                     <pre>
@@ -860,6 +999,12 @@ cursorId   integer($int64) (query)
             <td>채팅 메시지 전송</td>
             <td>
                 <details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
+                <details>
                     <summary>Message Content (application/json)</summary>
                     <pre>{
   "productId": 97,
@@ -886,6 +1031,13 @@ cursorId   integer($int64) (query)
             <td>/topic/products/{productId}</td>
             <td>제품 관련 채팅 메시지 수신 구독</td>
             <td>
+                <details>
+                    <summary>Path Variable</summary>
+                    <pre>
+Name        Description
+productId *  integer($int64) (path)
+</pre>
+                </details>
                 <details>
                     <summary>Response (application/json)</summary>
                     <pre>{
@@ -972,6 +1124,12 @@ code *       string (query)
             <td>/api/likes</td>
             <td>찜한 상품 목록 조회 페이징</td>
             <td>
+<details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
                 <details>
                     <summary>Request Parameters</summary>
                     <pre>
@@ -1038,8 +1196,14 @@ isAsc *      boolean (query)
             <td>/api/likes</td>
             <td>찜하기 토글</td>
             <td>
+<details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
                 <details>
-                    <summary>Request (application/json)</summary>
+                    <summary>Request</summary>
                     <pre>{
   "productId": 0,
   "press": true
@@ -1081,8 +1245,14 @@ isAsc *      boolean (query)
             <td>/api/likes/redis</td>
             <td>찜하기 수 top5 상품 등록 redis</td>
             <td>
+<details>
+                            <summary>Request Headers</summary>
+                <pre>
+Authorization: Bearer {JWT Token}
+Content-Type: application/json</pre>
+                </details>
                 <details>
-                    <summary>Request (application/json)</summary>
+                    <summary>Request</summary>
                     <pre>{
   "productId": 0,
   "press": true
@@ -1122,6 +1292,116 @@ isAsc *      boolean (query)
     </tbody>
 </table>
 
+
+### 📢 Communication
+
+### 이슈를 활용한 git branch strategy
+
+> 1. 템플릿에 기반한 이슈작성
+> 2. 이슈번호로 브랜치 -  [ ex) feature/#이슈번호 or feature/dev-#이슈번호 ] 생성
+> 3. 해당 브랜치에서 커밋할때 이슈번호 붙여서 커밋메세지 작성 ex) [#이슈번호] : OO기능 개발
+> 4. push
+> 5. 기능별 브랜치에서 작업 후 이슈단위로 Pull Request 수행
+
+- **Project 관리**
+
+  ![Project](https://github.com/user-attachments/assets/49046d0f-1b9b-468c-9fcc-7328c48c5e22)
+- **이슈 관리**
+
+  ![이슈](https://github.com/user-attachments/assets/f30c57cf-351e-45b8-b6fd-0977e9bfd441)
+
+    <details>
+          <summary>기능추가 이슈템플릿</summary>
+          <div markdown="1">
+    
+            ## 어떤 기능인가요?
+      
+            - 추가하려는 기능에 대해 간결하게 설명해주세요
+      
+            ## 작업 상세 내용
+      
+            - [ ] TODO
+            - [ ] TODO
+            - [ ] TODO
+      
+            ## 참고할만한 자료 - 선택 (첨부 파일, 스크린샷 등)
+    </div>
+     </details>
+    <details>
+          <summary>버그수정 이슈템플릿</summary>
+          <div markdown="1">
+    
+        ## 어떤 버그인가요?
+    
+        - 어떤 버그인지 간결하게 설명해주세요
+    
+        ## 어떤 상황에서 발생한 버그인가요?
+    
+        - (가능하면) Given-When-Then 형식으로 서술해주세요
+    
+        ## 예상 결과
+        
+        - 예상했던 정상적인 결과가 어떤 것이었는지 설명해주세요
+    
+        ## 참고할만한 자료 - 선택 (첨부 파일, 스크린샷 등)
+    </div>
+     </details>
+
+- **branch 종류**
+  - **dev**
+  - **feature/#{이슈번호}** : dev에 기능을 추가하기 위한 branch
+- **PR 관리**
+  ![PR](https://github.com/user-attachments/assets/fb421abd-aaa6-483f-b7c9-7be5fb578ecd)
+     - <details>
+              <summary>PR템플릿</summary>
+              <div markdown="1">
+
+            ## 어떤 버그인가요?
+    
+            - 어떤 버그인지 간결하게 설명해주세요
+    
+            ## 어떤 상황에서 발생한 버그인가요?
+    
+            - (가능하면) Given-When-Then 형식으로 서술해주세요
+    
+            ## 예상 결과
+        
+            - 예상했던 정상적인 결과가 어떤 것이었는지 설명해주세요
+    
+            ## 참고할만한 자료 - 선택 (첨부 파일, 스크린샷 등)
+    </div>
+    </details>
+  
+    - **코드 리뷰**
+      ![코드리뷰](https://github.com/user-attachments/assets/d536fe28-017b-43a5-8cee-1a788d69729f)
+### Commit convention
+![commit](https://github.com/user-attachments/assets/1dbc9050-f0fc-4d41-950d-9885a4de71b5)
+```
+{Gitmoji} [#{이슈번호}] Title
+
+Body
+```
+
+  <details>
+              <summary>Gitmoji</summary>
+              <div markdown="1">
+
+    🎉 Begin a project: 프로젝트 시작
+    ✨ Features: 새 기능
+    🐛 Fix a bug: 버그 수정
+    🚚 Move or Rename resources(files, paths, routes): 자원 이동 및 수정
+    🔥Remove code or files: 코드 or 파일 삭제
+    📝 Add or Update documentation: 문서 생성 및 수정
+    💡 Add or Update comments: 주석 생성 및 수정
+    ✏️ Fix typos
+    ✅ Test
+    🔊 Add or Update logs
+    ➕ Add a dependency
+    ➖ Remove a dependency
+    ♻️ Refactor code
+    ⚡️Improve performance
+  </div>
+  </details>
 
 ### 💡 주요 기능 소개
 <details>
@@ -1309,6 +1589,59 @@ isAsc *      boolean (query)
 
 ### 🧨 트러블 슈팅
 <details>
+  <summary>🧨 QueryDSL을 통한 커서 페이징(no offset) 검색 최적화</summary>
+  <div markdown="1">
+    <h4>❓문제 상황 </h4>
+    <p>커서 기반 페이지네이션 구현 시 cursor 판별을 위한 조회가 3회 발생</p>
+    <p>설정해주어야 할 경우의 수가 많아 코드 복잡성 증가</p>
+    <ul>
+      <li>원인</li>
+        <p>- 경매 상품의 상태(경매 진행 중, 경매 예정, 경매 종료)를 분류를 startDateTime과 maxEndDateTime로 판별</p>
+        <p>- 상품 조회 마다 상태를 판별하기 위해 다수의 db 조회 발생</p>
+      <li>해결 방법</li>
+        <p>- 경매 상태를 나타내는 ProductStatus 를 생성하여 경매 상태의 우선순위를 설정</p>
+        <p>- Cursor를 status, startDateTime, id로 설정하여 설정한 정렬 기준에 맞게 조회</p>
+        <p>- 리팩토링 전후 성능 테스트(사용자 수 1000명, 1번씩 요청)를 비교하였을 때, 오류 발생 비율 약 39.5% 감소</p>
+    </ul>
+  </div>
+</details>
+<details>
+  <summary>🧨 Redis Key Event Notification 기반 자동 경매 낙찰</summary>
+  <div markdown="1">
+    <h4>❓문제 상황 </h4>
+    <p>요구 사항 변경으로 인해, 마지막 입찰 5분 후 자동 낙찰자 선정되는 로직이 필요 </br> ➡ 단일 MySQL 데이터베이스 서버로는 실시간 입찰 데이터 처리와 만료 기반 자동 낙찰 로직을 효율적으로 처리하기 어려움이 존재</p>
+    <ul>
+      <li>변경된 요구사항</li>
+        <div>
+          <ol>
+            <li>입찰 방식 변경: 기존 비공개 입찰 방식을 실시간 공개 입찰 방식으로 전환</li>
+            <li>입찰 마감 시간 갱신: 새로운 입찰이 발생할 때마다 해당 입찰 시간으로부터 5분 후로 입찰 마감 시간이 갱신되며, 최대 갱신 시간은 기존에 정해진 마감 시간으로 제한</li>
+            <li>자동 낙찰자 선정: 마지막 입찰로 부터 5분간 추가 입찰이 없으면 자동으로 낙찰자가 선정되도록 시스템 변경</li>
+          </ol>
+        </div>
+      <li>문제 및 원인</li>
+        <div>
+          <ol>
+            <li>지속적인 폴링(Polling)의 비효율성: 실시간 공개 입찰로 전환하면서 시스템은 지속적인 데이터베이스 폴링이 필요하게 되어, MySQL에 과도한 부하를 발생</li>
+            <li>타이밍 정확성의 문제: 지속적인 폴링 또는 스케줄러만으로는 정확한 낙찰자 선정이 어려움</li>
+          </ol>
+        </div>
+      <li>해결 방법</li>
+        <div>
+          Redis Key Event Notification의 만료 이벤트 기술을 도입하여 입찰 데이터의 실시간 처리와 자동 낙찰을 효율적으로 구현
+          <ol>
+            <li>만료 설정: Redis의 만료 기능으로 5분 후 데이터가 자동으로 만료되게 설정</li>
+            <li>낙찰자 선정: Redis Key Event Notification 기능을 활용하여 만료된 데이터에 대해 자동 낙찰자를 선정하는 로직을 실행</li>
+          </ol>
+        </div>
+        <p>이로써, 입찰 데이터의 실시간 처리와 자동 낙찰을 효율적으로 구현</p>
+    </ul>
+  </div>
+</details>
+
+[//]: # (<li>실시간 저장: 최고 입찰 금액을 Redis에 저장하여 빠른 데이터 접근을 지원</li>)
+
+<details>
   <summary>🧨 프로파일 설정</summary>
   <div markdown="1">
     <h4>❓문제 상황 </h4>
@@ -1334,24 +1667,6 @@ isAsc *      boolean (query)
       <li>해결 방법</li>
         <p>- CORS 설정을 정의하고, SecurityFilterChain 메서드에 추가</p>
         <p>- setAllowedOrigins , setAllowedMethods , setExposedHeaders 속성을 적용할 때 와일드카드(“*”) 는 사용할 수 없으므로 명시적으로 지정</p>
-    </ul>
-  </div>
-</details>
-
-<details>
-  <summary>🧨 커서 기반 페이지네이션</summary>
-  <div markdown="1">
-    <h4>❓문제 상황 </h4>
-    <p>커서 기반 페이지네이션 구현 시 cursor 판별을 위한 조회가 3회 발생</p>
-    <p>설정해주어야 할 경우의 수가 많아 코드 복잡성 증가</p>
-    <ul>
-      <li>원인</li>
-        <p>- 경매 상품의 상태(경매 진행 중, 경매 예정, 경매 종료)를 분류를 startDateTime과 maxEndDateTime로 판별</p>
-        <p>- 상품 조회 마다 상태를 판별하기 위해 다수의 db 조회 발생</p>
-      <li>해결 방법</li>
-        <p>- 경매 상태를 나타내는 ProductStatus 를 생성하여 경매 상태의 우선순위를 설정</p>
-        <p>- Cursor를 status, startDateTime, id로 설정하여 설정한 정렬 기준에 맞게 조회</p>
-        <p>- 리팩토링 전후 성능 테스트(사용자 수 1000명, 1번씩 요청)를 비교하였을 때, 오류 발생 비율 약 39.5% 감소</p>
     </ul>
   </div>
 </details>
@@ -1445,37 +1760,6 @@ isAsc *      boolean (query)
     </ul>
   </div>
 </details>
-
-<details>
-  <summary>🧨 자동 낙찰자 선정 로직 구현에 대한 어려움</summary>
-  <div markdown="1">
-    <h4>❓문제 상황 </h4>
-    <p>입찰 후 5분 후 자동으로 낙찰자를 선정해야 하는데, 단일 MySQL 데이터베이스 서버로는 실시간 입찰 데이터 처리와 만료 기반 자동 낙찰 로직을 효율적으로 처리하기 어려움이 존재</p>
-    <ul>
-      <li>원인</li>
-        <div>
-          <ol>
-            <li>실시간 처리 한계: MySQL만으로는 실시간 데이터 처리에 한계</li>
-            <li>지속적인 폴링(Polling)의 비효율성: 5분 후 낙찰자를 선정하기 위해 지속적인 폴링을 하면 불필요한 쿼리와 리소스 소모로 서버 성능 저하</li>
-            <li>타이밍 정확성의 문제: 스케줄링 작업이 겹치면서 정확한 시점에 낙찰자를 선정하기 어려움</li>
-            <li>트랜잭션 처리 부담: 실시간 다수의 입찰로 인한 트랜잭션 부하가 데이터베이스 성능 저하</li>
-          </ol>
-        </div>
-      <li>해결 방법</li>
-        <p>- Redis Key Event Notification의 만료 이벤트 기술을 도입하여 해결</p>
-        <div>
-          <ol>
-            <li>실시간 저장: 최고 입찰 금액을 Redis에 저장하여 빠른 데이터 접근을 지원</li>
-            <li>만료 설정: Redis의 만료 기능으로 5분 후 데이터가 자동으로 만료되게 설정</li>
-            <li>낙찰자 선정: Redis Key Event Notification 기능을 활용하여 만료된 데이터에 대해 자동 낙찰자를 선정하는 로직을 실행</li>
-          </ol>
-        </div>
-        <p>이로써, 입찰 데이터의 실시간 처리와 자동 낙찰을 효율적으로 구현</p>
-    </ul>
-  </div>
-</details>
-
----
 
 ### 👨🏻‍💻👩🏻‍💻 팀원 구성
  

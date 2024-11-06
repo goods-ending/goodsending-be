@@ -86,6 +86,117 @@ GoodsEnding은 더 이상 필요 없어진 굿즈를 실시간 경매를 통해 
   </tr>
 </table>
 
+### 📢 Communication
+
+### 이슈를 활용한 git branch strategy
+
+> 1. 템플릿에 기반한 이슈작성
+> 2. 이슈번호로 브랜치 -  [ ex) feature/#이슈번호 or feature/dev-#이슈번호 ] 생성
+> 3. 해당 브랜치에서 커밋할때 이슈번호 붙여서 커밋메세지 작성 ex) [#이슈번호] : OO기능 개발
+> 4. push
+> 5. 기능별 브랜치에서 작업 후 이슈단위로 Pull Request 수행
+
+- **Project 관리**
+
+  ![Project](https://github.com/user-attachments/assets/49046d0f-1b9b-468c-9fcc-7328c48c5e22)
+- **이슈 관리**
+
+  ![이슈](https://github.com/user-attachments/assets/f30c57cf-351e-45b8-b6fd-0977e9bfd441)
+
+    <details>
+          <summary>기능추가 이슈템플릿</summary>
+          <div markdown="1">
+    
+            ## 어떤 기능인가요?
+      
+            - 추가하려는 기능에 대해 간결하게 설명해주세요
+      
+            ## 작업 상세 내용
+      
+            - [ ] TODO
+            - [ ] TODO
+            - [ ] TODO
+      
+            ## 참고할만한 자료 - 선택 (첨부 파일, 스크린샷 등)
+    </div>
+     </details>
+    <details>
+          <summary>버그수정 이슈템플릿</summary>
+          <div markdown="1">
+    
+        ## 어떤 버그인가요?
+    
+        - 어떤 버그인지 간결하게 설명해주세요
+    
+        ## 어떤 상황에서 발생한 버그인가요?
+    
+        - (가능하면) Given-When-Then 형식으로 서술해주세요
+    
+        ## 예상 결과
+        
+        - 예상했던 정상적인 결과가 어떤 것이었는지 설명해주세요
+    
+        ## 참고할만한 자료 - 선택 (첨부 파일, 스크린샷 등)
+    </div>
+     </details>
+
+- **branch 종류**
+  - **dev**
+  - **feature/#{이슈번호}** : dev에 기능을 추가하기 위한 branch
+- **PR 관리**
+  ![PR](https://github.com/user-attachments/assets/fb421abd-aaa6-483f-b7c9-7be5fb578ecd)
+     - <details>
+              <summary>PR템플릿</summary>
+              <div markdown="1">
+
+            ## 어떤 버그인가요?
+    
+            - 어떤 버그인지 간결하게 설명해주세요
+    
+            ## 어떤 상황에서 발생한 버그인가요?
+    
+            - (가능하면) Given-When-Then 형식으로 서술해주세요
+    
+            ## 예상 결과
+        
+            - 예상했던 정상적인 결과가 어떤 것이었는지 설명해주세요
+    
+            ## 참고할만한 자료 - 선택 (첨부 파일, 스크린샷 등)
+    </div>
+    </details>
+  
+    - **코드 리뷰**
+      ![코드리뷰](https://github.com/user-attachments/assets/d536fe28-017b-43a5-8cee-1a788d69729f)
+### Commit convention
+![commit](https://github.com/user-attachments/assets/1dbc9050-f0fc-4d41-950d-9885a4de71b5)
+```
+{Gitmoji} [#{이슈번호}] Title
+
+Body
+```
+
+  <details>
+              <summary>Gitmoji</summary>
+              <div markdown="1">
+
+    🎉 Begin a project: 프로젝트 시작
+    ✨ Features: 새 기능
+    🐛 Fix a bug: 버그 수정
+    🚚 Move or Rename resources(files, paths, routes): 자원 이동 및 수정
+    🔥Remove code or files: 코드 or 파일 삭제
+    📝 Add or Update documentation: 문서 생성 및 수정
+    💡 Add or Update comments: 주석 생성 및 수정
+    ✏️ Fix typos:
+    ✅ Test
+    🔊 Add or Update logs
+    ➕ Add a dependency
+    ➖ Remove a dependency
+    ♻️ Refactor code
+    ⚡️Improve performance
+  </div>
+  </details>
+
+
 ### 🗄 ERD
 
 ![erd-goodsending](https://github.com/user-attachments/assets/f4720370-e64a-4c72-806c-8d96705aec3c)

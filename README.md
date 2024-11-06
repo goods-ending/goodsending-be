@@ -1470,6 +1470,59 @@ isAsc *      boolean (query)
 
 ### 🧨 트러블 슈팅
 <details>
+  <summary>🧨 QueryDSL을 통한 커서 페이징(no offset) 검색 최적화</summary>
+  <div markdown="1">
+    <h4>❓문제 상황 </h4>
+    <p>커서 기반 페이지네이션 구현 시 cursor 판별을 위한 조회가 3회 발생</p>
+    <p>설정해주어야 할 경우의 수가 많아 코드 복잡성 증가</p>
+    <ul>
+      <li>원인</li>
+        <p>- 경매 상품의 상태(경매 진행 중, 경매 예정, 경매 종료)를 분류를 startDateTime과 maxEndDateTime로 판별</p>
+        <p>- 상품 조회 마다 상태를 판별하기 위해 다수의 db 조회 발생</p>
+      <li>해결 방법</li>
+        <p>- 경매 상태를 나타내는 ProductStatus 를 생성하여 경매 상태의 우선순위를 설정</p>
+        <p>- Cursor를 status, startDateTime, id로 설정하여 설정한 정렬 기준에 맞게 조회</p>
+        <p>- 리팩토링 전후 성능 테스트(사용자 수 1000명, 1번씩 요청)를 비교하였을 때, 오류 발생 비율 약 39.5% 감소</p>
+    </ul>
+  </div>
+</details>
+<details>
+  <summary>🧨 Redis Key Event Notification 기반 자동 경매 낙찰</summary>
+  <div markdown="1">
+    <h4>❓문제 상황 </h4>
+    <p>입찰 후 5분 후 자동으로 낙찰자를 선정해야 하는데, 단일 MySQL 데이터베이스 서버로는 실시간 입찰 데이터 처리와 만료 기반 자동 낙찰 로직을 효율적으로 처리하기 어려움이 존재</p>
+    <ul>
+      <li>변경된 요구사항</li>
+        <div>
+          <ol>
+            <li>입찰 방식 변경: 기존 비공개 입찰 방식을 실시간 공개 입찰 방식으로 전환</li>
+            <li>입찰 마감 시간 갱신: 새로운 입찰이 발생할 때마다 해당 입찰 시간으로부터 5분 후로 입찰 마감 시간이 갱신되며, 최대 갱신 시간은 기존에 정해진 마감 시간으로 제한</li>
+            <li>자동 낙찰자 선정: 마지막 입찰로 부터 5분간 추가 입찰이 없으면 자동으로 낙찰자가 선정되도록 시스템 변경</li>
+          </ol>
+        </div>
+      <li>문제 및 원인</li>
+        <div>
+          <ol>
+            <li>지속적인 폴링(Polling)의 비효율성: 실시간 공개 입찰로 전환하면서 시스템은 지속적인 데이터베이스 폴링이 필요하게 되어, MySQL에 과도한 부하를 발생</li>
+            <li>타이밍 정확성의 문제: 지속적인 폴링 또는 스케줄러만으로는 정확한 낙찰자 선정이 어려움</li>
+          </ol>
+        </div>
+      <li>해결 방법</li>
+        <div>
+          Redis Key Event Notification의 만료 이벤트 기술을 도입하여 입찰 데이터의 실시간 처리와 자동 낙찰을 효율적으로 구현
+          <ol>
+            <li>만료 설정: Redis의 만료 기능으로 5분 후 데이터가 자동으로 만료되게 설정</li>
+            <li>낙찰자 선정: Redis Key Event Notification 기능을 활용하여 만료된 데이터에 대해 자동 낙찰자를 선정하는 로직을 실행</li>
+          </ol>
+        </div>
+        <p>이로써, 입찰 데이터의 실시간 처리와 자동 낙찰을 효율적으로 구현</p>
+    </ul>
+  </div>
+</details>
+
+[//]: # (<li>실시간 저장: 최고 입찰 금액을 Redis에 저장하여 빠른 데이터 접근을 지원</li>)
+
+<details>
   <summary>🧨 프로파일 설정</summary>
   <div markdown="1">
     <h4>❓문제 상황 </h4>
@@ -1495,24 +1548,6 @@ isAsc *      boolean (query)
       <li>해결 방법</li>
         <p>- CORS 설정을 정의하고, SecurityFilterChain 메서드에 추가</p>
         <p>- setAllowedOrigins , setAllowedMethods , setExposedHeaders 속성을 적용할 때 와일드카드(“*”) 는 사용할 수 없으므로 명시적으로 지정</p>
-    </ul>
-  </div>
-</details>
-
-<details>
-  <summary>🧨 커서 기반 페이지네이션</summary>
-  <div markdown="1">
-    <h4>❓문제 상황 </h4>
-    <p>커서 기반 페이지네이션 구현 시 cursor 판별을 위한 조회가 3회 발생</p>
-    <p>설정해주어야 할 경우의 수가 많아 코드 복잡성 증가</p>
-    <ul>
-      <li>원인</li>
-        <p>- 경매 상품의 상태(경매 진행 중, 경매 예정, 경매 종료)를 분류를 startDateTime과 maxEndDateTime로 판별</p>
-        <p>- 상품 조회 마다 상태를 판별하기 위해 다수의 db 조회 발생</p>
-      <li>해결 방법</li>
-        <p>- 경매 상태를 나타내는 ProductStatus 를 생성하여 경매 상태의 우선순위를 설정</p>
-        <p>- Cursor를 status, startDateTime, id로 설정하여 설정한 정렬 기준에 맞게 조회</p>
-        <p>- 리팩토링 전후 성능 테스트(사용자 수 1000명, 1번씩 요청)를 비교하였을 때, 오류 발생 비율 약 39.5% 감소</p>
     </ul>
   </div>
 </details>
@@ -1603,35 +1638,6 @@ isAsc *      boolean (query)
         <p>- @EqualsAndHashCode(callSuper = true) 어노테이션을 붙여주지 않으면, 부모 클래스의 필드는 제외하고 EqualsAndHashCode를 생성해서 발생하는 warning</p>
       <li>해결 방법</li>
         <p>- 자식 클래스의 필드만을 포함하고 싶기 때문에 @EqualsAndHashCode(callSuper = false)를 붙여 warning를 해결</p>
-    </ul>
-  </div>
-</details>
-
-<details>
-  <summary>🧨 자동 낙찰자 선정 로직 구현에 대한 어려움</summary>
-  <div markdown="1">
-    <h4>❓문제 상황 </h4>
-    <p>입찰 후 5분 후 자동으로 낙찰자를 선정해야 하는데, 단일 MySQL 데이터베이스 서버로는 실시간 입찰 데이터 처리와 만료 기반 자동 낙찰 로직을 효율적으로 처리하기 어려움이 존재</p>
-    <ul>
-      <li>원인</li>
-        <div>
-          <ol>
-            <li>실시간 처리 한계: MySQL만으로는 실시간 데이터 처리에 한계</li>
-            <li>지속적인 폴링(Polling)의 비효율성: 5분 후 낙찰자를 선정하기 위해 지속적인 폴링을 하면 불필요한 쿼리와 리소스 소모로 서버 성능 저하</li>
-            <li>타이밍 정확성의 문제: 스케줄링 작업이 겹치면서 정확한 시점에 낙찰자를 선정하기 어려움</li>
-            <li>트랜잭션 처리 부담: 실시간 다수의 입찰로 인한 트랜잭션 부하가 데이터베이스 성능 저하</li>
-          </ol>
-        </div>
-      <li>해결 방법</li>
-        <p>- Redis Key Event Notification의 만료 이벤트 기술을 도입하여 해결</p>
-        <div>
-          <ol>
-            <li>실시간 저장: 최고 입찰 금액을 Redis에 저장하여 빠른 데이터 접근을 지원</li>
-            <li>만료 설정: Redis의 만료 기능으로 5분 후 데이터가 자동으로 만료되게 설정</li>
-            <li>낙찰자 선정: Redis Key Event Notification 기능을 활용하여 만료된 데이터에 대해 자동 낙찰자를 선정하는 로직을 실행</li>
-          </ol>
-        </div>
-        <p>이로써, 입찰 데이터의 실시간 처리와 자동 낙찰을 효율적으로 구현</p>
     </ul>
   </div>
 </details>

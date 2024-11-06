@@ -9,7 +9,7 @@
 > 🔗 [GOODSENDING-FE GITHUB](https://github.com/goods-ending/goodsending-fe)
 > 🔗 [GOODSENDING-BE GITHUB](https://github.com/goods-ending/goodsending-be)
 > 
-> 🔗 [프로젝트 서비스 링크](https://goodsending.shop/) (현재 백엔드 서버는 중단되었습니다.)
+> 🔗 [프로젝트 서비스 링크](https://goodsending.shop/) (현재 운영 중단되었습니다.)
 
 ## 📌 프로젝트 소개
 

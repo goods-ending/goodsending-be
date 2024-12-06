@@ -1,5 +1,6 @@
 package com.goodsending.order.service;
 
+import com.goodsending.bid.entity.Bid;
 import com.goodsending.charge.entity.ChargeHistory;
 import com.goodsending.charge.repository.ChargeHistoryRepository;
 import com.goodsending.deposit.entity.Deposit;
@@ -37,6 +38,10 @@ public class OrderServiceImpl implements OrderService{
   private static final double CHARGE_PERCENT = 0.05;
   private static final double POINT_PERCENT = 0.025;
 
+  @Override
+  public OrderResponse create(Bid bid){
+    return OrderResponse.from(orderRepository.save(Order.from(bid)));
+  }
 
   @Override
   public Slice<OrderWithProductResponse> readBySeller(OrderListBySellerRequest request) {

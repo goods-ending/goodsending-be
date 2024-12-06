@@ -1,9 +1,9 @@
 package com.goodsending.global.redis.listener;
 
 import com.goodsending.bid.repository.ProductBidPriceMaxRepository;
-import com.goodsending.global.redis.handler.RedisMessageHandler;
+import com.goodsending.global.redis.event.BidPriceMaxKeyExpirationEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -18,12 +18,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class RedisKeyExpirationListener extends KeyExpirationEventMessageListener {
-  private final ApplicationContext applicationContext;
+
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer,
-      ApplicationContext applicationContext) {
+      ApplicationEventPublisher publisher) {
     super(listenerContainer);
-    this.applicationContext = applicationContext;
+    this.applicationEventPublisher = publisher;
   }
 
   /**
@@ -37,15 +38,12 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     String key = message.toString();
     log.info("Expired key: {}", key);
 
-    RedisMessageHandler handler = null;
-    if(key.startsWith(ProductBidPriceMaxRepository.KEY_PREFIX)){
-      handler = this.applicationContext.getBean(
-          "bidPriceMaxKeyExpirationHandler", RedisMessageHandler.class);
+    if (key.startsWith(ProductBidPriceMaxRepository.KEY_PREFIX)) {
+      long productId = Long.parseLong(
+          key.substring(ProductBidPriceMaxRepository.KEY_PREFIX.length()));
+      applicationEventPublisher.publishEvent(BidPriceMaxKeyExpirationEvent.of(productId));
     }
 
-    if(handler != null){
-      handler.handle(key);
-    }
   }
 
 

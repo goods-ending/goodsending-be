@@ -1,5 +1,6 @@
 package com.goodsending.order.service;
 
+import com.goodsending.bid.entity.Bid;
 import com.goodsending.order.dto.request.OrderListBySellerRequest;
 import com.goodsending.order.dto.request.ReceiverInfoRequest;
 import com.goodsending.order.dto.response.OrderResponse;
@@ -16,6 +17,14 @@ import org.springframework.data.domain.Slice;
  * @Project : goodsending-be :: goodsending
  */
 public interface OrderService {
+
+  /**
+   * 주문생성
+   * @param bid 주문이 진행될 입찰
+   * @return 저장된 주문 정보
+   * @author : jieun(je-pa)
+   */
+  OrderResponse create(Bid bid);
 
   Slice<OrderWithProductResponse> readBySeller(OrderListBySellerRequest request);
 

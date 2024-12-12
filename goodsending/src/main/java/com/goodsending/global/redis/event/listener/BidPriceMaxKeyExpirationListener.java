@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author : jieun
- * @Date : 2024. 08. 01.
+ * @Date : 2024. 12. 06.
  * @Team : GoodsEnding
  * @Project : goodsending-be :: goodsending
  */

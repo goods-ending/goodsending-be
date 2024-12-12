@@ -24,4 +24,16 @@ public interface BidService {
    * @author : jieun(je-pa)
    */
   Slice<BidWithProductResponse> readByMember(BidListByMemberRequest request);
+
+  /**
+   * 낙찰자 자동 선정 후 주문 생성
+   * <p>
+   * <p>입찰 후 5분동안 추가 입찰이 없으면 마지막 입찰자가 낙찰자가 됩니다.
+   * <p>입찰의 상태가 낙찰자는 SUCCESS, 낙찰자를 제외한 입찰은 FAIL로 업데이트 됩니다.
+   * <p>낙찰자의 주문이 자동 생성됩니다.
+   * <p>낙찰자를 제외한 유저는 환불처리(포인트, 캐시) 됩니다.
+   *
+   * @param productId 낙찰로 인해 경매 마감되는 상품 id
+   */
+  void processBidsOnExpiration(Long productId);
 }

@@ -122,9 +122,18 @@ Content-Type: application/json</pre>
   "password": "string"
 }</pre>
                 </details>
-                <div>
-                    ▪️ Response (200 OK)
-                </div>
+                <details>
+                    <summary>Response (cookie)</summary>
+                    <pre>
+  Refresh_Token: {JWT Token}
+</pre>
+                </details>
+              <details>
+                    <summary>Response (header)</summary>
+                    <pre>
+  Access_Token: {JWT Token}
+</pre>
+                </details>
             </td>
         </tr>
         <tr>
@@ -196,9 +205,10 @@ memberId * integer($int64) (path)
                     <summary>Request (cookie)</summary>
                     <pre>Refresh_Token: string</pre>
                 </details>
-                <div>
-                    ▪️ Response (200 OK)
-                </div>
+                <details>
+                    <summary>Response (header)</summary>
+                    <pre>Access_Token: {JWT Token}</pre>
+                </details>
             </td>
         </tr>
         <tr>
